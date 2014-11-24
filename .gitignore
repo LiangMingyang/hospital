@@ -1,0 +1,7 @@
+# Ignore file for node.js app
+
+# Node.js modules
+node_modules
+
+# Gedit caches
+*~
