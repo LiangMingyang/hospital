@@ -1,0 +1,27 @@
+{
+  "name": "hospital",
+  "version": "1.0.0",
+  "description": "The application server of medical appointment system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No test targets currently.\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LiangMingyang/hospital.git"
+  },
+  "keywords": [
+    "nodejs",
+    "application server",
+    "medical"
+  ],
+  "author": "Song Ziming",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LiangMingyang/hospital/issues"
+  },
+  "homepage": "https://github.com/LiangMingyang/hospital",
+  "dependencies": {
+    "restify": "^2.8.3"
+  }
+}
