@@ -4,6 +4,21 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var config = require('./config');
+//这是关于数据库的一段，暂时将数据库的链接设定为全局变量
+var mysql = require('mysql');
+global.connect = mysql.createConnection(
+    config.database
+);
+global.connect.connect(function(err) {
+    if(err) {
+        console.log(err.message);
+        return ;
+    }
+    console.log('Successfully connected Database!');
+})
+//每次启动服务器都会自动连接数据库
+
 
 var routes = require('./routes/index');
 var app = express();
