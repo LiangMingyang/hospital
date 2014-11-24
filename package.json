@@ -4,7 +4,7 @@
   "description": "The application server of medical appointment system.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test targets currently.\""
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/LiangMingyang/hospital/issues"
   },
-  "homepage": "https://github.com/LiangMingyang/hospital"
+  "homepage": "https://github.com/LiangMingyang/hospital",
+  "dependencies": {
+    "restify": "^2.8.3"
+  }
 }
