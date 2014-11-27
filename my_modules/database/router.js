@@ -11,6 +11,8 @@ router.get('/', function (req,res) {
     res.render('index');
 });
 
+router.use(dbhelper.auth);
+
 router.post('/register',function(req,res) {
     res.json(req.body);
     //dbhelper.register(req,res);

@@ -8,6 +8,7 @@ module.exports = {
         user: 'root',
         password: 'Soar159357Lmy^^^',//默认没有密码
         database: 'Hospital_Reservation_DB' //数据库的名字
-    }
+    },
+    scret_key:"songzimingdb"
 };
 

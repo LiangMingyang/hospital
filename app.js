@@ -36,6 +36,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+global.secret_key = config.secret_key;
 routes(app);
 
 // catch 404 and forward to error handler
