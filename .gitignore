@@ -1,5 +1,5 @@
 # Ignore file for node.js app
-
+*.config
 # Node.js modules
 node_modules
 

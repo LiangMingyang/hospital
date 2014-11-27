@@ -6,7 +6,7 @@ module.exports = {
         host: '127.0.0.1',
         port: '3306',
         user: 'root',
-        password: '',//默认没有密码
+        password: 'Soar159357Lmy^^^',//默认没有密码
         database: 'Hospital_Reservation_DB' //数据库的名字
     }
 };
