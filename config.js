@@ -19,5 +19,5 @@ module.exports = {
  * grant all privileges on Hospital_Reservation_DB.* to test@localhost;
  * 最后刷新权限表
  * flush privileges;
- * 以后就可以用test账户访问数据库，测试时不再需要频繁更改config,js文件
+ * 以后就可以用test账户访问数据库，测试时不再需要频繁更改config.js文件
  */
