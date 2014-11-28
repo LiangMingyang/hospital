@@ -11,12 +11,9 @@ router.get('/', function (req,res) {
     res.render('index');
 });
 
-router.use(dbhelper.auth);
+router.use(dbhelper.check);
 
-router.post('/register',function(req,res) {
-    res.json(req.body);
-    //dbhelper.register(req,res);
-})
+router.post('/register',dbhelper.register)
 
 router.post('/find_hostpital',function(req,res) {
     res.json(req.body);
