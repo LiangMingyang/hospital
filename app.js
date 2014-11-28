@@ -16,7 +16,7 @@ global.connect.connect(function(err) {
         return ;
     }
     console.log('Successfully connected Database!');
-})
+});
 //每次启动服务器都会自动连接数据库
 
 
