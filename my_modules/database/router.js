@@ -15,9 +15,17 @@ router.use(dbhelper.check);
 
 router.post('/register',dbhelper.register)
 
-router.post('/find_hostpital',function(req,res) {
-    res.json(req.body);
-})
+router.post('/find_hostpital',dbhelper.findHospital)
+
+router.post('/find_doctor',dbhelper.findDoctor)
+
+router.post('/find_user',dbhelper.findUser)
+
+router.post('/Update_Individual_Info',dbhelper.UpdateIndividualInfo)
+
+router.post('/Check_Reservation_Simple',dbhelper.Check_Reservation_Simple)
+
+router.post('/Check_Reservation_Detail',dbhelper.Check_Reservation_Detail)
 
 module.exports = router;
 
