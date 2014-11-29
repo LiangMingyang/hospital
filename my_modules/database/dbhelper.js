@@ -36,11 +36,26 @@ exports.check = function (req, res, next) {
     next();
 };
 
+var jsonToand = function(data) {
+    var list = [];
+    for(var key in data) {
+        list.push(key+'='+data[key]);
+    }
+    return list.join(' and ');
+
+}
+
+//console.log(jsonToand({
+//    'u.username':'lmy',
+//    password:'yml'
+//}));
+
 var findUserByName = function (name, callback) {
     var table = 'user';
     var condition = {
         'username': name
     };
+    condition = jsonToand(condition);
     connect.query('SELECT * FROM ?? WHERE ?', [table, condition], function (err, rows) {
         if (err) {
             if (callback) {
@@ -162,7 +177,8 @@ exports.findHospital = function (req, res) {
     var end = condition.end;
     delete condition.start;
     delete condition.end;
-    connect.query('SELECT * FROM ?? WHERE ? LIMIT ??,??', [table, condition, start, end], function (err, rows) {
+    condition = jsonToand(condition);
+    connect.query('SELECT * FROM ?? WHERE'+condition+'LIMIT ??,??', [table, start, end], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -184,7 +200,8 @@ exports.findDoctor = function (req, res) {
     var end = condition.end;
     delete condition.start;
     delete condition.end;
-    connect.query('SELECT * FROM ?? WHERE ? LIMIT ??,??', [table, condition, start, end], function (err, rows) {
+    condition = jsonToand(condition);
+    connect.query('SELECT * FROM ?? WHERE '+condition+' LIMIT ?,?', [tablestart, end], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -205,7 +222,8 @@ exports.UpdateIndividualInfo = function (req, res) {
         User_ID: req.body.User_ID
     };
     var dest = req.body.Dest;
-    connect.query('UPDATE ?? SET ? WHERE ?', [table, dest, condition], function (err, result) {
+    condition = jsonToand(condition);
+    connect.query('UPDATE ?? SET ? WHERE'+condition, [table, dest], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
@@ -235,7 +253,8 @@ exports.Check_Reservation_Simple = function (req, res) {
         'Operation_Time',
         'Doctor_Name'
     ];
-    connect.query('SELECT ?? FROM ?? WHERE ?', [columns, table, condition], function (err, rows) {
+    condition = jsonToand(condition);
+    var query = connect.query('SELECT ?? FROM ?? WHERE '+condition, [columns, table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -248,6 +267,7 @@ exports.Check_Reservation_Simple = function (req, res) {
             content: rows
         })
     })
+    console.log(query.sql);
 };
 
 exports.Check_Reservation_Detail = function (req, res) {
@@ -259,6 +279,7 @@ exports.Check_Reservation_Detail = function (req, res) {
         Reservation_ID: req.body.Reservation_ID,
         'reservation.Doctor_ID':'doctor.Doctor_ID'
     };
+    condition = jsonToand(condition);
     connect.query('SELECT * FROM ?? WHERE ?', [table, condition], function (err, rows) {
         if (err) {
             res.json({
