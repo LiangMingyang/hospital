@@ -24,5 +24,15 @@ router.post('/Check_Reservation_Simple', dbhelper.Check_Reservation_Simple);
 
 router.post('/Check_Reservation_Detail', dbhelper.Check_Reservation_Detail);
 
+router.post('/Check_History_Reservation_Simple', dbhelper.Check_History_Reservation_Simple);
+
+router.post('/Check_History_Reservation_Detail', dbhelper.Check_History_Reservation_Detail);
+
+router.post('/Reservation', dbhelper.Reservation);
+
+router.post('/del_Reservation', dbhelper.del_Reservation);
+
+router.post('/Check_PayState', dbhelper.Check_PayState);
+
 module.exports = router;
 

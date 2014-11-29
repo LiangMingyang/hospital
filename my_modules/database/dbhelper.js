@@ -36,14 +36,14 @@ exports.check = function (req, res, next) {
     next();
 };
 
-var jsonToand = function(data) {
+var jsonToand = function (data) {
     var list = [];
-    for(var key in data) {
-        list.push(key+'='+data[key]);
+    for (var key in data) {
+        list.push(key + '=' + data[key]);
     }
     return list.join(' and ');
 
-}
+};
 
 //console.log(jsonToand({
 //    'u.username':'lmy',
@@ -51,12 +51,12 @@ var jsonToand = function(data) {
 //}));
 
 var findUserByName = function (name, callback) {
-    var table = 'user';
+    var table = 'User';
     var condition = {
-        'username': name
+        'UserName': name
     };
     condition = jsonToand(condition);
-    connect.query('SELECT * FROM ?? WHERE ?', [table, condition], function (err, rows) {
+    connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
         if (err) {
             if (callback) {
                 callback(err, rows);
@@ -66,11 +66,11 @@ var findUserByName = function (name, callback) {
         if (callback) {
             callback(null, rows);
         }
-    })
+    });
 };
 
 exports.register = function (req, res) {
-    findUserByName(req.body.username, function (err, rows) {
+    findUserByName(req.body.UserName, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -86,7 +86,7 @@ exports.register = function (req, res) {
             return;
         }
         ///执行插入
-        var table = 'user';
+        var table = 'User';
         var condition = req.body;
         connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
             if (err) {
@@ -96,7 +96,7 @@ exports.register = function (req, res) {
                 });
                 return;
             }
-            findUserByName(req.body.username, function (err, rows) {
+            findUserByName(req.body.UserName, function (err, rows) {
                 if (err) {
                     res.json({
                         msg: 1,
@@ -115,40 +115,40 @@ exports.register = function (req, res) {
                     msg: 0,
                     User_ID: rows[0].User_ID
                 });
-            })
-        })
+            });
+        });
     });
     //usernameNotUsed(req,res,function(err,req,res) {
     //    if(err) {
     //        res.json({
-    //            msg:1,
-    //            info:err.message
+    //            msg: 1,
+    //            info: err.message
     //        })
-    //        return ;
+    //        return;
     //    }
     //    ///执行插入
-    //    var table = 'user';
+    //    var table = 'User';
     //    var condition = req.body;
     //    connect.query('INSERT INTO ?? SET ?',[table,condition],function(err,result) {
     //        if(err) {
     //            res.json({
-    //                msg:1,
-    //                info:err.message
+    //                msg: 1,
+    //                info: err.message
     //            })
-    //            return ;
+    //            return;
     //        }
     //        res.json({
-    //            msg:0,
-    //            userid:result
+    //            msg: 0,
+    //            userid: result
     //        })
     //    })
     //})
 };
 
 exports.findUser = function (req, res) {
-    var table = 'user';
+    var table = 'User';
     var condition = req.body;
-    findUserByName(req.body.username, function (err, rows) {
+    findUserByName(req.body.UserName, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -166,19 +166,19 @@ exports.findUser = function (req, res) {
         res.json({
             msg: 0,
             content: rows[0]
-        })
-    })
+        });
+    });
 };
 
 exports.findHospital = function (req, res) {
-    var table = 'hospital';
+    var table = 'Hospital';
     var condition = req.body;
     var start = condition.start;
-    var end = condition.end;
+    var size = condition.size;
     delete condition.start;
-    delete condition.end;
+    delete condition.size;
     condition = jsonToand(condition);
-    connect.query('SELECT * FROM ?? WHERE'+condition+'LIMIT ??,??', [table, start, end], function (err, rows) {
+    connect.query('SELECT * FROM ?? WHERE ' + condition + ' LIMIT ??,??', [table, start, size], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -189,19 +189,19 @@ exports.findHospital = function (req, res) {
         res.json({
             msg: 0,
             content: rows
-        })
-    })
+        });
+    });
 };
 
 exports.findDoctor = function (req, res) {
-    var table = 'doctor';
+    var table = 'Doctor';
     var condition = req.body;
     var start = condition.start;
-    var end = condition.end;
+    var size = condition.size;
     delete condition.start;
-    delete condition.end;
+    delete condition.size;
     condition = jsonToand(condition);
-    connect.query('SELECT * FROM ?? WHERE '+condition+' LIMIT ?,?', [tablestart, end], function (err, rows) {
+    connect.query('SELECT * FROM ?? WHERE ' + condition + ' LIMIT ??,??', [table, start, size], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -212,18 +212,18 @@ exports.findDoctor = function (req, res) {
         res.json({
             msg: 0,
             content: rows
-        })
-    })
+        });
+    });
 };
 
 exports.UpdateIndividualInfo = function (req, res) {
-    var table = 'user';
+    var table = 'User';
     var condition = {
         User_ID: req.body.User_ID
     };
     var dest = req.body.Dest;
     condition = jsonToand(condition);
-    connect.query('UPDATE ?? SET ? WHERE'+condition, [table, dest], function (err, result) {
+    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
@@ -233,19 +233,19 @@ exports.UpdateIndividualInfo = function (req, res) {
         }
         res.json({
             msg: 0,
-            info: '成功修改'
-        })
-    })
+            info: '修改成功'
+        });
+    });
 };
 
 exports.Check_Reservation_Simple = function (req, res) {
     var table = [
-        'reservation',
-        'doctor'
+        'Reservation',
+        'Doctor'
     ];
     var condition = {
-        'reservation.User_ID': req.body.User_ID,
-        'reservation.Doctor_ID':'doctor.Doctor_ID'
+        'Reservation.User_ID': req.body.User_ID,
+        'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
     };
     var columns = [
         'Reservation_ID',
@@ -254,7 +254,7 @@ exports.Check_Reservation_Simple = function (req, res) {
         'Doctor_Name'
     ];
     condition = jsonToand(condition);
-    var query = connect.query('SELECT ?? FROM ?? WHERE '+condition, [columns, table], function (err, rows) {
+    var query = connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -265,22 +265,21 @@ exports.Check_Reservation_Simple = function (req, res) {
         res.json({
             msg: 0,
             content: rows
-        })
-    })
-    console.log(query.sql);
+        });
+    });
 };
 
 exports.Check_Reservation_Detail = function (req, res) {
     var table = [
-        'reservation',
-        'doctor'
-        ];
+        'Reservation',
+        'Doctor'
+    ];
     var condition = {
         Reservation_ID: req.body.Reservation_ID,
-        'reservation.Doctor_ID':'doctor.Doctor_ID'
+        'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
     };
     condition = jsonToand(condition);
-    connect.query('SELECT * FROM ?? WHERE '+condition, table, function (err, rows) {
+    connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -291,6 +290,128 @@ exports.Check_Reservation_Detail = function (req, res) {
         res.json({
             msg: 0,
             content: rows
-        })
-    })
+        });
+    });
+};
+
+exports.Check_History_Reservation_Simple = function (req, res) {
+    var table = [
+        'History_Reservation',
+        'Doctor'
+    ];
+    var condition = req.body;
+    var start = condition.start;
+    var size = condition.size;
+    var startDate = condition.startDate;
+    var endDate = condition.endDate;
+    var dateString = 'History_Reservation_Time';
+    var columns = [
+        'History_Reservation_ID',
+        'History_Reservation_Time',
+        'History_Operation_Time',
+        'Doctor_Name'
+    ];
+    condition = {
+        History_Reservation_ID: req.body.Reservation_ID,
+        'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+    };
+    condition = jsonToand(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? >= ? AND ?? <= ? LIMIT ??,??', [
+        columns, table, dateString, startDate, dateString, endDate, start, size
+    ], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Check_History_Reservation_Detail = function (req, res) {
+    var table = [
+        'History_Reservation',
+        'Doctor'
+    ];
+    var condition = {
+        History_Reservation_ID: req.body.History_Reservation_ID,
+        'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+    };
+    condition = jsonToand(condition);
+    connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Reservation = function (req, res) {
+    var table = 'Reservation';
+    var condition = req.body;
+    condition = jsonToand(condition);
+    connect.query('INSERT INTO ?? SET ' + condition, table, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '预订成功'
+        });
+    });
+};
+
+exports.del_Reservation = function (req, res) {
+    var table = 'Reservation';
+    var condition = req.body;
+    condition = jsonToand(condition);
+    connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '取消预订成功'
+        });
+    });
+};
+
+exports.Check_PayState = function (req, res) {
+    var table = 'Reservation';
+    var condition = req.body;
+    var columns = 'Reservation_Payed';
+    condition = jsonToand(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 2,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: rows.Reservation_Payed,
+            info: rows.Reservation_Payed == 0 ? '已支付' : '未支付'
+        });
+    });
 };

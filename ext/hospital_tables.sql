@@ -1,5 +1,7 @@
--- 运行如下语句执行
--- mysql -u test < hostpital_tables.sql
+/**
+ * 运行如下语句执行
+ * mysql -u test < hostpital_tables.sql
+ */
 
 DROP DATABASE IF EXISTS Hospital_Reservation_DB;
 
@@ -106,7 +108,7 @@ CREATE TABLE Reservation (
 );
 
 CREATE TABLE History_Reservation (
-    History_Reservation_ID INT (11) NOT NULL AUTO_INCREMENT,
+    History_Reservation_Time INT (11) NOT NULL AUTO_INCREMENT,
     User_ID INT (11) NOT NULL,
     Doctor_ID INT (11) NOT NULL,
     History_Reservation_Time datetime NOT NULL,
