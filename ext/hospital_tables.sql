@@ -1,3 +1,12 @@
+-- 运行如下语句执行
+-- mysql -u test < hostpital_tables.sql
+
+DROP DATABASE IF EXISTS Hospital_Reservation_DB;
+
+CREATE DATABASE Hospital_Reservation_DB;
+
+USE Hospital_Reservation_DB;
+
 CREATE TABLE Province (
     Province_ID INT (2) NOT NULL AUTO_INCREMENT,
     Province_Name VARCHAR (10) NOT NULL,
