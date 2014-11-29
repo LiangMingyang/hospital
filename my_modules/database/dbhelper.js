@@ -223,10 +223,11 @@ exports.UpdateIndividualInfo = function (req, res) {
 exports.Check_Reservation_Simple = function (req, res) {
     var table = [
         'reservation',
-        'user'
+        'doctor'
     ];
     var condition = {
-        User_ID: req.body.User_ID
+        'reservation.User_ID': req.body.User_ID,
+        'reservation.Doctor_ID':'doctor.Doctor_ID'
     };
     var columns = [
         'Reservation_ID',
@@ -255,7 +256,8 @@ exports.Check_Reservation_Detail = function (req, res) {
         'doctor'
         ];
     var condition = {
-        Reservation_ID: req.body.Reservation_ID
+        Reservation_ID: req.body.Reservation_ID,
+        'reservation.Doctor_ID':'doctor.Doctor_ID'
     };
     connect.query('SELECT * FROM ?? WHERE ?', [table, condition], function (err, rows) {
         if (err) {
