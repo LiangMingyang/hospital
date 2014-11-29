@@ -2,8 +2,8 @@ module.exports = {
     database: {
         host: '127.0.0.1',
         port: '3306',
-        user: 'test',//默认使用test账户
-        password: '',//默认没有密码
+        user: 'root',//默认使用test账户
+        password: 'Soar159357Lmy^^^',//默认没有密码
         database: 'Hospital_Reservation_DB' //数据库的名字
     },
     scret_key: "songzimingdb"
