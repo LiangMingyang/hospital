@@ -43,10 +43,14 @@ var findUserByName = function (name, callback) {
     };
     connect.query('SELECT * FROM ?? WHERE ?', [table, condition], function (err, rows) {
         if (err) {
-            if (callback)callback(err, rows);
+            if (callback) {
+                callback(err, rows);
+            }
             return;
         }
-        if (callback)callback(null, rows);
+        if (callback) {
+            callback(null, rows);
+        }
     })
 };
 
@@ -134,7 +138,7 @@ exports.findUser = function (req, res) {
             res.json({
                 msg: 1,
                 info: err.message
-            })
+            });
             return;
         }
         if (rows.length == 0) {
@@ -264,4 +268,3 @@ exports.Check_Reservation_Detail = function (req, res) {
         })
     })
 };
-
