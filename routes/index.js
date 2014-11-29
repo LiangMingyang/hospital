@@ -4,7 +4,7 @@ var db = require('../my_modules/database/router');
 
 /* GET home page. */
 
-module.exports = function(app) {
-  app.use('/',db);
-}
+module.exports = function (app) {
+    app.use('/', db);
+};
 
