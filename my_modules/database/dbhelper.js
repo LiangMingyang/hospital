@@ -280,7 +280,7 @@ exports.Check_Reservation_Detail = function (req, res) {
         'reservation.Doctor_ID':'doctor.Doctor_ID'
     };
     condition = jsonToand(condition);
-    connect.query('SELECT * FROM ?? WHERE ?', [table, condition], function (err, rows) {
+    connect.query('SELECT * FROM ?? WHERE '+condition, table, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
