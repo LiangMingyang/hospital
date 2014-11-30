@@ -361,8 +361,7 @@ exports.Check_History_Reservation_Detail = function (req, res) {
 exports.Reservation = function (req, res) {
     var table = 'Reservation';
     var condition = req.body;
-    condition = jsonToand(condition);
-    connect.query('INSERT INTO ?? SET ' + condition, table, function (err, rows) {
+    var query = connect.query('INSERT INTO ?? SET ?', [table,condition], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -375,6 +374,7 @@ exports.Reservation = function (req, res) {
             info: '预订成功'
         });
     });
+    console.log(query.sql);
     //TODO:increse doctor.limit?
 };
 

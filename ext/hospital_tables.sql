@@ -95,20 +95,20 @@ CREATE TABLE Manage (
 CREATE TABLE Reservation (
     User_ID INT (11) NOT NULL,
     Doctor_ID INT (11) NOT NULL,
-    Reservation_ID INT (11) NOT NULL,
+    Reservation_ID INT (11) NOT NULL AUTO_INCREMENT,
     Reservation_Time datetime NOT NULL,
     Reseration_Symptom VARCHAR (50),
     Reservation_Payed INT (1) NOT NULL,
     Reservation_PayTime datetime,
     Reservation_PayAmount FLOAT (4, 2),
     Operation_Time datetime NOT NULL,
-    PRIMARY KEY (User_ID, Doctor_ID),
+    PRIMARY KEY (Reservation_ID),
     FOREIGN KEY (User_ID) REFERENCES User(User_ID) ON UPDATE CASCADE ON DELETE RESTRICT,
     FOREIGN KEY (Doctor_ID) REFERENCES Doctor(Doctor_ID) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 CREATE TABLE History_Reservation (
-    History_Reservation_Time INT (11) NOT NULL AUTO_INCREMENT,
+    History_Reservation_ID INT (11) NOT NULL AUTO_INCREMENT,
     User_ID INT (11) NOT NULL,
     Doctor_ID INT (11) NOT NULL,
     History_Reservation_Time datetime NOT NULL,
