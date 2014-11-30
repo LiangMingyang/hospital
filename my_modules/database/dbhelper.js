@@ -41,7 +41,7 @@ var jsonToAnd = function (data) {
     for (var key in data) {
         list.push(key + '=' + data[key]);
     }
-    return ' '+list.join(' and ')+' ';
+    return ' ' + list.join(' and ') + ' ';
 
 };
 
@@ -361,7 +361,7 @@ exports.Check_History_Reservation_Detail = function (req, res) {
 exports.Reservation = function (req, res) {
     var table = 'Reservation';
     var condition = req.body;
-    var query = connect.query('INSERT INTO ?? SET ?', [table,condition], function (err, rows) {
+    var query = connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
