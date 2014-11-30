@@ -67,6 +67,7 @@ CREATE TABLE User (
     PASSWORD VARCHAR (20) NOT NULL,
     Credit_Rank INT (2) NOT NULL DEFAULT 3,
     Appointment_Limit INT (2) NOT NULL DEFAULT 3,
+    Sex INT (1) NOT NULL,
     Birthday datetime NOT NULL,
     Location VARCHAR (30) NOT NULL,
     Mail VARCHAR (30) NOT NULL,

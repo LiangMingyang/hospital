@@ -34,5 +34,27 @@ router.post('/del_Reservation', dbhelper.del_Reservation);
 
 router.post('/Check_PayState', dbhelper.Check_PayState);
 
+//router.post('/In_Cash', dbhelper.In_Cash);
+
+router.post('/Pay_Reservation', dbhelper.Pay_Reservation);
+
+//router.post('/Check_Register', dbhelper.Check_Register);
+
+router.post('/Get_Reservation_Info', dbhelper.Get_Reservation_Info);
+
+router.post('/Search_By_Identity', dbhelper.Search_By_Identity);
+
+//router.post('/Cancel_Reservation', dbhelper.Cancel_Reservation);
+
+router.post('/get_UserInfo_byID', dbhelper.get_UserInfo_byID);
+
+//router.post('/Search_User', dbhelper.Search_User);
+
+router.post('/Set_CreditRank_user_ID', dbhelper.Set_CreditRank_user_ID);
+
+router.post('/Create_Hospital', dbhelper.Create_Hospital);
+
+router.post('/Get_HospitalInfo_simple', dbhelper.Get_HospitalInfo_simple);
+
 module.exports = router;
 
