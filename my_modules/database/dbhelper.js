@@ -96,25 +96,9 @@ exports.register = function (req, res) {
                 });
                 return;
             }
-            findUserByName(req.body.UserName, function (err, rows) {
-                if (err) {
-                    res.json({
-                        msg: 1,
-                        info: err.message
-                    });
-                    return;
-                }
-                if (rows.length == 0) {
-                    res.json({
-                        msg: 1,
-                        info: '刚刚插入的数据竟然不见了真是奇怪……'
-                    });
-                    return;
-                }
-                res.json({
-                    msg: 0,
-                    User_ID: rows[0].User_ID
-                });
+            res.json({
+                msg: 0,
+                info: '注册成功'
             });
         });
     });
@@ -145,7 +129,7 @@ exports.register = function (req, res) {
     //})
 };
 
-exports.findUser = function (req, res) {
+exports.findUser = function (req, res) { //4.0版本接口中不再需要返回User_ID，所以删去了检查的过程
     var table = 'User';
     var condition = req.body;
     findUserByName(req.body.UserName, function (err, rows) {
@@ -170,6 +154,7 @@ exports.findUser = function (req, res) {
     });
 };
 
+// TODO 4.0版本接口有更新，需修改
 exports.findHospital = function (req, res) {
     var table = 'Hospital';
     var condition = req.body;
@@ -251,7 +236,8 @@ exports.Check_Reservation_Simple = function (req, res) {
         'Reservation_ID',
         'Reservation_Time',
         'Operation_Time',
-        'Doctor_Name'
+        'Doctor_Name',
+        'Reservation_Payed'
     ];
     condition = jsonToAnd(condition);
     var query = connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
@@ -272,11 +258,15 @@ exports.Check_Reservation_Simple = function (req, res) {
 exports.Check_Reservation_Detail = function (req, res) {
     var table = [
         'Reservation',
-        'Doctor'
+        'Doctor',
+        'Depart',
+        'Hospital'
     ];
     var condition = {
         Reservation_ID: req.body.Reservation_ID,
-        'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+        'Doctor.Depart_ID': 'Depart.Depart_ID',
+        'Depart.Hospital_ID': 'Hospital.Hospital_ID'
     };
     condition = jsonToAnd(condition);
     connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
@@ -335,11 +325,15 @@ exports.Check_History_Reservation_Simple = function (req, res) {
 exports.Check_History_Reservation_Detail = function (req, res) {
     var table = [
         'History_Reservation',
-        'Doctor'
+        'Doctor',
+        'Depart',
+        'Hospital'
     ];
     var condition = {
         History_Reservation_ID: req.body.History_Reservation_ID,
-        'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+        'Doctor.Depart_ID': 'Depart.Depart_ID',
+        'Depart.Hospital_ID': 'Hospital.Hospital_ID'
     };
     condition = jsonToAnd(condition);
     connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
@@ -373,8 +367,7 @@ exports.Reservation = function (req, res) {
             info: '预订成功'
         });
     });
-    console.log(query.sql);
-    //TODO increase doctor.limit?
+    //TODO increase doctor.limit? what about user.limit?
 };
 
 exports.del_Reservation = function (req, res) {
@@ -394,9 +387,11 @@ exports.del_Reservation = function (req, res) {
             info: '取消预订成功'
         });
     });
+    //TODO decrease doctor.limit? what about user.limit?
+    //TODO 如果已经支付过挂号费，需要退款
 };
 
-exports.Check_PayState = function (req, res) { //前端表示只要msg不为0，他就不看了，这个字段代表有没有出错
+exports.Check_PayState = function (req, res) {
     var table = 'Reservation';
     var condition = req.body;
     var columns = 'Reservation_Payed';
@@ -416,11 +411,59 @@ exports.Check_PayState = function (req, res) { //前端表示只要msg不为0，
     });
 };
 
-//TODO In_Cash 这是什么鬼……
-//exports.In_Cash = function (req, res) {
-//
-//};
+exports.Check_Cash = function (req, res) {
+    var table = 'User';
+    var condition = req.body;
+    var columns = 'Amount';
+    condition = jsonToAnd(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: rows[0].Amount
+        });
+    });
+};
 
+exports.In_Cash = function (req, res) {
+    var table = 'User';
+    var condition = {
+        User_ID: req.body.User_ID
+    };
+    var columns = 'Amount';
+    condition = jsonToAnd(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        var dest = {
+            Amount: rows[0].Amount + req.body.Amout
+        };
+        connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                info: '充值成功'
+            });
+        });
+    });
+};
 
 exports.Pay_Reservation = function (req, res) {
     var table = 'Reservation';
@@ -527,9 +570,17 @@ exports.Search_By_Identity = function (req, res) {
 //    });
 //};
 
-exports.get_UserInfo_byID = function (req, res) {
-    var table = 'User';
-    var condition = req.body;
+exports.Search_User = function (req, res) {
+    var table = [
+        'User',
+        'Area',
+        'Province'
+    ];
+    var condition = {
+        Identity_ID: req.body.Identity_ID,
+        'User.Area_ID': 'Area.Area_ID',
+        'Area.Province_ID': 'Province.Province_ID'
+    };
     condition = jsonToAnd(condition);
     connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
         if (err) {
@@ -546,24 +597,32 @@ exports.get_UserInfo_byID = function (req, res) {
     });
 };
 
-//exports.Search_User = function (req, res) {
-//    var table = 'User';
-//    var condition = req.body;
-//    condition = jsonToAnd(condition);
-//    connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
-//        if (err) {
-//            res.json({
-//                msg: 1,
-//                info: err.message
-//            });
-//            return;
-//        }
-//        res.json({
-//            msg: 0,
-//            content: rows
-//        });
-//    });
-//};
+exports.get_UserInfo_byID = function (req, res) {
+    var table = [
+        'User',
+        'Area',
+        'Province'
+    ];
+    var condition = {
+        User_ID: req.body.User_ID,
+        'User.Area_ID': 'Area.Area_ID',
+        'Area.Province_ID': 'Province.Province_ID'
+    };
+    condition = jsonToAnd(condition);
+    connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
 
 exports.Set_CreditRank_user_ID = function (req, res) {
     var table = 'User';
@@ -571,7 +630,7 @@ exports.Set_CreditRank_user_ID = function (req, res) {
         User_ID: req.body.User_ID
     };
     var dest = {
-        Credit_Rank: req.body.rank
+        Credit_Rank: req.body.Credit_Rank
     };
     condition = jsonToAnd(condition);
     connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
@@ -635,25 +694,9 @@ exports.Create_Hospital = function (req, res) {
                 });
                 return;
             }
-            findHospitalByName(req.body.Hospital_Name, function (err, rows) {
-                if (err) {
-                    res.json({
-                        msg: 1,
-                        info: err.message
-                    });
-                    return;
-                }
-                if (rows.length == 0) {
-                    res.json({
-                        msg: 1,
-                        info: '刚刚插入的数据竟然不见了真是奇怪……'
-                    });
-                    return;
-                }
-                res.json({
-                    msg: 0,
-                    info: rows[0].Hospital_ID
-                });
+            res.json({
+                msg: 0,
+                info: '创建医院成功'
             });
         });
     });

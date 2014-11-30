@@ -10,13 +10,13 @@ router.get('/', function (req, res) {
 
 router.use(dbhelper.check);
 
-router.post('/register', dbhelper.register);
+router.post('/Register', dbhelper.register);
 
-router.post('/find_hostpital', dbhelper.findHospital);
+router.post('/Find_Hospital', dbhelper.findHospital);
 
-router.post('/find_doctor', dbhelper.findDoctor);
+router.post('/Find_Doctor', dbhelper.findDoctor);
 
-router.post('/find_user', dbhelper.findUser);
+router.post('/Find_User', dbhelper.findUser);
 
 router.post('/Update_Individual_Info', dbhelper.UpdateIndividualInfo);
 
@@ -34,7 +34,9 @@ router.post('/del_Reservation', dbhelper.del_Reservation);
 
 router.post('/Check_PayState', dbhelper.Check_PayState);
 
-//router.post('/In_Cash', dbhelper.In_Cash);
+router.post('/Check_Cash', dbhelper.Check_Cash);
+
+router.post('/In_Cash', dbhelper.In_Cash);
 
 router.post('/Pay_Reservation', dbhelper.Pay_Reservation);
 
@@ -46,9 +48,9 @@ router.post('/Search_By_Identity', dbhelper.Search_By_Identity);
 
 //router.post('/Cancel_Reservation', dbhelper.Cancel_Reservation);
 
-router.post('/get_UserInfo_byID', dbhelper.get_UserInfo_byID);
+router.post('/Search_User', dbhelper.Search_User);
 
-//router.post('/Search_User', dbhelper.Search_User);
+router.post('/get_UserInfo_byID', dbhelper.get_UserInfo_byID);
 
 router.post('/Set_CreditRank_user_ID', dbhelper.Set_CreditRank_user_ID);
 
