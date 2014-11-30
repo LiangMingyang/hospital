@@ -28,6 +28,9 @@ node_modules
 # Gedit caches
 *~
 
+# LibreOffice cached
+.~lock.*#
+
 # IDEA project file
 .idea
 
