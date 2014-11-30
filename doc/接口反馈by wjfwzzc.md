@@ -1,11 +1,12 @@
-> 本反馈从《接口信息规范3.1》第8页开始
+> 本反馈从《接口信息规范4.0》第8页开始
 
 ###查看历史 Check_History_Reservation_Simple
+- url路径改成host/Check_History_Reservation_Simple
 - 为与数据库保持一致，所有Reservation\_\*字段，全部变为History\_Reservation\_\*
-- post信息中应增加User_ID字段，与查看预约保持一致
 - content内的State含义不明，故而没有返回相应字段
 
 ###查看单条历史详情 Check_History_Reservation_Detail
+- url路径改成host/Check_History_Reservation_Detail
 - 为与数据库保持一致，所有Reservation\_\*字段，全部变为History\_Reservation\_\*
 - post请求中Reservation_Date字段含义不明，故而没有使用
 
