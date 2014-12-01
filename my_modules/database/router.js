@@ -20,7 +20,7 @@ router.post('/Find_User', dbhelper.findUser);
 
 router.post('/Update_Individual_Info', dbhelper.UpdateIndividualInfo);
 
-router.post('/Check_Reservation_Simple', dbhelper.Check_Reservation_Simple);
+router.get('/Check_Reservation_Simple', dbhelper.Check_Reservation_Simple);
 
 router.post('/Check_Reservation_Detail', dbhelper.Check_Reservation_Detail);
 
@@ -45,8 +45,6 @@ router.post('/Pay_Reservation', dbhelper.Pay_Reservation);
 router.post('/Get_Reservation_Info', dbhelper.Get_Reservation_Info);
 
 router.post('/Search_By_Identity', dbhelper.Search_By_Identity);
-
-//router.post('/Cancel_Reservation', dbhelper.Cancel_Reservation);
 
 router.post('/Search_User', dbhelper.Search_User);
 
@@ -77,5 +75,11 @@ router.post('/Set_DoctorInfo', dbhelper.Set_DoctorInfo);
 router.post('/Add_Admin', dbhelper.Add_Admin);
 
 router.post('/Get_AdminInfo', dbhelper.Get_AdminInfo);
+
+router.post('/Get_Privilege', dbhelper.Get_Privilege);
+
+router.post('/Del_Privilege', dbhelper.Del_Privilege);
+
+router.post('/del_Admin', dbhelper.del_Admin);
 
 module.exports = router;

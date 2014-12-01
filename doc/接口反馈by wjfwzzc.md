@@ -1,4 +1,4 @@
-> 本反馈从《接口信息规范4.0》第9页开始
+> 本反馈从《接口信息规范4.0》Page9 to Page25
 
 ###sql文件改动
 - 添加外键约束
@@ -6,6 +6,9 @@
 - 实体集中的ID全部添加AUTO_INCREMENT属性，即自动增长
 - 所有FLOUT和REAL类型全部变成DECIMAL，因为金额必须储存精确值，至于精确的位数还需要定一下
 - 参照文档，User添加Sex和Amount字段
+
+###Page2 Find_Hospital
+- 只提供Area_ID即可，不需要提供Province相关信息
 
 ###查看历史 Check_History_Reservation_Simple
 - url路径改成host/Check_History_Reservation_Simple
@@ -28,9 +31,6 @@
 ###取消预约 del_Reservation
 - 如果预约时需要increase，那么取消时是否应该decrease
 - 已支付时要退钱这个注意到了，但还是同样的问题，Reservation_PayAmount字段从没赋过值，不知道该退多少钱
-
-###查看是否支付 Check_PayState
-- 返回状态含义修改，msg = 1表明查询失败，msg = 0表示查询成功，info记录查询结果（0代表已支付，否则为未支付）
 
 ###支付挂号费 Pay_Reservation
 - 没有提供Reservation_PayTime字段，理由同预约医生接口
@@ -66,4 +66,10 @@
 - 注册用户、创建医院、创建科室等接口的后台实现中都不允许重名的出现（检查了已经存在），这里是否允许重名？（目前的后台实现是不允许）
 
 ###创建普通管理员账号 Add_Admin
-- 没有给isSuper字段？是否应该默认为0？
+- 没有提供isSuper字段？是否应该默认为0？
+
+###赋予权限 Give_Privilege
+- 没有提供Admin_ID字段？解除权限接口也有此问题
+
+###Find_User_By_Identity_ID
+- 与Search_User的含义和行为完全一致，可删去
