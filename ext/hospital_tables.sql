@@ -5,7 +5,7 @@
 
 DROP DATABASE IF EXISTS Hospital_Reservation_DB;
 
-CREATE DATABASE Hospital_Reservation_DB;
+CREATE DATABASE Hospital_Reservation_DB CHARACTER SET utf8;
 
 USE Hospital_Reservation_DB;
 

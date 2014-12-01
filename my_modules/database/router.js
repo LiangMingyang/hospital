@@ -58,5 +58,24 @@ router.post('/Create_Hospital', dbhelper.Create_Hospital);
 
 router.post('/Get_HospitalInfo_simple', dbhelper.Get_HospitalInfo_simple);
 
-module.exports = router;
+router.post('/Get_HospitalInfo_detail', dbhelper.Get_HospitalInfo_detail);
 
+router.post('/Set_HospitalInfo', dbhelper.Set_HospitalInfo);
+
+router.post('/Create_Depart', dbhelper.Create_Depart);
+
+router.post('/Get_DepartInfo', dbhelper.Get_DepartInfo);
+
+router.post('/Get_DoctorInfo', dbhelper.Get_DoctorInfo);
+
+router.post('/Get_DoctorInfo_detail', dbhelper.Get_DoctorInfo_detail);
+
+router.post('/Add_Doctor', dbhelper.Add_Doctor);
+
+router.post('/Set_DoctorInfo', dbhelper.Set_DoctorInfo);
+
+router.post('/Add_Admin', dbhelper.Add_Admin);
+
+router.post('/Get_AdminInfo', dbhelper.Get_AdminInfo);
+
+module.exports = router;

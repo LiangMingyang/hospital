@@ -50,11 +50,7 @@ var jsonToAnd = function (data) {
 //    password:'yml'
 //}));
 
-var findUserByName = function (name, callback) {
-    var table = 'User';
-    var condition = {
-        'UserName': name
-    };
+var findSomethingByName = function (table, condition, callback) { //便于创建其它信息时重用
     condition = jsonToAnd(condition);
     connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
         if (err) {
@@ -70,7 +66,9 @@ var findUserByName = function (name, callback) {
 };
 
 exports.register = function (req, res) {
-    findUserByName(req.body.UserName, function (err, rows) {
+    var table = 'User';
+    var condition = req.body;
+    findSomethingByName(table, {'UserName': condition.UserName}, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -86,8 +84,6 @@ exports.register = function (req, res) {
             return;
         }
         //执行插入
-        var table = 'User';
-        var condition = req.body;
         connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
             if (err) {
                 res.json({
@@ -508,8 +504,18 @@ exports.Get_Reservation_Info = function (req, res) {
         'Doctor.Depart_ID': 'Depart.Depart_ID',
         'Depart.Hospital_ID': 'Hospital.Hospital_ID'
     };
+    var columns = [
+        UserName,
+        Doctor_Name,
+        Reservation_ID,
+        Reservation_Time,
+        Operation_Time,
+        Doctor_Name
+    ];
     condition = jsonToAnd(condition);
-    connect.query('SELECT * FROM ?? WHERE ' + condition + ' LIMIT ??,??', [table, start, size], function (err, rows) {
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' LIMIT ??,??', [
+        columns, table, start, size
+    ], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -535,8 +541,16 @@ exports.Search_By_Identity = function (req, res) {
         'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
         'Reservation.User_ID': 'User.User_ID'
     };
+    var columns = [
+        UserName,
+        Doctor_Name,
+        Reservation_ID,
+        Reservation_Time,
+        Operation_Time,
+        Doctor_Name
+    ];
     condition = jsonToAnd(condition);
-    connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -643,32 +657,15 @@ exports.Set_CreditRank_user_ID = function (req, res) {
         }
         res.json({
             msg: 0,
-            info: '调整信用等级成功'
+            info: '信用等级已调整'
         });
     });
 };
 
-var findHospitalByName = function (name, callback) {
-    var table = 'Hospital';
-    var condition = {
-        'Hospital_Name': name
-    };
-    condition = jsonToAnd(condition);
-    connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
-        if (err) {
-            if (callback) {
-                callback(err, rows);
-            }
-            return;
-        }
-        if (callback) {
-            callback(null, rows);
-        }
-    });
-};
-
 exports.Create_Hospital = function (req, res) {
-    findHospitalByName(req.body.Hospital_Name, function (err, rows) {
+    var table = 'Hospital';
+    var condition = req.body;
+    findSometingByName(table, {'Hospital_Name': condition.Hospital_Name}, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -684,8 +681,6 @@ exports.Create_Hospital = function (req, res) {
             return;
         }
         //执行插入
-        var table = 'Hospital';
-        var condition = req.body;
         connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
             if (err) {
                 res.json({
@@ -696,7 +691,7 @@ exports.Create_Hospital = function (req, res) {
             }
             res.json({
                 msg: 0,
-                info: '创建医院成功'
+                info: '医院创建成功'
             });
         });
     });
@@ -711,8 +706,295 @@ exports.Get_HospitalInfo_simple = function (req, res) {
         Admin_ID: req.body.Admin_ID,
         'Manage.Hospital_ID': 'Hospital.Hospital_ID'
     };
+    var columns = [
+        Hospital_ID,
+        Hospital_Name
+    ];
+    condition = jsonToAnd(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Get_HospitalInfo_detail = function (req, res) {
+    var table = 'Hospital';
+    var condition = req.body;
     condition = jsonToAnd(condition);
     connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Set_HospitalInfo = function (req, res) {
+    var table = 'Hospital';
+    var condition = {
+        Hospital_ID: req.body.Hospital_ID
+    };
+    var dest = req.body;
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET ? WHERE' + condition, [table, dest], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '医院信息配置成功'
+        });
+    })
+};
+
+exports.Create_Depart = function (req, res) {
+    var table = 'Depart';
+    var condition = req.body;
+    findSometingByName(table, {'Depart_Name': condition.Depart_Name}, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows.length > 0) {
+            res.json({
+                msg: 1,
+                info: '科室已经存在了'
+            });
+            return;
+        }
+        //执行插入
+        connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                info: '科室创建成功'
+            });
+        });
+    });
+};
+
+exports.Get_DepartInfo = function (req, res) {
+    var table = 'Depart';
+    var condition = req.body;
+    var columns = [
+        Depart_ID,
+        Deprt_Name
+    ];
+    condition = jsonToAnd(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Get_DoctorInfo = function (req, res) {
+    var table = 'Doctor';
+    var condition = req.body;
+    var columns = [
+        Doctor_ID,
+        Doctor_Name
+    ];
+    condition = jsonToAnd(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Get_DoctorInfo_detail = function (req, res) {
+    var table = 'Doctor';
+    var condition = req.body;
+    condition = jsonToAnd(condition);
+    connect.query('SELECT * FROM ?? WHERE ' + condition, table, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Add_Doctor = function (req, res) {
+    var table = 'Doctor';
+    var condition = req.body;
+    findSometingByName(table, {'Doctor_Name': condition.Doctor_Name}, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows.length > 0) {
+            res.json({
+                msg: 1,
+                info: '医生已经存在了'
+            });
+            return;
+        }
+        //执行插入
+        connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                info: '医生添加成功'
+            });
+        });
+    });
+};
+
+exports.Set_DoctorInfo = function (req, res) {
+    var table = 'Doctor';
+    var condition = {
+        Doctor_ID: req.body.Doctor_ID
+    };
+    var dest = req.body;
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET ? WHERE' + condition, [table, dest], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '医生信息配置成功'
+        });
+    })
+};
+
+exports.Add_Admin = function (req, res) {
+    var table = 'Admin';
+    var condition = req.body;
+    findSometingByName(table, {'Admin_Name': condition.Doctor_Name}, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows.length > 0) {
+            res.json({
+                msg: 1,
+                info: '管理员已经存在了'
+            });
+            return;
+        }
+        //执行插入
+        connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                info: '管理员添加成功'
+            });
+        });
+    });
+};
+
+exports.Get_AdminInfo = function (req, res) {
+    var table = 'Admin';
+    var columns = [
+        Admin_ID,
+        Admin_Name
+    ];
+    connect.query('SELECT ?? FROM ??', [columns, table], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Get_Privilege = function (req, res) {
+    var table = [
+        'Admin',
+        'Hospital'
+    ];
+    var condition = {
+        Hospital_ID: req.body.Hospital_ID,
+        'Admin.Hospital_ID': 'Hospital.Hospital_ID'
+    };
+    var columns = [
+        Hospital_ID,
+        Hospital_Name
+    ];
+    condition = jsonToAnd(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,

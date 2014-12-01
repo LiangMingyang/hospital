@@ -1,12 +1,11 @@
-var express      = require('express');
-var path         = require('path');
-var favicon      = require('serve-favicon');
-var logger       = require('morgan');
+var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-var bodyParser   = require('body-parser');
-var mysql        = require('mysql');
-var config       = require('./config');
-
+var bodyParser = require('body-parser');
+var mysql = require('mysql');
+var config = require('./config');
 
 // Connect to server on startup
 global.connect = mysql.createConnection(
@@ -40,7 +39,7 @@ global.secret_key = config.secret_key;
 routes(app);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -50,7 +49,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
     // development error handler
     // will print stacktrace
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
@@ -60,7 +59,7 @@ if (app.get('env') === 'development') {
 } else {
     // production error handler
     // no stacktraces leaked to user
-    app.use(function(err, req, res, next) {
+    app.use(function (err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
