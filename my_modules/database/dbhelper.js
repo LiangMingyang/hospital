@@ -5,33 +5,33 @@ var strftime = require("strftime");
 var connect = global.connect;
 
 exports.check = function (req, res, next) {
-    //var sendtime = new Date(req.body.encrypttime);
-    //var token    = req.body.token;
-    //if(!sendtime || !token) {
-    //    res.json({
-    //        msg : 1,
-    //        info: "格式不合法"
-    //    })
-    //    return ;
-    //}
-    //var now = new Date();
-    //var delta = Math.abs(now-sendtime);
-    //if(delta > 60*1000) {
-    //    res.json({
-    //        msg : 2,
-    //        info:"超时"
-    //    })
-    //    return;
-    //}
-    //
-    //
-    //if(hash.update(secret+'$'+strftime("%F %T",sendtime)).digest('hex') != token) {
-    //    res.json({
-    //        msg : 3,
-    //        info:"token不正确"
-    //    })
-    //    return;
-    //}
+    var sendtime = new Date(req.body.encrypttime);
+    var token    = req.body.token;
+    if(!sendtime || !token) {
+        res.json({
+            msg : 1,
+            info: "格式不合法"
+        })
+        return ;
+    }
+    var now = new Date();
+    var delta = Math.abs(now-sendtime);
+    if(delta > 60*1000) {
+        res.json({
+            msg : 2,
+            info:"超时"
+        })
+        return;
+    }
+
+
+    if(hash.update(secret+'$'+strftime("%F %T",sendtime)).digest('hex') != token) {
+        res.json({
+            msg : 3,
+            info:"token不正确"
+        })
+        return;
+    }
     delete req.body.token;
     delete req.body.encrypttime;
     next();
