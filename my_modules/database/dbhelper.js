@@ -3,6 +3,7 @@ var hash = crypto.createHash('sha1');
 var secret = global.secret_key;
 var strftime = require("strftime");
 var connect = global.connect;
+
 exports.check = function (req, res, next) {
     //var sendtime = new Date(req.body.encrypttime);
     //var token    = req.body.token;
@@ -1063,6 +1064,146 @@ exports.del_Admin = function (req, res) {
         res.json({
             msg: 0,
             info: '管理员账号删除成功'
+        });
+    });
+};
+
+// Added since API version 4.4 update 1
+
+// why name it like this, doesn't `ID`==`Identity`?
+exports.find_User_By_Identity_ID = function (req, res) {
+    var table = 'User';
+    var condition = {
+        UserName: req.body.UserName
+    };
+    var callback = function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows.length == 0) {
+            res.json({
+                msg: 1,
+                info: "这个用户不存在"
+            });
+            return;
+        }
+        // Since the return object of this API doesn't have `content` field,
+        // we have to take a different way.
+        ret_obj = {};
+        for (key in rows[0]) {
+            ret_obj[key] = rows[0][key];
+        }
+        ret_obj["msg"] = 0;
+        res.json(ret_obj);
+    };
+
+    // do the real query here
+    find(table, condition, callback);
+};
+
+// get admin entity given its name
+exports.Find_Admin_By_Admin_Name = function (req, res) {
+    var table = 'Admin';
+    connect.query('DELETE FROM ?? WHERE Admin_Name = ??', [table, res.body.Admin_Name], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        ret_obj = {};
+        ret_obj.msg = 0;
+        ret_obj.Admin_ID = rows[0].Admin_ID;
+        ret_obj.Mail = rows[0].Mail;
+        ret_obj.isSuper = rows[0].isSuper;
+        res.json(ret_obj);
+    });
+};
+
+exports.Get_Province_info = function(req, res) {
+    connect.query('select * from province', function(err, rows) {
+        if (!!err) {
+            res.json({
+                msg: 1,
+                info: 'Cannot query province table.'
+            });
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Get_Area_Info_By_Province_ID = function(req, res) {
+    var pid = req.body.Province_ID;
+    connect.query('select * from area where province_id = ??', [pid], function(err, rows) {
+        if (!!err) {
+            res.json({
+                msg: 1,
+                info: 'Cannot query area table.'
+            });
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+};
+
+exports.Find_Hospital_By_Condition = function(req, res) {
+    connect.query('select * from hospital where ??', jsonToAnd(req.body), function(err, rows) {
+        if (!!err) {
+            res.json({
+                msg: 1,
+                info: 'Cannot query hospital table.'
+            });
+        }
+        res.json({
+            msg: 0,
+            total: rows.length,
+            content: rows
+        });
+    });
+};
+
+// Frontend should never bother backend, this function is very unelegant
+exports.Get_History_Reservation_For_Flexigrid = function(req, res) {
+    // a mess
+    var page = req.body.page;
+    var qtype = req.body.qtype;     // buddha of study said we can ignore this one
+    var query = req.body.query;
+
+    // What, we need to parse string for the front end?!!!!
+    var time = query.split('!');
+    var startTime = new Date(time[0]);
+    var endTime = new Date(time[1]);
+    var rp = req.body.rp;           // regard this one as size
+    var sortname = req.body.sortname;   // sort rows by this field
+    var sortorder = req.body.sortorder; // ascending or descending
+
+    // construct condition
+    var condition = 'datetime between ' + startTime.toString() + ' and ' + endTime.toString();
+    var table = 'reservation';
+    connect.query('select * from ?? where ??', [table, condition], function(err, rows) {
+        if (!!err) {
+            res.json({
+                msg: 1,
+                info: 'Cannot query database.'
+            });
+            return;
+        }
+        var ret_obj = {};
+        ret_obj.Total = rows.length;
+        ret_obj.from = page;
+        ret_obj.to = page + rp - 1;
+        ret_obj.rows = rows.map(function(e) {
+            return {id: e.Reservation_ID, cell: e};
         });
     });
 };
