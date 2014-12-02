@@ -50,7 +50,7 @@ CREATE TABLE Doctor (
     Depart_ID INT (11) NOT NULL,
     Doctor_Name VARCHAR (10) NOT NULL,
     Doctor_Level INT (2),
-    Doctor_Fee FLOAT (4, 2),
+    Doctor_Fee DECIMAL (4, 2),
     Doctor_Limit INT (2),
     Doctor_Major VARCHAR (30),
     Doctor_Picture_url VARCHAR (50),
@@ -82,7 +82,7 @@ CREATE TABLE Admin (
     Admin_ID INT (11) NOT NULL AUTO_INCREMENT,
     Admin_Name VARCHAR (10),
     PASSWORD VARCHAR (20),
-    isSuper INT (1),
+    isSuper INT (1) DEFAULT 0,
     PRIMARY KEY (Admin_ID)
 );
 

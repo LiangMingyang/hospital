@@ -16,8 +16,6 @@ router.post('/Find_Hospital', dbhelper.Find_Hospital);
 
 router.post('/Find_Doctor', dbhelper.Find_Doctor);
 
-//router.post('/Find_User', dbhelper.Find_User);
-
 router.post('/Update_Individual_Info', dbhelper.Update_Individual_Info);
 
 router.get('/Check_Reservation_Simple', dbhelper.Check_Reservation_Simple);
