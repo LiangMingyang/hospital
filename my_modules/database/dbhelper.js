@@ -49,7 +49,7 @@ var jsonToAnd = function (data) {
 //    password:'yml'
 //}));
 
-//var find = function (table, condition, callback, columns) { //扩展了功能，便于后面重用
+//var select = function (table, condition, callback, columns) { //扩展了功能，便于后面重用
 //    condition = jsonToAnd(condition);
 //    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns || '*', table], function (err, rows) {
 //        if (err) {
@@ -64,13 +64,57 @@ var jsonToAnd = function (data) {
 //    });
 //};
 
-var find = function (table, condition, callback, columns) { //扩展了功能，便于后面重用
+var select = function (table, condition, callback, columns) { //SELECT语句的封装，便于重用
     condition = jsonToAnd(condition);
-    var query = connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns || '*', table], callback);
-    console.log(query.sql);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns || '*', table], callback);
 };
 
-exports.register = function (req, res) {
+var find = function (table, condition, res, columns) { //用于绝大多数find函数，便于重用
+    select(table, condition, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    }, columns);
+};
+
+var find_range = function (table, condition, start, size, res, columns) { //用于绝大多数带limit的find函数，便于重用
+    condition = jsonToAnd(condition);
+    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        var count = rows[0].count;
+        connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' LIMIT ??,??',
+            [columns || '*', table, start, size], function (err, rows) {
+                if (err) {
+                    res.json({
+                        msg: 1,
+                        info: err.message
+                    });
+                    return;
+                }
+                res.json({
+                    msg: 0,
+                    content: rows,
+                    total: count
+                });
+            });
+    });
+};
+
+exports.Register = function (req, res) {
     var table = 'User';
     var condition = req.body;
     var callback = function (err, rows) {
@@ -103,110 +147,71 @@ exports.register = function (req, res) {
             });
         });
     };
-    find(table, {'UserName': condition.UserName}, callback);
-    //usernameNotUsed(req,res,function(err,req,res) {
-    //    if(err) {
-    //        res.json({
-    //            msg: 1,
-    //            info: err.message
-    //        })
-    //        return;
-    //    }
-    //    ///执行插入
-    //    var table = 'User';
-    //    var condition = req.body;
-    //    connect.query('INSERT INTO ?? SET ?',[table,condition],function(err,result) {
-    //        if(err) {
-    //            res.json({
-    //                msg: 1,
-    //                info: err.message
-    //            })
-    //            return;
-    //        }
-    //        res.json({
-    //            msg: 0,
-    //            userid: result
-    //        })
-    //    })
-    //})
+    select(table, {'Identity_ID': condition.Identity_ID}, callback);
 };
 
-exports.findUser = function (req, res) { //4.0版本接口中不再需要返回User_ID，所以删去了检查的过程
-    var table = 'User';
-    var condition = {
-        UserName: req.body.UserName
-    };
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        if (rows.length == 0) {
-            res.json({
-                msg: 1,
-                info: "这个用户不存在"
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows[0]
-        });
-    };
-    find(table, condition, callback);
-};
-
-// TODO 4.0版本接口有更新，需修改
-exports.findHospital = function (req, res) {
+exports.Find_Hospital = function (req, res) {
     var table = 'Hospital';
-    var condition = req.body;
-    var start = condition.start;
-    var size = condition.size;
-    delete condition.start;
-    delete condition.size;
-    condition = jsonToAnd(condition);
-    connect.query('SELECT * FROM ?? WHERE ' + condition + ' LIMIT ??,??', [table, start, size], function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    });
+    var condition = {
+        Hospital_Level: req.body.Hospital_Level,
+        Area_ID: req.body.Area_ID
+    };
+    var start = req.body.start;
+    var size = req.body.size;
+    var columns = [
+        'Hospital_ID',
+        'Hospital_introduction',
+        'Hospital_Location'
+    ];
+    find_range(table, condition, start, size, res, columns);
 };
 
-exports.findDoctor = function (req, res) {
+exports.Find_Doctor = function (req, res) {
     var table = 'Doctor';
-    var condition = req.body;
-    var start = condition.start;
-    var size = condition.size;
-    delete condition.start;
-    delete condition.size;
-    condition = jsonToAnd(condition);
-    connect.query('SELECT * FROM ?? WHERE ' + condition + ' LIMIT ??,??', [table, start, size], function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    });
+    var condition = {
+        Depart_ID: req.body.Depart_ID
+    };
+    var start = req.body.start;
+    var size = req.body.size;
+    var columns = [
+        'Doctor_ID',
+        'Doctor_Name',
+        'Doctor_Fee',
+        'Doctor_Limit',
+        'Doctor_Major'
+    ];
+    find_range(table, condition, start, size, res, columns);
 };
 
-exports.UpdateIndividualInfo = function (req, res) {
+//exports.Find_User = function (req, res) {
+//    var table = 'User';
+//    var condition = {
+//        UserName: req.body.UserName
+//    };
+//    var callback = function (err, rows) {
+//        if (err) {
+//            res.json({
+//                msg: 1,
+//                info: err.message
+//            });
+//            return;
+//        }
+//        if (rows.length == 0) {
+//            res.json({
+//                msg: 1,
+//                info: "这个用户不存在"
+//            });
+//            return;
+//        }
+//        res.json({
+//            msg: 0,
+//            content: rows[0]
+//        });
+//    };
+//    select(table, condition, callback);
+//};
+
+exports.Update_Individual_Info = function (req, res) {
     var table = 'User';
     var condition = {
         User_ID: req.body.User_ID
@@ -244,20 +249,7 @@ exports.Check_Reservation_Simple = function (req, res) {
         'Doctor_Name',
         'Reservation_Payed'
     ];
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    find(table, condition, callback, columns);
+    find(table, condition, res, columns);
 };
 
 exports.Check_Reservation_Detail = function (req, res) {
@@ -273,20 +265,7 @@ exports.Check_Reservation_Detail = function (req, res) {
         'Doctor.Depart_ID': 'Depart.Depart_ID',
         'Depart.Hospital_ID': 'Hospital.Hospital_ID'
     };
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    find(table, condition, callback);
+    find(table, condition, res);
 };
 
 exports.Check_History_Reservation_Simple = function (req, res) {
@@ -294,14 +273,14 @@ exports.Check_History_Reservation_Simple = function (req, res) {
         'History_Reservation',
         'Doctor'
     ];
-    var start = req.body.start;
-    var size = req.body.size;
-    var startDate = req.body.startDate;
-    var endDate = req.body.endDate;
     var condition = {
         History_Reservation_ID: req.body.Reservation_ID,
         'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID'
     };
+    var start = req.body.start;
+    var size = req.body.size;
+    var startDate = req.body.startDate;
+    var endDate = req.body.endDate;
     var columns = [
         'History_Reservation_ID',
         'History_Reservation_Time',
@@ -338,20 +317,7 @@ exports.Check_History_Reservation_Detail = function (req, res) {
         'Doctor.Depart_ID': 'Depart.Depart_ID',
         'Depart.Hospital_ID': 'Hospital.Hospital_ID'
     };
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    find(table, condition, callback);
+    find(table, condition, res);
 };
 
 exports.Reservation = function (req, res) {
@@ -411,7 +377,7 @@ exports.Check_PayState = function (req, res) {
             info: rows[0].Reservation_Payed // == 0 ? '已支付' : '未支付'
         });
     };
-    find(table, condition, callback, columns);
+    select(table, condition, callback, columns);
 };
 
 exports.Check_Cash = function (req, res) {
@@ -431,7 +397,7 @@ exports.Check_Cash = function (req, res) {
             info: rows[0].Amount
         });
     };
-    find(table, condition, callback, columns);
+    select(table, condition, callback, columns);
 };
 
 exports.In_Cash = function (req, res) {
@@ -465,7 +431,7 @@ exports.In_Cash = function (req, res) {
             });
         });
     };
-    find(table, condition, callback, columns);
+    select(table, condition, callback, columns);
 };
 
 exports.Pay_Reservation = function (req, res) {
@@ -568,10 +534,10 @@ exports.Search_By_Identity = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback, columns);
+    select(table, condition, callback, columns);
 };
 
-exports.Search_User = function (req, res) {
+exports.Find_User_By_Identity_ID = function (req, res) {
     var table = [
         'User',
         'Area',
@@ -595,7 +561,7 @@ exports.Search_User = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback);
+    select(table, condition, callback);
 };
 
 exports.get_UserInfo_byID = function (req, res) {
@@ -622,7 +588,7 @@ exports.get_UserInfo_byID = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback);
+    select(table, condition, callback);
 };
 
 exports.Set_CreditRank_user_ID = function (req, res) {
@@ -682,7 +648,7 @@ exports.Create_Hospital = function (req, res) {
             });
         });
     };
-    find(table, {'Hospital_Name': condition.Hospital_Name}, callback);
+    select(table, {'Hospital_Name': condition.Hospital_Name}, callback);
 };
 
 exports.Get_HospitalInfo_simple = function (req, res) {
@@ -711,7 +677,7 @@ exports.Get_HospitalInfo_simple = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback, columns);
+    select(table, condition, callback, columns);
 };
 
 exports.Get_HospitalInfo_detail = function (req, res) {
@@ -730,7 +696,7 @@ exports.Get_HospitalInfo_detail = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback);
+    select(table, condition, callback);
 };
 
 exports.Set_HospitalInfo = function (req, res) {
@@ -788,7 +754,7 @@ exports.Create_Depart = function (req, res) {
             });
         });
     };
-    find(table, {'Depart_Name': condition.Depart_Name}, callback);
+    select(table, {'Depart_Name': condition.Depart_Name}, callback);
 };
 
 exports.Get_DepartInfo = function (req, res) {
@@ -811,7 +777,7 @@ exports.Get_DepartInfo = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback, columns);
+    select(table, condition, callback, columns);
 };
 
 exports.Get_DoctorInfo = function (req, res) {
@@ -834,7 +800,7 @@ exports.Get_DoctorInfo = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback, columns);
+    select(table, condition, callback, columns);
 };
 
 exports.Get_DoctorInfo_detail = function (req, res) {
@@ -853,7 +819,7 @@ exports.Get_DoctorInfo_detail = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback);
+    select(table, condition, callback);
 };
 
 exports.Add_Doctor = function (req, res) {
@@ -889,7 +855,7 @@ exports.Add_Doctor = function (req, res) {
             });
         });
     };
-    find(table, {'Doctor_Name': condition.Doctor_Name}, callback);
+    select(table, {'Doctor_Name': condition.Doctor_Name}, callback);
 };
 
 exports.Set_DoctorInfo = function (req, res) {
@@ -947,7 +913,7 @@ exports.Add_Admin = function (req, res) {
             });
         });
     };
-    find(table, {'Admin_Name': condition.Admin_Name}, callback);
+    select(table, {'Admin_Name': condition.Admin_Name}, callback);
 };
 
 exports.Get_AdminInfo = function (req, res) {
@@ -997,7 +963,7 @@ exports.Get_Privilege = function (req, res) {
             content: rows
         });
     };
-    find(table, condition, callback, columns);
+    select(table, condition, callback, columns);
 };
 
 var tupleToString = function (data, str) {

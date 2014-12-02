@@ -7,22 +7,13 @@
 - 所有FLOUT和REAL类型全部变成DECIMAL，因为金额必须储存精确值，至于精确的位数还需要定一下
 - 参照文档，User添加Sex和Amount字段
 
-###Page2 Find_Hospital
-- 只提供Area_ID即可，不需要提供Province相关信息
+###Find_User
+- 此接口是否还存在？
 
 ###查看历史 Check_History_Reservation_Simple
-- url路径改成host/Check_History_Reservation_Simple
-- 为与数据库保持一致，所有Reservation\_\*字段，应全部变为History_Reservation\_\*
 - content内的State含义不明，故而没有返回相应字段
 
-###查看单条历史详情 Check_History_Reservation_Detail
-- url路径改成host/Check_History_Reservation_Detail
-- 为与数据库保持一致，所有Reservation\_\*字段，应全部变为History_Reservation\_\*
-- post请求中Reservation_Date字段含义不明，故而没有使用（有ID的情况下也不需要其它信息）
-
 ###预约医生 Reservation
-- 字段“Reseration_Symptom”拼写错误，因与查询操作直接相关，需要修改
-- 没有提供Reservation_Time字段，不在后台本地获取的原因是前后端系统时间可能有误差，应以用户看到的前端时间为准
 - 没有提供Reservation_PayAmount字段，当然也可以在支付挂号费时提供，但支付挂号费时也没有提供
 - Doctor表中不存在“已预约人数”对应的字段，暂时忽略
 - 解释一下Doctor_Limit字段的含义，如果是上限，是应该不动，还是应该逐渐减少？如果不动，哪个字段记录了已预约次数？
