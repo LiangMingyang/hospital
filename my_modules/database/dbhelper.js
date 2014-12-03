@@ -285,7 +285,9 @@ exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
     ];
     // JS中貌似不存在能直接格式化成MySQL的datetime格式的东西
     var date = new Date();
-    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(); ///TODO 为何月份要加1?
+    //var dateString = strftime("%F", date);
+    //console.log(dataString); //2014-12-03
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
     connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + ' AND ?? BETWEEN '

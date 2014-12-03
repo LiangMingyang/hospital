@@ -1,5 +1,37 @@
 extends layout
 
 block content
-  h1= settings.title
-  p Welcome to #{settings.title}
+  ////h1= settings.title
+  //////p Welcome to #{settings.title}
+  //p.
+  !{data}
+  //:markdown
+  //  > 本反馈对应《接口信息规范4.4》更正版
+  //  ###Check_History_Reservation_Simple
+  //  - content内的State含义不明，故而没有返回相应字段
+  //  ###Reservation && del_Reservation
+  //  - 这两个函数简直要写哭了……目前以非常难看的姿势实现了它，但真的没有更简单的处理逻辑了么……？
+  //  ###Reservation
+  //  - 没有提供Operation_Time字段，倘若它的意思是看病时间的话
+  //  ###del_Reservation
+  //  - 现在数据库操作的逻辑是，先进行退款的update语句，再进行删除条目的delete语句
+  //  - 这样存在一个问题是，倘若update成功，但delete失败，则钱款已退，但后台返回的是error，且挂号依旧存在
+  //  - 但倘若调换顺序，可能出现的情况是，delete成功，update失败，则后台返回的是error，但条目消失，钱款未退
+  //  - 事实上，只要是多个涉及数据库修改的操作联动，都会有类似问题，于是问题来了：
+  //  - 有没有办法将几个操作进行绑定？比如其中一个操作失败，则所有操作回退？视图……？事务……？还是什么……？
+  //  - 如果无法解决（比如我们太弱……肯定有办法的= =），我们最终怎样设定比较好？医院利益优先还是用户利益优先？
+  //  ###Pay_Reservation
+  //  - 与上面类似的问题，先扣款还是先更改支付信息？
+  //  - 问题已解决，直接采用多表update
+  //  ###*Check_Register*
+  //  - 没搞明白这个函数的意思……
+  //  ###Create_Hospital
+  //  - 创建医院前检查医院是否已经存在的工作，是交给PHP还是Node.js？
+  //  - 目前后台的做法是检查了是否已经存在，如果存在，msg = 1，info记录已存在的提示信息
+  //  - 注册用户、添加科室也存在上述问题
+  //  ###Get_DepartInfo
+  //  - 与获取科室信息接口重名，后台将其修改为Create_Depart，与创建医院统一格式
+  //  - 注册用户、创建医院、添加医生等接口都没有返回ID，这个确定需要返回ID么？（因为要多写很多东西）
+  //  ###Add_Doctor
+  //  - 注册用户、创建医院、创建科室等接口的后台实现中都不允许重名的出现（检查了已经存在），这里是否允许重名？（目前的后台实现是不允许）
+

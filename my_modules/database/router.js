@@ -2,10 +2,19 @@ var express = require('express');
 var router = express.Router();
 var db = require('./database');
 var dbhelper = require('./dbhelper');
+var fs = require('fs');
+var markdown = require('markdown').markdown;
 
 /* GET home page. */
 router.get('/', function (req, res) {
-    res.render('index');
+    //res.render('index');
+    fs.readFile('doc/接口反馈by wjfwzzc.md',function(err,data) {
+        if(err) {
+            res.render('index',{data:err.message});
+            return ;
+        }
+        res.render('index',{data:markdown.toHTML(data.toString())});
+    })
 });
 
 router.use(dbhelper.check);

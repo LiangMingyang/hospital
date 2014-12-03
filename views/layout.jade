@@ -1,7 +1,69 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+    head
+        meta(charset='utf-8', name='viewport', content = 'width=device-width,initial-scale=1.0')
+        title= title
+        //-link(rel='stylesheet', href='/stylesheets/style.css')
+        link(rel='stylesheet', href='/css/bootstrap.min.css')
+        // if lt IE 9
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+                         script(src='/js/jquery-2.1.1.min.js')
+        script(src='/js/bootstrap.min.js')
+    body(style='min-height: 2000px;padding-top: 70px;')
+        //block header
+        //    nav.navbar.navbar-default.navbar-fixed-top(role='navigation')
+        //        div.container
+        //            div.navbar-header
+        //                button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
+        //                    span.sr-only Toggle navigation
+        //                    span.icon-bar
+        //                    span.icon-bar
+        //                    span.icon-bar
+        //                p.navbar-brand(href='#') My Site
+        //            div#navbar.navbar-collapse.collapse
+        //                ul.nav.navbar-nav
+        //                    li.active
+        //                        a(href='/') Home
+        //                    li
+        //                        a(href='#about') Hospital
+        //                    li
+        //                        a(href='#contact') Doctor
+        //                    li.dropdown
+        //                        a.dropdown-toggle(href='#', data-toggle='dropdown')
+        //                            | Help
+        //                            span.caret
+        //                        ul.dropdown-menu(role='menu')
+        //                            li
+        //                                a(href='#') Running
+        //                            li
+        //                                a(href='#') Another action
+        //                            li
+        //                                a(href='#') Something else here
+        //                            li.divider
+        //                            li.dropdown-header
+        //                                i Nav header
+        //                            li
+        //                                a(href='#') Separated link
+        //                            li
+        //                                a(href='#') One more separated link
+        //                ul.nav.navbar-nav.navbar-right
+        //                    if userid
+        //                        li.dropdown
+        //                            a.dropdown-toggle(href='#', data-toggle='dropdown') #{username}
+        //                                span.caret
+        //                            ul.dropdown-menu(role='menu',style='left:0;')
+        //                                li
+        //                                    a(href='/user/#{userid}/profile') Profile
+        //                                li
+        //                                    a(href='/user/logoff') log off
+        //                    else
+        //                        li
+        //                            a(href='/user/login') Login
+        //            .nav-collapse
+        .container
+          .jumbotron
+            block content
+        // /container
+        block footer
+                 
