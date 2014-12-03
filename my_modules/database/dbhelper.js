@@ -1196,7 +1196,7 @@ exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
     // construct condition
     var condition = 'datetime between ' + startTime.toString() + ' and ' + endTime.toString();
     var table = 'reservation';
-    connect.query('select * from ?? where ??', [table, condition], function (err, rows) {
+    connect.query('select * from ?? where '+condition, table , function (err, rows) {
         if (!!err) {
             res.json({
                 msg: 1,
