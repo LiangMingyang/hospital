@@ -285,7 +285,7 @@ exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
     ];
     // JS中貌似不存在能直接格式化成MySQL的datetime格式的东西
     var date = new Date();
-    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(); ///TODO 为何月份要加1?
+    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(); //TODO 因为我查API，奇葩地发现它返回的是0~11……
     //var dateString = strftime("%F", date);
     //console.log(dataString); //2014-12-03
     condition = jsonToAnd(condition);
@@ -1198,7 +1198,7 @@ exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
     // construct condition
     var condition = 'datetime between ' + startTime.toString() + ' and ' + endTime.toString();
     var table = 'reservation';
-    connect.query('select * from ?? where '+condition, table , function (err, rows) {
+    connect.query('select * from ?? where ' + condition, table, function (err, rows) {
         if (!!err) {
             res.json({
                 msg: 1,
