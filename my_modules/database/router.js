@@ -10,15 +10,13 @@ router.get('/', function (req, res) {
 
 router.use(dbhelper.check);
 
-router.post('/Register', dbhelper.register);
+router.post('/Register', dbhelper.Register);
 
-router.post('/Find_Hospital', dbhelper.findHospital);
+router.post('/Find_Hospital', dbhelper.Find_Hospital);
 
-router.post('/Find_Doctor', dbhelper.findDoctor);
+router.post('/Find_Doctor', dbhelper.Find_Doctor);
 
-router.post('/Find_User', dbhelper.findUser);
-
-router.post('/Update_Individual_Info', dbhelper.UpdateIndividualInfo);
+router.post('/Update_Individual_Info', dbhelper.Update_Individual_Info);
 
 router.get('/Check_Reservation_Simple', dbhelper.Check_Reservation_Simple);
 
@@ -46,7 +44,7 @@ router.post('/Get_Reservation_Info', dbhelper.Get_Reservation_Info);
 
 router.post('/Search_By_Identity', dbhelper.Search_By_Identity);
 
-router.post('/Search_User', dbhelper.Search_User);
+router.post('/Find_User_By_Identity_ID', dbhelper.Find_User_By_Identity_ID);
 
 router.post('/get_UserInfo_byID', dbhelper.get_UserInfo_byID);
 
