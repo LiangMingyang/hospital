@@ -46,7 +46,13 @@ var jsonToAnd = function (data) {
 
 var select = function (table, condition, callback, columns) { // SELECT语句的封装，便于重用
     condition = jsonToAnd(condition);
-    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns || '*', table], callback);
+    //connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns || '*', table], callback);
+    if(columns) {
+        connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], callback);
+    }
+    else {
+        connect.query('SELECT * FROM ?? WHERE ' + condition, table, callback);
+    }
 };
 
 var find = function (table, condition, res, columns) { // 用于绝大多数find函数，便于重用
