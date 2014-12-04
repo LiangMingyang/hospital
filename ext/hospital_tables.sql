@@ -72,7 +72,6 @@ CREATE TABLE User (
     Birthday datetime NOT NULL,
     Location VARCHAR (30) NOT NULL,
     Mail VARCHAR (30) NOT NULL,
-    FailTime datetime NOT NULL,
     LastLogInTime datetime NOT NULL,
     Phone VARCHAR (20) NOT NULL,
     FailTime INT (1) NOT NULL,
@@ -85,7 +84,7 @@ CREATE TABLE Admin (
     Admin_Name VARCHAR (10),
     PASSWORD VARCHAR (20),
     Mail VARCHAR(30) NOT NULL,
-    FailTime datetime NOT NULL,
+    FailTime INT(1) NOT NULL,
     LastLogInTime datetime NOT NULL,
     isSuper INT (1) DEFAULT 0,
     PRIMARY KEY (Admin_ID)
