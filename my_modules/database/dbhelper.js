@@ -1,10 +1,9 @@
 var crypto = require('crypto');
-var hash = crypto.createHash('sha1');
-var secret = global.secret_key;
 var strftime = require("strftime");
 var connect = global.connect;
 
 exports.check = function (req, res, next) {
+    var secret = global.secret_key;
     var sendtime = new Date(req.body.encrypttime);
     var token = req.body.token;
     if (!sendtime || !token) {
@@ -15,6 +14,7 @@ exports.check = function (req, res, next) {
         return;
     }
     var now = new Date();
+    var hash = crypto.createHash('sha1');
     var delta = Math.abs(now - sendtime);
     if (delta > 60 * 1000) {
         res.json({
@@ -23,7 +23,8 @@ exports.check = function (req, res, next) {
         });
         return;
     }
-    if (hash.update(secret + '$' + strftime("%F %T", sendtime)).digest('hex') != token) {
+    var std = hash.update(secret + '$' + strftime("%F %T", sendtime)).digest('hex');
+    if (std != token) {
         res.json({
             msg: 3,
             info: "token不正确"

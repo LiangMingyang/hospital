@@ -36,6 +36,7 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 global.secret_key = config.secret_key;
+
 routes(app);
 
 // catch 404 and forward to error handler
