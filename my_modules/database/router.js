@@ -27,7 +27,7 @@ router.post('/Find_Doctor', dbhelper.Find_Doctor);
 
 router.post('/Update_Individual_Info', dbhelper.Update_Individual_Info);
 
-router.get('/Check_Reservation_Simple', dbhelper.Check_Reservation_Simple);
+router.post('/Check_Reservation_Simple', dbhelper.Check_Reservation_Simple);
 
 router.post('/Check_Reservation_Detail', dbhelper.Check_Reservation_Detail);
 
@@ -47,15 +47,11 @@ router.post('/In_Cash', dbhelper.In_Cash);
 
 router.post('/Pay_Reservation', dbhelper.Pay_Reservation);
 
-//router.post('/Check_Register', dbhelper.Check_Register);
+router.post('/Check_Register', dbhelper.Check_Register);
 
 router.post('/Get_Reservation_Info', dbhelper.Get_Reservation_Info);
 
 router.post('/Search_By_Identity', dbhelper.Search_By_Identity);
-
-router.post('/Find_User_By_Identity_ID', dbhelper.Find_User_By_Identity_ID);
-
-router.post('/get_UserInfo_byID', dbhelper.get_UserInfo_byID);
 
 router.post('/Set_CreditRank_user_ID', dbhelper.Set_CreditRank_user_ID);
 
@@ -88,5 +84,24 @@ router.post('/Get_Privilege', dbhelper.Get_Privilege);
 router.post('/Del_Privilege', dbhelper.Del_Privilege);
 
 router.post('/del_Admin', dbhelper.del_Admin);
+
+router.post('/Find_User_By_Identity_ID', dbhelper.Find_User_By_Identity_ID);
+
+router.post('/Find_Admin_By_Admin_Name', dbhelper.Find_Admin_By_Admin_Name);
+
+router.post('/Get_Province_info', dbhelper.Get_Province_info);
+
+router.post('/Get_Area_Info_By_Province_ID', dbhelper.Get_Area_Info_By_Province_ID);
+
+router.post('/Find_Hospital_By_Condition', dbhelper.Find_Hospital_By_Condition);
+
+router.post('/Get_History_Reservation_For_Flexigrid', dbhelper.Get_History_Reservation_For_Flexigrid);
+
+router.post('/Get_Hospital_Number_By_Condition', dbhelper.Get_Hospital_Number_By_Condition);
+
+router.post('/Find_Doctor_By_Condition', dbhelper.Find_Doctor_By_Condition);
+
+router.post('/Check_Admin_Repeat', dbhelper.Check_Admin_Repeat);
+
 
 module.exports = router;

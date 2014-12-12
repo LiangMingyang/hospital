@@ -134,3 +134,9 @@ CREATE TABLE Reset_Pwd_Security (
     genTime datetime NOT NULL,
     PRIMARY KEY (ID)
 );
+
+CREATE TABLE Doctor_Time (
+    Doctor_ID INT (11) NOT NULL,
+    Duty_Time INT (2) NOT NULL,
+    FOREIGN KEY (Doctor_ID) REFERENCES Doctor(Doctor_ID) ON UPDATE CASCADE ON DELETE RESTRICT,
+);

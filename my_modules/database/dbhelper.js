@@ -47,7 +47,7 @@ var jsonToAnd = function (data) {
 var select = function (table, condition, callback, columns) { // SELECT语句的封装，便于重用
     condition = jsonToAnd(condition);
     //connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns || '*', table], callback);
-    if(columns) {
+    if (columns) {
         connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], callback);
     }
     else {
@@ -82,21 +82,40 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
             return;
         }
         var count = rows[0].count;
-        connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' LIMIT ??,??',
-            [columns || '*', table, start, size], function (err, rows) {
-                if (err) {
+        if (columns) {
+            connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' LIMIT ??,??',
+                [columns, table, start, size], function (err, rows) {
+                    if (err) {
+                        res.json({
+                            msg: 1,
+                            info: err.message
+                        });
+                        return;
+                    }
                     res.json({
-                        msg: 1,
-                        info: err.message
+                        msg: 0,
+                        content: rows,
+                        total: count
                     });
-                    return;
-                }
-                res.json({
-                    msg: 0,
-                    content: rows,
-                    total: count
                 });
-            });
+        }
+        else {
+            connect.query('SELECT * FROM ?? WHERE ' + condition + ' LIMIT ??,??',
+                [table, start, size], function (err, rows) {
+                    if (err) {
+                        res.json({
+                            msg: 1,
+                            info: err.message
+                        });
+                        return;
+                    }
+                    res.json({
+                        msg: 0,
+                        content: rows,
+                        total: count
+                    });
+                });
+        }
     });
 };
 
@@ -138,8 +157,8 @@ exports.Register = function (req, res) {
 exports.Find_Hospital = function (req, res) {
     var table = 'Hospital';
     var condition = {
-        Hospital_Level: req.body.Hospital_Level,
-        Area_ID: req.body.Area_ID
+        Area_ID: req.body.Area_ID,
+        Hospital_Level: req.body.Hospital_Level
     };
     var start = req.body.start;
     var size = req.body.size;
@@ -173,7 +192,7 @@ exports.Update_Individual_Info = function (req, res) {
     var condition = {
         User_ID: req.body.User_ID
     };
-    var dest = req.body.Dest;
+    var dest = req.body;
     condition = jsonToAnd(condition);
     connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
         if (err) {
@@ -292,9 +311,10 @@ exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
     ];
     // JS中貌似不存在能直接格式化成MySQL的datetime格式的东西
     var date = new Date();
-    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(); //TODO 因为我查API，奇葩地发现它返回的是0~11……
+    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     //var dateString = strftime("%F", date);
     //console.log(dataString); //2014-12-03
+    // TODO 这个strftime函数JS里有？如果有的话就用它了
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
     connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + ' AND ?? BETWEEN '
@@ -506,10 +526,37 @@ exports.Pay_Reservation = function (req, res) {
     select(table, condition, callback, columns);
 };
 
-//TODO Check_Register 这是什么鬼……
-//exports.Check_Register = function (req, res) {
-//
-//};
+exports.Check_Register = function (req, res) {
+    var table = 'User';
+    var condition = req.body;
+    var columns = [
+        'isChecked',
+        'Mail',
+        'Phone'
+    ];
+    var callback = function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows[0].isChecked == 1) {
+            res.json({
+                msg: 0,
+                Mall: rows[0].Mail,
+                Phone: rows[0].Phone
+            });
+        }
+        else {
+            res.json({
+                msg: 0
+            });
+        }
+    };
+    select(table, condition, callback, columns);
+};
 
 exports.Get_Reservation_Info = function (req, res) {
     var table = [
@@ -535,21 +582,7 @@ exports.Get_Reservation_Info = function (req, res) {
         'Operation_Time',
         'Doctor_Name'
     ];
-    condition = jsonToAnd(condition);
-    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' LIMIT ??,??',
-        [columns, table, start, size], function (err, rows) {
-            if (err) {
-                res.json({
-                    msg: 1,
-                    info: err.message
-                });
-                return;
-            }
-            res.json({
-                msg: 0,
-                content: rows
-            });
-        });
+    find_range(table, condition, start, size, res, columns);
 };
 
 exports.Search_By_Identity = function (req, res) {
@@ -571,74 +604,7 @@ exports.Search_By_Identity = function (req, res) {
         'Operation_Time',
         'Doctor_Name'
     ];
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback, columns);
-};
-
-exports.Find_User_By_Identity_ID = function (req, res) {
-    var table = [
-        'User',
-        'Area',
-        'Province'
-    ];
-    var condition = {
-        Identity_ID: req.body.Identity_ID,
-        'User.Area_ID': 'Area.Area_ID',
-        'Area.Province_ID': 'Province.Province_ID'
-    };
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback);
-};
-
-exports.get_UserInfo_byID = function (req, res) {
-    var table = [
-        'User',
-        'Area',
-        'Province'
-    ];
-    var condition = {
-        User_ID: req.body.User_ID,
-        'User.Area_ID': 'Area.Area_ID',
-        'Area.Province_ID': 'Province.Province_ID'
-    };
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback);
+    find(table, condition, res, columns);
 };
 
 exports.Set_CreditRank_user_ID = function (req, res) {
@@ -714,39 +680,13 @@ exports.Get_HospitalInfo_simple = function (req, res) {
         'Hospital_ID',
         'Hospital_Name'
     ];
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback, columns);
+    find(table, condition, res, columns);
 };
 
 exports.Get_HospitalInfo_detail = function (req, res) {
     var table = 'Hospital';
     var condition = req.body;
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback);
+    find(table, condition, res);
 };
 
 exports.Set_HospitalInfo = function (req, res) {
@@ -756,7 +696,7 @@ exports.Set_HospitalInfo = function (req, res) {
     };
     var dest = req.body;
     condition = jsonToAnd(condition);
-    connect.query('UPDATE ?? SET ? WHERE' + condition, [table, dest], function (err, result) {
+    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
@@ -814,20 +754,7 @@ exports.Get_DepartInfo = function (req, res) {
         'Depart_ID',
         'Deprt_Name'
     ];
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback, columns);
+    find(table, condition, res, columns);
 };
 
 exports.Get_DoctorInfo = function (req, res) {
@@ -837,39 +764,13 @@ exports.Get_DoctorInfo = function (req, res) {
         'Doctor_ID',
         'Doctor_Name'
     ];
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback, columns);
+    find(table, condition, res, columns);
 };
 
 exports.Get_DoctorInfo_detail = function (req, res) {
     var table = 'Doctor';
     var condition = req.body;
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback);
+    find(table, condition, res);
 };
 
 exports.Add_Doctor = function (req, res) {
@@ -915,7 +816,7 @@ exports.Set_DoctorInfo = function (req, res) {
     };
     var dest = req.body;
     condition = jsonToAnd(condition);
-    connect.query('UPDATE ?? SET ? WHERE' + condition, [table, dest], function (err, result) {
+    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1000,20 +901,7 @@ exports.Get_Privilege = function (req, res) {
         'Hospital_ID',
         'Hospital_Name'
     ];
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    };
-    select(table, condition, callback, columns);
+    find(table, condition, res, columns);
 };
 
 var tupleToString = function (data, str) {
@@ -1083,13 +971,16 @@ exports.del_Admin = function (req, res) {
     });
 };
 
-// Added since API version 4.4 update 1
-
-// why name it like this, doesn't `ID`==`Identity`?
-exports.find_User_By_Identity_ID = function (req, res) {
-    var table = 'User';
+exports.Find_User_By_Identity_ID = function (req, res) {
+    var table = [
+        'User',
+        'Area',
+        'Province'
+    ];
     var condition = {
-        UserName: req.body.UserName
+        Identity_ID: req.body.Identity_ID,
+        'User.Area_ID': 'Area.Area_ID',
+        'Area.Province_ID': 'Province.Province_ID'
     };
     var callback = function (err, rows) {
         if (err) {
@@ -1099,31 +990,21 @@ exports.find_User_By_Identity_ID = function (req, res) {
             });
             return;
         }
-        if (rows.length == 0) {
-            res.json({
-                msg: 1,
-                info: "这个用户不存在"
-            });
-            return;
-        }
-        // Since the return object of this API doesn't have `content` field,
-        // we have to take a different way.
-        ret_obj = {};
+        var ret_obj = {};
         for (key in rows[0]) {
             ret_obj[key] = rows[0][key];
         }
-        ret_obj["msg"] = 0;
+        ret_obj['msg'] = 0;
         res.json(ret_obj);
     };
-
-    // do the real query here
     find(table, condition, callback);
 };
 
-// get admin entity given its name
 exports.Find_Admin_By_Admin_Name = function (req, res) {
     var table = 'Admin';
-    connect.query('DELETE FROM ?? WHERE Admin_Name = ??', [table, res.body.Admin_Name], function (err, rows) {
+    var condition = req.body;
+    condition = jsonToAnd(condition);
+    connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1131,22 +1012,24 @@ exports.Find_Admin_By_Admin_Name = function (req, res) {
             });
             return;
         }
-        ret_obj = {};
-        ret_obj.msg = 0;
-        ret_obj.Admin_ID = rows[0].Admin_ID;
-        ret_obj.Mail = rows[0].Mail;
-        ret_obj.isSuper = rows[0].isSuper;
-        res.json(ret_obj);
+        res.json({
+            msg: 0,
+            Admin_ID: rows[0].Admin_ID,
+            Mail: rows[0].Mail,
+            isSuper: rows[0].isSuper
+        });
     });
 };
 
 exports.Get_Province_info = function (req, res) {
-    connect.query('select * from province', function (err, rows) {
-        if (!!err) {
+    var table = 'Province';
+    connect.query('SELECT * FROM ??', table, function (err, rows) {
+        if (err) {
             res.json({
                 msg: 1,
-                info: 'Cannot query province table.'
+                info: err.message
             });
+            return;
         }
         res.json({
             msg: 0,
@@ -1156,69 +1039,113 @@ exports.Get_Province_info = function (req, res) {
 };
 
 exports.Get_Area_Info_By_Province_ID = function (req, res) {
-    var pid = req.body.Province_ID;
-    connect.query('select * from area where province_id = ??', [pid], function (err, rows) {
-        if (!!err) {
-            res.json({
-                msg: 1,
-                info: 'Cannot query area table.'
-            });
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    });
+    var table = 'Province';
+    var condition = req.body;
+    find(table, condition, res);
 };
 
 exports.Find_Hospital_By_Condition = function (req, res) {
-    connect.query('select * from hospital where ??', jsonToAnd(req.body), function (err, rows) {
-        if (!!err) {
-            res.json({
-                msg: 1,
-                info: 'Cannot query hospital table.'
-            });
-        }
-        res.json({
-            msg: 0,
-            total: rows.length,
-            content: rows
-        });
-    });
+    var table = 'Hospital';
+    var condition = {
+        Area_ID: req.body.Area_ID,
+        Hospital_Level: req.body.Hospital_ID
+    };
+    var start = req.body.start;
+    var size = req.body.size;
+    find_range(table, condition, start, size, res);
 };
 
 // Frontend should never bother backend, this function is very unelegant
 exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
     // a mess
     var page = req.body.page;
-    var qtype = req.body.qtype;     // buddha of study said we can ignore this one
+    //var qtype = req.body.qtype;     // buddha of study said we can ignore this one
     var query = req.body.query;
 
     // What, we need to parse string for the front end?!!!!
     var time = query.split('!');
-    var startTime = new Date(time[0]);
-    var endTime = new Date(time[1]);
     var rp = req.body.rp;           // regard this one as size
-    var sortname = req.body.sortname;   // sort rows by this field
-    var sortorder = req.body.sortorder; // ascending or descending
+    //var sortname = req.body.sortname;   // sort rows by this field
+    //var sortorder = req.body.sortorder; // ascending or descending
 
     // construct condition
-    var condition = 'datetime between ' + startTime.toString() + ' and ' + endTime.toString();
-    var table = 'reservation';
-    connect.query('select * from ?? where ' + condition, table, function (err, rows) {
-        if (!!err) {
+    var table = 'History_Reservation';
+    connect.query('SELECT * FROM ?? WHERE ?? BETWEEN ?? AND ??',
+        [table, 'History_Reservation_Time', time[0], time[1]], function (err, rows) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                Total: rows.length,
+                from: page,
+                to: page + rp - 1,
+                rows: rows.map(function (element) {
+                    return {id: element.Reservation_ID, cell: element};
+                })
+            });
+        });
+};
+
+exports.Get_Hospital_Number_By_Condition = function (req, res) {
+    var table = 'Hospital';
+    var condition = {
+        Area_ID: req.body.Area_ID,
+        Hospital_Level: req.body.Hospital_ID
+    };
+    condition = jsonToAnd(condition);
+    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, table, function (err, rows) {
+        if (err) {
             res.json({
                 msg: 1,
-                info: 'Cannot query database.'
+                info: err.message
             });
             return;
         }
-        var ret_obj = {};
-        ret_obj.Total = rows.length;
-        ret_obj.from = page;
-        ret_obj.to = page + rp - 1;
-        ret_obj.rows = rows.map(function (e) {
-            return {id: e.Reservation_ID, cell: e};
+        res.json({
+            msg: 0,
+            num: rows[0].count
+        });
+    });
+};
+
+exports.Find_Doctor_By_Condition = function (req, res) {
+    var table = [
+        'Doctor',
+        'Doctor_Time'
+    ];
+    var condition = {
+        Depart_ID: req.body.Depart_ID,
+        Doctor_Level: req.body.Doctor_Level,
+        Duty_Time: req.body.Duty_Time,
+        'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
+    };
+    var columns = [
+        'Doctor_ID',
+        'Doctor_Name'
+    ];
+    find(table, condition, res, columns);
+};
+
+exports.Check_Admin_Repeat = function (req, res) {
+    var table = 'Admin';
+    var condition = req.body;
+    condition = jsonToAnd(condition);
+    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, table, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            isRepeat: rows[0].count // == 0 ? 0 : 1
         });
     });
 };
