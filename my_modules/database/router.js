@@ -103,5 +103,9 @@ router.post('/Find_Doctor_By_Condition', dbhelper.Find_Doctor_By_Condition);
 
 router.post('/Check_Admin_Repeat', dbhelper.Check_Admin_Repeat);
 
+//router.post('/Find_Doctor_State', dbhelper.Find_Doctor_State);
+
+router.post('/Find_Doctor_By_Condition_Free', dbhelper.Find_Doctor_By_Condition_Free);
+
 
 module.exports = router;

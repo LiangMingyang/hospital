@@ -312,14 +312,15 @@ exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
     // JS中貌似不存在能直接格式化成MySQL的datetime格式的东西
     var date = new Date();
     var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var startTime = dateString + ' 00:00:00';
+    var endTime = dateString + ' 23:59:59';
     //var dateString = strftime("%F", date);
     //console.log(dataString); //2014-12-03
     // TODO 这个strftime函数JS里有？如果有的话就用它了
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
-    connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + ' AND ?? BETWEEN '
-        + dateString + ' 00:00:00 AND ' + dateString + ' 23:59:59',
-        [columns, table, 'Reservation_Time'], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+    connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ??',
+        [columns, table, 'Reservation_Time', startTime, endTime], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
             if (err) {
                 res.json({
                     msg: 1,
@@ -1149,3 +1150,55 @@ exports.Check_Admin_Repeat = function (req, res) {
         });
     });
 };
+
+//What the hell is it?!
+//exports.Find_Doctor_State = function (req,res) {
+//
+//};
+
+exports.Find_Doctor_By_Condition_Free = function (req, res) {
+    var table = [
+        'Doctor',
+        'Doctor_Time',
+        'Reservation'
+    ];
+    var condition = {
+        Depart_ID: req.body.Depart_ID,
+        Doctor_Level: req.body.Doctor_Level,
+        Duty_Time: req.body.Duty_Time,
+        'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
+        'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+    };
+    var columns = [
+        'Doctor_ID',
+        'Doctor_Name'
+    ];
+    var date = new Date();
+    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var startTime = dateString;
+    var endTime = dateString;
+    if (req.body.Duty_Time % 2 == 1) { // Duty_Time是上午
+        startTime += ' 00:00:00';
+        endTime += ' 11:59:59';
+    }
+    else {
+        startTime += ' 12:00:00';
+        endTime += ' 23:59:59';
+    }
+    condition = jsonToAnd(condition);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ??',
+        [columns, table, 'Reservation_Time', startTime, endTime], function (err, rows) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                content: rows
+            });
+        });
+};
+
