@@ -1,6 +1,6 @@
 /**
  * 运行如下语句执行
- * mysql -u test < hostpital_tables.sql
+ * mysql -u test < hospital_tables.sql
  */
 
 DROP DATABASE IF EXISTS Hospital_Reservation_DB;
@@ -138,5 +138,6 @@ CREATE TABLE Reset_Pwd_Security (
 CREATE TABLE Doctor_Time (
     Doctor_ID INT (11) NOT NULL,
     Duty_Time INT (2) NOT NULL,
-    FOREIGN KEY (Doctor_ID) REFERENCES Doctor(Doctor_ID) ON UPDATE CASCADE ON DELETE RESTRICT,
+    PRIMARY KEY (Hospital_ID, Admin_ID),
+    FOREIGN KEY (Doctor_ID) REFERENCES Doctor(Doctor_ID) ON UPDATE CASCADE ON DELETE RESTRICT
 );

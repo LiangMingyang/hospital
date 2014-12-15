@@ -1,43 +1,16 @@
-- 我要先做一个吐槽：文档中说“严格按照最新的借口信息规范文档”
-- 但是历次文档中都有太多混乱不堪的东西存在，根本没有办法将其作为一个严格的规则去遵守
-- 下一版接口规范能不能重构一下？什么删除线之类的能不能都去掉？已经作废的函数能不能都删去？功能重复的接口能不能先自查一下？
-
-> 以下反馈对应《接口信息规范4.6》中尚未解决的问题
-
-###Find_Hospital_By_Condition
-- 不需要提供Province_ID字段，因为Area_ID字段已经可以唯一确定地区
-
-###Get_Hospital_Number_By_Condition
-- 不需要提供Province_ID字段，因为Area_ID字段已经可以唯一确定地区
-
-###Find_Doctor_By_Condition
-- 不需要提供Hospital_ID字段，因为Depart_ID字段已经可以唯一确定部门
+> 以下反馈对应《接口信息规范5.0》中尚未解决的问题
 
 ###*Find_Doctor_State*
 - 这函数是干啥的……我怎么确定一个doctor是free的……
 
-###Find_Doctor_By_Condition_Free
-- 不需要提供Hospital_ID字段，因为Depart_ID字段已经可以唯一确定部门
+###LogIn_User, LogIn_Admin未完成
 
-###Config_User
-- 这跟Update_Individual_Info接口有区别么……求别无谓增加后台工作量
+###宋子明部分未完成
 
 > 以下是历史遗留的未解决问题
 
 ###Check_History_Reservation_Simple
 - content内的State含义不明，故而没有返回相应字段
 
-###Reservation && del_Reservation
-- 这两个函数简直要写哭了……目前以非常难看的姿势实现了它，但真的没有更简单的处理逻辑了么……？
-
 ###Reservation
 - 没有提供Operation_Time字段，倘若它的意思是看病时间的话
-
-###del_Reservation
-- 现在数据库操作的逻辑是，先进行退款的update语句，再进行删除条目的delete语句
-- 这样存在一个问题是，倘若update成功，但delete失败，则钱款已退，但后台返回的是error，且挂号依旧存在
-- 但倘若调换顺序，可能出现的情况是，delete成功，update失败，则后台返回的是error，但条目消失，钱款未退
-- 事实上，只要是多个涉及数据库修改的操作联动，都会有类似问题，于是问题来了：
-- 有没有办法将几个操作进行绑定？比如其中一个操作失败，则所有操作回退？视图……？事务……？还是什么……？
-- 如果无法解决（比如我们太弱……肯定有办法的= =），我们最终怎样设定比较好？医院利益优先还是用户利益优先？
-- *有两种方法：1.就是在真正操作之前先进行一下检查，是否可以进行操作 2.操作的时候记录下一些操作记录，然后出现错误的时，进行回滚操作*

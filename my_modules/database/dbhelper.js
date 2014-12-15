@@ -187,12 +187,14 @@ exports.Find_Doctor = function (req, res) {
     find_range(table, condition, start, size, res, columns);
 };
 
-exports.Update_Individual_Info = function (req, res) {
-    var table = 'User';
+exports.UpdatePwd_Admin = function (req, res) {
+    var table = 'Admin';
     var condition = {
-        User_ID: req.body.User_ID
+        Admin_ID: req.body.Admin_ID
     };
-    var dest = req.body;
+    var dest = {
+        Password: req.body.Password
+    };
     condition = jsonToAnd(condition);
     connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
         if (err) {
@@ -203,8 +205,30 @@ exports.Update_Individual_Info = function (req, res) {
             return;
         }
         res.json({
-            msg: 0,
-            info: '修改成功'
+            msg: 0
+        });
+    });
+};
+
+exports.UpdatePwd_User = function (req, res) {
+    var table = 'User';
+    var condition = {
+        User_ID: req.body.User_ID
+    };
+    var dest = {
+        Password: req.body.Password
+    };
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0
         });
     });
 };
@@ -608,29 +632,29 @@ exports.Search_By_Identity = function (req, res) {
     find(table, condition, res, columns);
 };
 
-exports.Set_CreditRank_user_ID = function (req, res) {
-    var table = 'User';
-    var condition = {
-        User_ID: req.body.User_ID
-    };
-    var dest = {
-        Credit_Rank: req.body.Credit_Rank
-    };
-    condition = jsonToAnd(condition);
-    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            info: '信用等级已调整'
-        });
-    });
-};
+//exports.Set_CreditRank_user_ID = function (req, res) {
+//    var table = 'User';
+//    var condition = {
+//        User_ID: req.body.User_ID
+//    };
+//    var dest = {
+//        Credit_Rank: req.body.Credit_Rank
+//    };
+//    condition = jsonToAnd(condition);
+//    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+//        if (err) {
+//            res.json({
+//                msg: 1,
+//                info: err.message
+//            });
+//            return;
+//        }
+//        res.json({
+//            msg: 0,
+//            info: '信用等级已调整'
+//        });
+//    });
+//};
 
 exports.Create_Hospital = function (req, res) {
     var table = 'Hospital';
@@ -750,22 +774,40 @@ exports.Create_Depart = function (req, res) {
 
 exports.Get_DepartInfo = function (req, res) {
     var table = 'Depart';
-    var condition = req.body;
+    var condition = {
+        Hospital_ID: req.body.Hospital_ID
+    };
     var columns = [
         'Depart_ID',
-        'Deprt_Name'
+        'Depart_Name'
     ];
-    find(table, condition, res, columns);
+    if (req.body.start && req.body.size) {
+        var start = req.body.start;
+        var size = req.body.size;
+        find_range(table, condition, start, size, res, columns);
+    }
+    else {
+        find(table, condition, res, columns);
+    }
 };
 
 exports.Get_DoctorInfo = function (req, res) {
     var table = 'Doctor';
-    var condition = req.body;
+    var condition = {
+        Depart_ID: req.body.Depart_ID
+    };
     var columns = [
         'Doctor_ID',
         'Doctor_Name'
     ];
-    find(table, condition, res, columns);
+    if (req.body.start && req.body.size) {
+        var start = req.body.start;
+        var size = req.body.size;
+        find_range(table, condition, start, size, res, columns);
+    }
+    else {
+        find(table, condition, res, columns);
+    }
 };
 
 exports.Get_DoctorInfo_detail = function (req, res) {
@@ -1022,7 +1064,7 @@ exports.Find_Admin_By_Admin_Name = function (req, res) {
     });
 };
 
-exports.Get_Province_info = function (req, res) {
+exports.Get_Province_Info = function (req, res) {
     var table = 'Province';
     connect.query('SELECT * FROM ??', table, function (err, rows) {
         if (err) {
@@ -1046,11 +1088,24 @@ exports.Get_Area_Info_By_Province_ID = function (req, res) {
 };
 
 exports.Find_Hospital_By_Condition = function (req, res) {
-    var table = 'Hospital';
+    var table = [
+        'Province',
+        'Area',
+        'Hospital'
+    ];
     var condition = {
-        Area_ID: req.body.Area_ID,
-        Hospital_Level: req.body.Hospital_ID
+        'Hospital.Area_ID': 'Area.Area_ID',
+        'Area.Province_ID': 'Province.Province_ID'
     };
+    if (req.body.Province_ID) {
+        condition.Province_ID = req.body.Province_ID;
+    }
+    if (req.body.Area_ID) {
+        condition.Area_ID = req.body.Area_ID;
+    }
+    if (req.body.Hospital_Level) {
+        condition.Hospital_Level = req.body.Hospital_Level;
+    }
     var start = req.body.start;
     var size = req.body.size;
     find_range(table, condition, start, size, res);
@@ -1093,11 +1148,24 @@ exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
 };
 
 exports.Get_Hospital_Number_By_Condition = function (req, res) {
-    var table = 'Hospital';
+    var table = [
+        'Province',
+        'Area',
+        'Hospital'
+    ];
     var condition = {
-        Area_ID: req.body.Area_ID,
-        Hospital_Level: req.body.Hospital_ID
+        'Hospital.Area_ID': 'Area.Area_ID',
+        'Area.Province_ID': 'Province.Province_ID'
     };
+    if (req.body.Province_ID) {
+        condition.Province_ID = req.body.Province_ID;
+    }
+    if (req.body.Area_ID) {
+        condition.Area_ID = req.body.Area_ID;
+    }
+    if (req.body.Hospital_Level) {
+        condition.Hospital_Level = req.body.Hospital_Level;
+    }
     condition = jsonToAnd(condition);
     connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, table, function (err, rows) {
         if (err) {
@@ -1116,15 +1184,28 @@ exports.Get_Hospital_Number_By_Condition = function (req, res) {
 
 exports.Find_Doctor_By_Condition = function (req, res) {
     var table = [
+        'Depart',
+        'Hospital',
         'Doctor',
         'Doctor_Time'
     ];
     var condition = {
-        Depart_ID: req.body.Depart_ID,
-        Doctor_Level: req.body.Doctor_Level,
-        Duty_Time: req.body.Duty_Time,
-        'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
+        'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
+        'Doctor.Hospital_ID': 'Hospital.Hospital_ID',
+        'Hospital.Depart_ID': 'Depart.Depart_ID'
     };
+    if (req.body.Depart_ID) {
+        condition.Depart_ID = req.body.Depart_ID;
+    }
+    if (req.body.Hospital_ID) {
+        condition.Hospital_ID = req.body.Hospital_ID;
+    }
+    if (req.body.Doctor_Level) {
+        condition.Doctor_Level = req.body.Doctor_Level;
+    }
+    if (req.body.Duty_Time) {
+        condition.Duty_Time = req.body.Duty_Time;
+    }
     var columns = [
         'Doctor_ID',
         'Doctor_Name'
@@ -1158,22 +1239,35 @@ exports.Check_Admin_Repeat = function (req, res) {
 
 exports.Find_Doctor_By_Condition_Free = function (req, res) {
     var table = [
+        'Depart',
+        'Hospital',
         'Doctor',
         'Doctor_Time',
         'Reservation'
     ];
     var condition = {
-        Depart_ID: req.body.Depart_ID,
-        Doctor_Level: req.body.Doctor_Level,
-        Duty_Time: req.body.Duty_Time,
         'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
-        'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+        'Doctor.Hospital_ID': 'Hospital.Hospital_ID',
+        'Hospital.Depart_ID': 'Depart.Depart_ID'
     };
+    if (req.body.Depart_ID) {
+        condition.Depart_ID = req.body.Depart_ID;
+    }
+    if (req.body.Hospital_ID) {
+        condition.Hospital_ID = req.body.Hospital_ID;
+    }
+    if (req.body.Doctor_Level) {
+        condition.Doctor_Level = req.body.Doctor_Level;
+    }
+    if (req.body.Duty_Time) {
+        condition.Duty_Time = req.body.Duty_Time;
+    }
     var columns = [
         'Doctor_ID',
         'Doctor_Name'
     ];
-    var date = new Date();
+    var date = new Date(Date.parse(req.body.Reservation_Time.replace(/-/g, "/")));
     var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
     var startTime = dateString;
     var endTime = dateString;
@@ -1202,3 +1296,63 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         });
 };
 
+exports.Config_User = function (req, res) {
+    var table = 'User';
+    var condition = {
+        User_ID: req.body.User_ID
+    };
+    var dest = req.body;
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '修改成功'
+        });
+    });
+};
+
+exports.Del_Doctor = function (req, res) {
+    var table = [
+        'Doctor',
+        'Doctor_Time'
+    ];
+    var condition = {
+        'Doctor.Doctor_ID': req.body.Doctor_ID,
+        'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
+    };
+    condition = jsonToAnd(condition);
+    connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '该医生信息已删除'
+        });
+    });
+};
+
+exports.Get_Old_Pwd_User = function (req, res) {
+    var table = 'User';
+    var condition = req.body;
+    var columns = 'Password';
+    find(table, condition, res, columns);
+};
+
+exports.Get_Old_Pwd_Admin = function (req, res) {
+    var table = 'Admin';
+    var condition = req.body;
+    var columns = 'Password';
+    find(table, condition, res, columns);
+};
