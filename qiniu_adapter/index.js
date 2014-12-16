@@ -25,6 +25,18 @@ function uploadFromBuffer(body, key, uptoken, cb) {
 }
 
 exports.uploadData = function(identifier, data, callback) {
-    uptoken = getUploadToken(config.qiniu.bucket);
-    uploadFromBuffer(data, identifier, uptoken, callback);
+    var key = req.body['key'] || null;
+    var val = req.files['val'].buffer || null;
+    if (!!key || !!val) {
+        uptoken = getUploadToken(config.qiniu.bucket);
+        uploadFromBuffer(data, identifier, uptoken, function(err) {
+            if (!!err) {
+                res.end('upload error');
+            } else {
+                res.end('upload ok');
+            }
+        });
+    } else {
+        res.end('param error');
+    }
 };
