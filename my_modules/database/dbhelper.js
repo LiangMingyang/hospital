@@ -46,12 +46,14 @@ var jsonToAnd = function (data) {
 
 var select = function (table, condition, callback, columns) { // SELECT语句的封装，便于重用
     condition = jsonToAnd(condition);
-    //connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns || '*', table], callback);
+    if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
+        condition = ' WHERE ' + condition;
+    }
     if (columns) {
-        connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], callback);
+        connect.query('SELECT ?? FROM ?? ' + condition, [columns, table], callback);
     }
     else {
-        connect.query('SELECT * FROM ?? WHERE ' + condition, table, callback);
+        connect.query('SELECT * FROM ?? ' + condition, table, callback);
     }
 };
 
@@ -73,7 +75,10 @@ var find = function (table, condition, res, columns) { // 用于绝大多数find
 
 var find_range = function (table, condition, start, size, res, columns) { // 用于绝大多数带limit的find函数，便于重用
     condition = jsonToAnd(condition);
-    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, function (err, rows) {
+    if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
+        condition = ' WHERE ' + condition;
+    }
+    connect.query('SELECT COUNT(1) AS count FROM ?? ' + condition, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -83,7 +88,7 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
         }
         var count = rows[0].count;
         if (columns) {
-            connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' LIMIT ??,??',
+            connect.query('SELECT ?? FROM ?? ' + condition + ' LIMIT ??,??',
                 [columns, table, start, size], function (err, rows) {
                     if (err) {
                         res.json({
@@ -100,7 +105,7 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
                 });
         }
         else {
-            connect.query('SELECT * FROM ?? WHERE ' + condition + ' LIMIT ??,??',
+            connect.query('SELECT * FROM ?? ' + condition + ' LIMIT ??,??',
                 [table, start, size], function (err, rows) {
                     if (err) {
                         res.json({
@@ -185,6 +190,56 @@ exports.Find_Doctor = function (req, res) {
         'Doctor_Major'
     ];
     find_range(table, condition, start, size, res, columns);
+};
+
+exports.LogIn_User = function (req, res) {
+    var table = 'User';
+    var condition = req.body;
+    select(table, condition, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows.length == 0) {
+            res.json({
+                msg: 1,
+                info: "用户名或密码不正确"
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows[0]
+        });
+    });
+};
+
+exports.LogIn_Admin = function (req, res) {
+    var table = 'Admin';
+    var condition = req.body;
+    select(table, condition, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows.length == 0) {
+            res.json({
+                msg: 1,
+                info: "用户名或密码不正确"
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows[0]
+        });
+    });
 };
 
 exports.UpdatePwd_Admin = function (req, res) {
@@ -378,7 +433,7 @@ exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
         });
 };
 
-exports.del_Reservation = function (req, res) { //更晕了，要死了
+exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
     var table = 'Reservation';
     var condition = req.body;
     var columns = [
@@ -912,23 +967,12 @@ exports.Add_Admin = function (req, res) {
 
 exports.Get_AdminInfo = function (req, res) {
     var table = 'Admin';
+    var condition = {};
     var columns = [
         'Admin_ID',
         'Admin_Name'
     ];
-    connect.query('SELECT ?? FROM ??', [columns, table], function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    });
+    find(table, condition, res, columns);
 };
 
 exports.Get_Privilege = function (req, res) {
@@ -1066,19 +1110,8 @@ exports.Find_Admin_By_Admin_Name = function (req, res) {
 
 exports.Get_Province_Info = function (req, res) {
     var table = 'Province';
-    connect.query('SELECT * FROM ??', table, function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    });
+    var condition = {};
+    find(table, condition, res);
 };
 
 exports.Get_Area_Info_By_Province_ID = function (req, res) {
@@ -1232,11 +1265,6 @@ exports.Check_Admin_Repeat = function (req, res) {
     });
 };
 
-//What the hell is it?!
-//exports.Find_Doctor_State = function (req,res) {
-//
-//};
-
 exports.Find_Doctor_By_Condition_Free = function (req, res) {
     var table = [
         'Depart',
@@ -1357,52 +1385,27 @@ exports.Get_Old_Pwd_Admin = function (req, res) {
     find(table, condition, res, columns);
 };
 
-exports.Login_User = function (req, res) {
-    var table = 'User';
-    var condition = req.body;
-    select(table, condition, function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        if(rows.length == 0) {
-            res.json({
-                msg: 1,
-                info: "用户名或密码不正确"
-            })
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows[0]
-        });
-    });
-}
 
-exports.Login_Admin = function (req, res) {
-    var table = 'Admin';
-    var condition = req.body;
-    select(table, condition, function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        if(rows.length == 0) {
-            res.json({
-                msg: 1,
-                info: "用户名或密码不正确"
-            })
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows[0]
-        });
-    });
-}
+exports.Find_User_By_Condition = function (req, res) {
+    var table = 'User';
+    var condition = {};
+    if (req.body.Area_ID) {
+        condition.Area_ID = req.body.Area_ID;
+    }
+    if (req.body.isChecked) {
+        condition.isChecked = req.body.isChecked;
+    }
+    var columns = [
+        'User_ID',
+        'UserName',
+        'Identity_ID'
+    ];
+    if (req.body.start && req.body.size) {
+        var start = req.body.start;
+        var size = req.body.size;
+        find_range(table, condition, start, size, res, columns);
+    }
+    else {
+        find(table, condition, res, columns);
+    }
+};
