@@ -39,7 +39,7 @@ exports.check = function (req, res, next) {
 var jsonToAnd = function (data) {
     var list = [];
     for (var key in data) {
-        list.push(key + ' = ' + data[key]);
+        list.push(key + ' = ' + '\'' + data[key] + '\'');
     }
     return ' ' + list.join(' AND ') + ' ';
 };
