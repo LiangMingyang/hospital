@@ -1082,7 +1082,7 @@ exports.Get_Province_Info = function (req, res) {
 };
 
 exports.Get_Area_Info_By_Province_ID = function (req, res) {
-    var table = 'Province';
+    var table = 'Area';
     var condition = req.body;
     find(table, condition, res);
 };
