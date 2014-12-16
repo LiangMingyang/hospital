@@ -1,6 +1,6 @@
 /**
  * 运行如下语句执行
- * mysql -u test < hostpital_tables.sql
+ * mysql -u test < hospital_tables.sql
  */
 
 DROP DATABASE IF EXISTS Hospital_Reservation_DB;
@@ -10,15 +10,15 @@ CREATE DATABASE Hospital_Reservation_DB CHARACTER SET utf8;
 USE Hospital_Reservation_DB;
 
 CREATE TABLE Province (
-    Province_ID INT (2) NOT NULL AUTO_INCREMENT,
+    Province_ID INT (2) NOT NULL,
     Province_Name VARCHAR (10) NOT NULL,
     PRIMARY KEY (Province_ID)
 );
 
 CREATE TABLE Area (
-    Area_ID INT (11) NOT NULL AUTO_INCREMENT,
+    Area_ID INT (11) NOT NULL,
     Province_ID INT (2) NOT NULL,
-    Area_Name VARCHAR (10) NOT NULL,
+    Area_Name VARCHAR (100) NOT NULL,
     PRIMARY KEY (Area_ID),
     FOREIGN KEY (Province_ID) REFERENCES Province(Province_ID) ON UPDATE CASCADE ON DELETE RESTRICT
 );
@@ -138,5 +138,6 @@ CREATE TABLE Reset_Pwd_Security (
 CREATE TABLE Doctor_Time (
     Doctor_ID INT (11) NOT NULL,
     Duty_Time INT (2) NOT NULL,
-    FOREIGN KEY (Doctor_ID) REFERENCES Doctor(Doctor_ID) ON UPDATE CASCADE ON DELETE RESTRICT,
+    PRIMARY KEY (Doctor_ID, Duty_Time),
+    FOREIGN KEY (Doctor_ID) REFERENCES Doctor(Doctor_ID) ON UPDATE CASCADE ON DELETE RESTRICT
 );

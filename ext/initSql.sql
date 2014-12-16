@@ -2,8 +2,6 @@
  * Created by 明阳 on 2014/11/30.
  * 初始数据，直接use Hospital_Reservation_DB后执行 SOURCE initSql.sql就可以了
  */
-INSERT INTO `Province` (`Province_Name`) VALUES ('北京');
-INSERT INTO `Area` (`Province_ID`, `Area_Name`) VALUES ('1', '昌平');
 INSERT INTO `Hospital` (`Area_ID`, `Hospital_Level`, `Hospital_Introduction`, `Hospital_Name`, `Hospital_Location`, `Reservation_Start_Time`, `Reservation_End_Time`, `Hospital_Picture_url`) VALUES ('1', '1', 'nothing', '北医三院', '北航周边', '2014-11-30 00:33:10', '2014-11-30 00:33:15', 'nothing');
 INSERT INTO `Depart` (`Hospital_ID`, `Depart_Name`) VALUES ('1', '北医三院');
 INSERT INTO `Doctor` (`Depart_ID`, `Doctor_Name`, `Doctor_Level`, `Doctor_Fee`, `Doctor_Limit`, `Doctor_Major`, `Doctor_Picture_url`) VALUES ('1', 'DB', '1', '10', '1', 'Death', 'none');
