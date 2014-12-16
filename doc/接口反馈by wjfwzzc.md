@@ -3,7 +3,6 @@
 ###*Find_Doctor_State*
 - 这函数是干啥的……我怎么确定一个doctor是free的……
 
-###LogIn_User, LogIn_Admin未完成
 
 ###宋子明部分未完成
 
