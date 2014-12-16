@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var db = require('./database');
 var dbhelper = require('./dbhelper');
 var fs = require('fs');
 var markdown = require('markdown').markdown;
