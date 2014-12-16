@@ -25,9 +25,9 @@ router.post('/Find_Hospital', dbhelper.Find_Hospital);
 
 router.post('/Find_Doctor', dbhelper.Find_Doctor);
 
-//router.post('/LogIn_User', dbhelper.LogIn_User);
+router.post('/LogIn_User', dbhelper.LogIn_User);
 
-//router.post('/LogIn_Admin', dbhelper.LogIn_Admin);
+router.post('/LogIn_Admin', dbhelper.LogIn_Admin);
 
 router.post('/UpdatePwd_Admin', dbhelper.UpdatePwd_Admin);
 
@@ -43,7 +43,7 @@ router.post('/Check_History_Reservation_Detail', dbhelper.Check_History_Reservat
 
 router.post('/Reservation', dbhelper.Reservation);
 
-router.post('/del_Reservation', dbhelper.del_Reservation);
+router.post('/del_Reservation', dbhelper.Cancel_Reservation);
 
 router.post('/Check_PayState', dbhelper.Check_PayState);
 
@@ -111,8 +111,6 @@ router.post('/Find_Doctor_By_Condition', dbhelper.Find_Doctor_By_Condition);
 
 router.post('/Check_Admin_Repeat', dbhelper.Check_Admin_Repeat);
 
-//router.post('/Find_Doctor_State', dbhelper.Find_Doctor_State);
-
 router.post('/Find_Doctor_By_Condition_Free', dbhelper.Find_Doctor_By_Condition_Free);
 
 router.post('/Config_User', dbhelper.Config_User);
@@ -123,8 +121,6 @@ router.post('/Get_Old_Pwd_User', dbhelper.Get_Old_Pwd_User);
 
 router.post('/Get_Old_Pwd_Admin', dbhelper.Get_Old_Pwd_Admin);
 
-router.post('/Login_User',dbhelper.Login_User);
-
-router.post('/Login_Admin',dbhelper.Login_Admin);
+router.post('/Find_User_By_Condition', dbhelper.Find_User_By_Condition);
 
 module.exports = router;
