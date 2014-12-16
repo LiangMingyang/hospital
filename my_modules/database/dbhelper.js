@@ -1356,3 +1356,53 @@ exports.Get_Old_Pwd_Admin = function (req, res) {
     var columns = 'Password';
     find(table, condition, res, columns);
 };
+
+exports.Login_User = function (req, res) {
+    var table = 'User';
+    var condition = req.body;
+    select(table, condition, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if(rows.length == 0) {
+            res.json({
+                msg: 1,
+                info: "用户名或密码不正确"
+            })
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows[0]
+        });
+    });
+}
+
+exports.Login_Admin = function (req, res) {
+    var table = 'Admin';
+    var condition = req.body;
+    select(table, condition, function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if(rows.length == 0) {
+            res.json({
+                msg: 1,
+                info: "用户名或密码不正确"
+            })
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows[0]
+        });
+    });
+}

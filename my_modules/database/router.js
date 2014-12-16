@@ -123,4 +123,8 @@ router.post('/Get_Old_Pwd_User', dbhelper.Get_Old_Pwd_User);
 
 router.post('/Get_Old_Pwd_Admin', dbhelper.Get_Old_Pwd_Admin);
 
+router.post('/Login_User',dbhelper.Login_User);
+
+router.post('/Login_Admin',dbhelper.Login_Admin);
+
 module.exports = router;
