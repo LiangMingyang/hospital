@@ -1459,3 +1459,55 @@ exports.Add_Depart = function (req,res) {
         });
     });
 }
+
+exports.Del_Depart = function (req, res) {
+    var table = 'Depart';
+    var condition = req.body;
+    condition = jsonToAnd(condition);
+    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if(result.affectedRows == 0) {
+            res.json({
+                msg:1,
+                info:"删除失败"
+            })
+            return ;
+        }
+        res.json({
+            msg: 0,
+            info: '删除成功'
+        });
+    });
+}
+
+exports.Del_Hospital = function (req, res) {
+    var table = 'Hospital';
+    var condition = req.body;
+    condition = jsonToAnd(condition);
+    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if(result.affectedRows == 0) {
+            res.json({
+                msg:1,
+                info:"删除失败"
+            })
+            return ;
+        }
+        res.json({
+            msg: 0,
+            info: '删除成功'
+        });
+    });
+}
