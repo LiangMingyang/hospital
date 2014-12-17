@@ -648,14 +648,15 @@ exports.Check_Register = function (req, res) {
                 Mall: rows[0].Mail,
                 Phone: rows[0].Phone
             });
-        }
-        else {
+        } else {
             res.json({
                 msg: 0
             });
         }
     };
-    select(table, condition, callback, columns);
+    //select(table, condition, callback, columns);
+    connect.query('update User set isChecked = ' + condition.isChecked +
+    ' where User_ID=' + condition.User_ID,  callback);
 };
 
 exports.Get_Reservation_Info = function (req, res) {
