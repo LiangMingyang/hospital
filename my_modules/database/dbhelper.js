@@ -56,22 +56,11 @@ var select = function (table, condition, callback, columns) { // SELECT语句的
     if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
-    var list;
-    if(typeof (table) == 'string') {
-        list = [];
-        list.push(table);
-        table = list;
-    }
-    if(typeof (columns) == 'string') {
-        list = [];
-        list.push(columns);
-        columns = list;
-    }
     if (columns) {
-        connect.query('SELECT ' + columns.join(',') + ' FROM '+table.join(',') + ' ' + condition, callback);
+        connect.query('SELECT ?? FROM ?? ' + condition,[columns,table], callback);
     }
     else {
-        connect.query('SELECT * FROM '+table.join(',') + ' ' + condition, callback);
+        connect.query('SELECT * FROM ?? ' + condition,[table], callback);
     }
 };
 
@@ -96,18 +85,7 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
     if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
-    var list;
-    if(typeof (table) == 'string') {
-        list = [];
-        list.push(table);
-        table = list;
-    }
-    if(typeof (columns) == 'string') {
-        list = [];
-        list.push(columns);
-        columns = list;
-    }
-    connect.query('SELECT COUNT(1) AS count FROM '+ table.join(',') + ' ' + condition, function (err, rows) {
+    connect.query('SELECT COUNT(1) AS count FROM ??' + condition, [table] , function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -117,8 +95,8 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
         }
         var count = rows[0].count;
         if (columns) {
-            connect.query('SELECT '+ columns.join(',') +' FROM '+ table.join(',') + ' ' + condition + ' LIMIT ??,??',
-                [start, size], function (err, rows) {
+            connect.query('SELECT ?? FROM ?? ' + condition + ' LIMIT ?,?',[columns,table,parseInt(start),parseInt(size)],
+                function (err, rows) {
                     if (err) {
                         res.json({
                             msg: 1,
@@ -134,8 +112,8 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
                 });
         }
         else {
-            connect.query('SELECT * FROM '+ table.join(',') + ' ' + condition + ' LIMIT ??,??',
-                [start, size], function (err, rows) {
+            connect.query('SELECT * FROM ?? ' + condition + ' LIMIT ?,?',[table,parseInt(start),parseInt(size)],
+                function (err, rows) {
                     if (err) {
                         res.json({
                             msg: 1,
@@ -378,8 +356,8 @@ exports.Check_History_Reservation_Simple = function (req, res) {
         'Doctor_Name'
     ];
     condition = jsonToAnd(condition);
-    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ?? LIMIT ??,??',
-        [columns, table, 'History_Reservation_Time', startDate, endDate, start, size], function (err, rows) {
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ?? LIMIT ?,?',
+        [columns, table, 'History_Reservation_Time', startDate, endDate, parseInt(start), parseInt(size)], function (err, rows) {
             if (err) {
                 res.json({
                     msg: 1,
@@ -506,7 +484,7 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
                 }
                 table = 'Reservation';
                 condition = req.body;
-                connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, result) { // 删除挂号条目
+                connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) { // 删除挂号条目
                     if (err) {
                         res.json({
                             msg: 1,
@@ -570,16 +548,21 @@ exports.In_Cash = function (req, res) {
     var condition = {
         User_ID: req.body.User_ID
     };
-    var dest = {
-        Amount: Amount + req.body.Amout
-    };
-    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET Amount = Amount+' + req.body.Amount+' WHERE ' + condition, [table], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
                 info: err.message
             });
             return;
+        }
+        if(result.affectedRows == 0) {
+            res.json({
+                msg:1,
+                info:"充值失败"
+            })
+            return ;
         }
         res.json({
             msg: 0,
@@ -1108,41 +1091,18 @@ exports.del_Admin = function (req, res) {
 };
 
 exports.Find_User_By_Identity_ID = function (req, res) {
-    var table = [
-        'User',
-        'Area',
-        'Province'
-    ];
+    var table = 'User';
     var condition = {
         Identity_ID: req.body.Identity_ID,
-        relation: {
-            'User.Area_ID': 'Area.Area_ID',
-            'Area.Province_ID': 'Province.Province_ID'
-        }
     };
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        var ret_obj = {};
-        for (key in rows[0]) {
-            ret_obj[key] = rows[0][key];
-        }
-        ret_obj['msg'] = 0;
-        res.json(ret_obj);
-    };
-    find(table, condition, callback);
+    find(table, condition, res);
 };
 
 exports.Find_Admin_By_Admin_Name = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
     condition = jsonToAnd(condition);
-    connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, rows) {
+    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1318,7 +1278,7 @@ exports.Check_Admin_Repeat = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
     condition = jsonToAnd(condition);
-    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, table, function (err, rows) {
+    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, [table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1428,7 +1388,7 @@ exports.Del_Doctor = function (req, res) {
         }
     };
     condition = jsonToAnd(condition);
-    connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, result) {
+    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1481,3 +1441,21 @@ exports.Find_User_By_Condition = function (req, res) {
         find(table, condition, res, columns);
     }
 };
+
+exports.Add_Depart = function (req,res) {
+    var table = 'Depart';
+    var condition = req.body;
+    connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '添加成功'
+        });
+    });
+}
