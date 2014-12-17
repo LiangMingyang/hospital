@@ -666,7 +666,15 @@ exports.Check_Register = function (req, res) {
         if (!!err) {
             console.log(err.message);
             return ;
-        } 
+        } else {
+            if (rows.affectedRows==0) {
+                res.json({
+                    msg: 1,
+                    info: "No line affected!"
+                });
+                return;
+            }
+        }
         select(table, condition, callback, columns);
     });
 };
