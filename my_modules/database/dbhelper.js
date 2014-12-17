@@ -38,7 +38,14 @@ exports.check = function (req, res, next) {
 
 var jsonToAnd = function (data) {
     var list = [];
+    var relation = data.relation;
+    if(relation) {
+        for (var key in relation) {
+            list.push(key + ' = ' + relation[key]);
+        }
+    }
     for (var key in data) {
+        if(key == 'relation')continue;
         list.push(key + ' = ' + '\'' + data[key] + '\'');
     }
     return ' ' + list.join(' AND ') + ' ';
@@ -49,11 +56,22 @@ var select = function (table, condition, callback, columns) { // SELECT语句的
     if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
+    var list;
+    if(typeof (table) == 'string') {
+        list = [];
+        list.push(table);
+        table = list;
+    }
+    if(typeof (columns) == 'string') {
+        list = [];
+        list.push(columns);
+        columns = list;
+    }
     if (columns) {
-        connect.query('SELECT ?? FROM ?? ' + condition, [columns, table], callback);
+        connect.query('SELECT ' + columns.join(',') + ' FROM '+table.join(',') + ' ' + condition, callback);
     }
     else {
-        connect.query('SELECT * FROM ?? ' + condition, table, callback);
+        connect.query('SELECT * FROM '+table.join(',') + ' ' + condition, callback);
     }
 };
 
@@ -295,7 +313,9 @@ exports.Check_Reservation_Simple = function (req, res) {
     ];
     var condition = {
         User_ID: req.body.User_ID,
-        'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        relation: {
+            'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        }
     };
     var columns = [
         'Reservation_ID',
@@ -316,9 +336,11 @@ exports.Check_Reservation_Detail = function (req, res) {
     ];
     var condition = {
         Reservation_ID: req.body.Reservation_ID,
-        'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
-        'Doctor.Depart_ID': 'Depart.Depart_ID',
-        'Depart.Hospital_ID': 'Hospital.Hospital_ID'
+        relation: {
+            'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+            'Doctor.Depart_ID': 'Depart.Depart_ID',
+            'Depart.Hospital_ID': 'Hospital.Hospital_ID'
+        }
     };
     find(table, condition, res);
 };
@@ -330,7 +352,9 @@ exports.Check_History_Reservation_Simple = function (req, res) {
     ];
     var condition = {
         History_Reservation_ID: req.body.Reservation_ID,
-        'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        relation:{
+            'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        }
     };
     var start = req.body.start;
     var size = req.body.size;
@@ -368,9 +392,11 @@ exports.Check_History_Reservation_Detail = function (req, res) {
     ];
     var condition = {
         History_Reservation_ID: req.body.History_Reservation_ID,
-        'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID',
-        'Doctor.Depart_ID': 'Depart.Depart_ID',
-        'Depart.Hospital_ID': 'Hospital.Hospital_ID'
+        relation: {
+            'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+            'Doctor.Depart_ID': 'Depart.Depart_ID',
+            'Depart.Hospital_ID': 'Hospital.Hospital_ID'
+        }
     };
     find(table, condition, res);
 };
@@ -382,7 +408,9 @@ exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
     ];
     var condition = {
         'Doctor.Doctor_ID': req.body.Doctor_ID,
-        'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        relation: {
+            'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+        }
     };
     var columns = [
         'Doctor_Limit',
@@ -581,7 +609,9 @@ exports.Pay_Reservation = function (req, res) {
         condition = {
             Reservation_ID: req.body.Reservation_ID,
             'User.User_ID': req.body.User_ID,
-            'Reservation.User_ID': 'User.User_ID'
+            relation: {
+                'Reservation.User_ID': 'User.User_ID'
+            }
         };
         var dest = {
             Amount: Amount - rows[0].Reservation_PayAmount,
@@ -650,9 +680,11 @@ exports.Get_Reservation_Info = function (req, res) {
     var condition = {
         Reservation_ID: req.body.Reservation_ID,
         Hospital_ID: req.body.Hospital_ID,
-        'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
-        'Doctor.Depart_ID': 'Depart.Depart_ID',
-        'Depart.Hospital_ID': 'Hospital.Hospital_ID'
+        relation: {
+            'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+            'Doctor.Depart_ID': 'Depart.Depart_ID',
+            'Depart.Hospital_ID': 'Hospital.Hospital_ID'
+        }
     };
     var columns = [
         'UserName',
@@ -673,8 +705,10 @@ exports.Search_By_Identity = function (req, res) {
     ];
     var condition = {
         Identity_ID: req.body.Identity_ID,
-        'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
-        'Reservation.User_ID': 'User.User_ID'
+        relation: {
+            'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+            'Reservation.User_ID': 'User.User_ID'
+        }
     };
     var columns = [
         'UserName',
@@ -754,7 +788,9 @@ exports.Get_HospitalInfo_simple = function (req, res) {
     ];
     var condition = {
         Admin_ID: req.body.Admin_ID,
-        'Manage.Hospital_ID': 'Hospital.Hospital_ID'
+        relation: {
+            'Manage.Hospital_ID': 'Hospital.Hospital_ID'
+        }
     };
     var columns = [
         'Hospital_ID',
@@ -977,18 +1013,20 @@ exports.Get_AdminInfo = function (req, res) {
 
 exports.Get_Privilege = function (req, res) {
     var table = [
-        'Admin',
-        'Hospital'
+        'Hospital',
+        'Manage'
     ];
     var condition = {
-        Hospital_ID: req.body.Hospital_ID,
-        'Admin.Hospital_ID': 'Hospital.Hospital_ID'
+        relation: {
+            'Manage.Hospital_ID': 'Hospital.Hospital_ID'
+        },
+        'Manage.Admin_ID': req.body.Admin_ID
     };
     var columns = [
         'Hospital_ID',
         'Hospital_Name'
     ];
-    find(table, condition, res, columns);
+    find(table, condition, res);
 };
 
 var tupleToString = function (data, str) {
@@ -1066,8 +1104,10 @@ exports.Find_User_By_Identity_ID = function (req, res) {
     ];
     var condition = {
         Identity_ID: req.body.Identity_ID,
-        'User.Area_ID': 'Area.Area_ID',
-        'Area.Province_ID': 'Province.Province_ID'
+        relation: {
+            'User.Area_ID': 'Area.Area_ID',
+            'Area.Province_ID': 'Province.Province_ID'
+        }
     };
     var callback = function (err, rows) {
         if (err) {
@@ -1127,8 +1167,10 @@ exports.Find_Hospital_By_Condition = function (req, res) {
         'Hospital'
     ];
     var condition = {
-        'Hospital.Area_ID': 'Area.Area_ID',
-        'Area.Province_ID': 'Province.Province_ID'
+        relation: {
+            'Hospital.Area_ID': 'Area.Area_ID',
+            'Area.Province_ID': 'Province.Province_ID'
+        }
     };
     if (req.body.Province_ID) {
         condition.Province_ID = req.body.Province_ID;
@@ -1239,9 +1281,11 @@ exports.Find_Doctor_By_Condition = function (req, res) {
         'Doctor_Time'
     ];
     var condition = {
-        'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
-        'Doctor.Hospital_ID': 'Hospital.Hospital_ID',
-        'Hospital.Depart_ID': 'Depart.Depart_ID'
+        relation: {
+            'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
+            'Doctor.Hospital_ID': 'Hospital.Hospital_ID',
+            'Hospital.Depart_ID': 'Depart.Depart_ID'
+        }
     };
     if (req.body.Depart_ID) {
         condition.Depart_ID = req.body.Depart_ID;
@@ -1290,10 +1334,12 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         'Reservation'
     ];
     var condition = {
-        'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
-        'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
-        'Doctor.Hospital_ID': 'Hospital.Hospital_ID',
-        'Hospital.Depart_ID': 'Depart.Depart_ID'
+        relation: {
+            'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
+            'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+            'Doctor.Hospital_ID': 'Hospital.Hospital_ID',
+            'Hospital.Depart_ID': 'Depart.Depart_ID'
+        }
     };
     if (req.body.Depart_ID) {
         condition.Depart_ID = req.body.Depart_ID;
@@ -1369,7 +1415,9 @@ exports.Del_Doctor = function (req, res) {
     ];
     var condition = {
         'Doctor.Doctor_ID': req.body.Doctor_ID,
-        'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
+        relation: {
+            'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
+        }
     };
     condition = jsonToAnd(condition);
     connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, result) {
