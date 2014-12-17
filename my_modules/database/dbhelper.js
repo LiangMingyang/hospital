@@ -783,7 +783,7 @@ exports.Get_HospitalInfo_simple = function (req, res) {
         }
     };
     var columns = [
-        'Hospital_ID',
+        'Manage.Hospital_ID',
         'Hospital_Name'
     ];
     find(table, condition, res, columns);
