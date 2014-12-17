@@ -1093,7 +1093,7 @@ exports.del_Admin = function (req, res) {
 exports.Find_User_By_Identity_ID = function (req, res) {
     var table = 'User';
     var condition = {
-        Identity_ID: req.body.Identity_ID,
+        Identity_ID: req.body.Identity_ID
     };
     find(table, condition, res);
 };
@@ -1458,7 +1458,7 @@ exports.Add_Depart = function (req,res) {
             info: '添加成功'
         });
     });
-}
+};
 
 exports.Del_Depart = function (req, res) {
     var table = 'Depart';
@@ -1484,7 +1484,7 @@ exports.Del_Depart = function (req, res) {
             info: '删除成功'
         });
     });
-}
+};
 
 exports.Del_Hospital = function (req, res) {
     var table = 'Hospital';
@@ -1510,4 +1510,4 @@ exports.Del_Hospital = function (req, res) {
             info: '删除成功'
         });
     });
-}
+};
