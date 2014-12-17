@@ -1052,7 +1052,7 @@ exports.Del_Privilege = function (req, res) {
         Admin_ID: req.body.Admin_ID
     };
     condition_admin = jsonToAnd(condition_admin);
-    var condition_hospital = ' (' + res.body.Hospital_ID.join(', ') + ') ';
+    var condition_hospital = ' (' + res.body.Hospital_ID + ') ';
     connect.query('DELETE FROM ?? WHERE ' + condition_admin + ' AND ?? IN ' + condition_hospital,
         [table, 'Hospital_ID'], function (err, result) {
             if (err) {
@@ -1512,9 +1512,11 @@ exports.Update_User = function(req, res) {
     var condition = {
         User_ID: req.body.User_ID
     };
-    var dest = {
+    /*var dest = {
         Password: req.body.Password
-    };
+    };*/
+    var dest = req.body;
+    delete dest.User_ID;
     condition = jsonToAnd(condition);
     connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
         if (err) {
@@ -1534,7 +1536,7 @@ exports.Update_User = function(req, res) {
 // param: token, encrpttime, User_ID (separated by comma)
 exports.Del_User = function(req, res) {
     var ids = req.body.User_ID;
-    connect.query('delete from User where User_ID in (' + ids + ')', funcrion(err, result) {
+    connect.query('delete from User where User_ID in (' + ids + ')', function(err, result) {
         var ret = {}
         if (!!err) {
             ret.msg = 1;
