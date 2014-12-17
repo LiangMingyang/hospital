@@ -666,9 +666,9 @@ exports.Check_Register = function (req, res) {
         if (!!err) {
             console.log(err.message);
             return ;
-        }
+        } 
+        select(table, condition, callback, columns);
     });
-    select(table, condition, callback, columns);
 };
 
 exports.Get_Reservation_Info = function (req, res) {
