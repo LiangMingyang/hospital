@@ -1086,34 +1086,11 @@ exports.del_Admin = function (req, res) {
 };
 
 exports.Find_User_By_Identity_ID = function (req, res) {
-    var table = [
-        'User',
-        'Area',
-        'Province'
-    ];
+    var table = 'User';
     var condition = {
         Identity_ID: req.body.Identity_ID,
-        relation: {
-            'User.Area_ID': 'Area.Area_ID',
-            'Area.Province_ID': 'Province.Province_ID'
-        }
     };
-    var callback = function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        var ret_obj = {};
-        for (key in rows[0]) {
-            ret_obj[key] = rows[0][key];
-        }
-        ret_obj['msg'] = 0;
-        res.json(ret_obj);
-    };
-    find(table, condition, callback);
+    find(table, condition, res);
 };
 
 exports.Find_Admin_By_Admin_Name = function (req, res) {
