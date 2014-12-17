@@ -642,6 +642,13 @@ exports.Check_Register = function (req, res) {
             });
             return;
         }
+        if (rows.length==0) {
+            res.json({
+                msg: 1,
+                info: "Not found"
+            });
+            return;
+        }
         if (rows[0].isChecked == 1) {
             res.json({
                 msg: 0,
@@ -654,9 +661,14 @@ exports.Check_Register = function (req, res) {
             });
         }
     };
-    //select(table, condition, callback, columns);
     connect.query('update User set isChecked = ' + condition.isChecked +
-    ' where User_ID=' + condition.User_ID,  callback);
+    ' where User_ID=' + condition.User_ID,  function(err, rows) {
+        if (!!err) {
+            console.log(err.message);
+            return ;
+        }
+    });
+    select(table, condition, callback, columns);
 };
 
 exports.Get_Reservation_Info = function (req, res) {
