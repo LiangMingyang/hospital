@@ -128,4 +128,8 @@ router.post('/Del_Depart', dbhelper.Del_Depart);
 
 router.post('/Del_Hospital', dbhelper.Del_Hospital);
 
+router.post('/Update_User', dbhelper.Update_User);
+
+router.post('/Del_User', dbhelper.Del_User);
+
 module.exports = router;

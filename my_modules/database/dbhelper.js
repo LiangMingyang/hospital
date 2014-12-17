@@ -1088,31 +1088,13 @@ exports.del_Admin = function (req, res) {
 };
 
 exports.Find_User_By_Identity_ID = function (req, res) {
-/*    var table = 'User';
+    var table = 'User';
     var condition = {
         Identity_ID: req.body.Identity_ID
     };
-    find(table, condition, res);*/
-    var id = req.body.Identity_ID;
-    connect.query('select * from User where Identity_ID = '+id, function(err, result) {
-        var ret = {};
-        if (!!err) {
-            ret.msg = 1;
-            ret.info = "Cannot query database";
-        } else {
-            if (result.affectedRows==0) {
-                ret.msg = 1;
-                ret.info = "No result found";
-            } else {
-                ret.msg = 0;
-                ret.info = "OK";
-                result.Province_ID = result.Area_ID / 100;
-                ret.content = result;
-            }
-        }
-    });
+    find(table, condition, res);
 };
-
+    
 exports.Find_Admin_By_Admin_Name = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
@@ -1524,6 +1506,30 @@ exports.Del_Hospital = function (req, res) {
     });
 };
 
+// Update user
+exports.Update_User = function(req, res) {
+    var table = 'User';
+    var condition = {
+        User_ID: req.body.User_ID
+    };
+    var dest = {
+        Password: req.body.Password
+    };
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0
+        });
+    });
+};
+
 // Delete a user
 // param: token, encrpttime, User_ID (separated by comma)
 exports.Del_User = function(req, res) {
@@ -1536,14 +1542,12 @@ exports.Del_User = function(req, res) {
         } else {
             if (result.affectedRows == 0) {
                 ret.msg = 1;
-                ret.info
-                res.json({
-                    msg: 1,
-                    info: 'No user are deleted'
-                });
+                ret.info = 'No user are deleted';
             } else {
-                res.json({
+                ret.msg = 0;
+                ret.info = "OK";
             }
         }
+        res.json(ret);
     });
 };
