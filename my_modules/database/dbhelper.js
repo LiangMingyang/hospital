@@ -1173,18 +1173,15 @@ exports.Get_Area_Info_By_Province_ID = function (req, res) {
 
 exports.Find_Hospital_By_Condition = function (req, res) {
     var table = [
-        'Province',
-        'Area',
         'Hospital'
     ];
     var condition = {
-        relation: {
-            'Hospital.Area_ID': 'Area.Area_ID',
-            'Area.Province_ID': 'Province.Province_ID'
-        }
     };
     if (req.body.Province_ID) {
-        condition.Province_ID = req.body.Province_ID;
+        //condition.Province_ID = req.body.Province_ID;
+        condition.relation = {
+            'Area_ID div 100':req.body.Province_ID  //因为地区整除100即省份号
+        }
     }
     if (req.body.Area_ID) {
         condition.Area_ID = req.body.Area_ID;
