@@ -25,7 +25,7 @@ function uploadFromBuffer(body, key, uptoken, cb) {
 }
 
 exports.getToken = function(req, res) {
-    res.end({status: 0, token: getUploadToken(config.qiniu.bucket)});
+    res.json({uptoken: getUploadToken(config.qiniu.bucket)});
 };
 
 exports.uploadData = function(req, res) {
