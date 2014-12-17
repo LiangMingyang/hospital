@@ -1,6 +1,6 @@
 $(function() {
     var uploader = Qiniu.uploader({
-        runtimes: 'html5,flash,html4',    //上传模式,依次退化
+        runtimes: 'flash,html4',    //上传模式,依次退化
         browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
         //uptoken_url: 'http://hospital.wannakissyou.com/data/getToken',
         uptoken_url: 'http://127.0.0.1:12321/tok',
@@ -9,7 +9,7 @@ $(function() {
             //bucket 域名，下载资源时用到，**必需**
         container: 'container',           //上传区域DOM ID，默认是browser_button的父元素，
         max_file_size: '100mb',           //最大文件体积限制
-        flash_swf_url: './Moxie.swf',  //引入flash,相对路径
+        flash_swf_url: './js/Moxie.swf',  //引入flash,相对路径
         max_retries: 3,                   //上传失败最大重试次数
         dragdrop: true,                   //开启可拖曳上传
         drop_element: 'container',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
@@ -48,7 +48,7 @@ $(function() {
             'Key': function(up, file) {
                 // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
                 // 该配置必须要在 unique_names: false , save_key: false 时才生效
-                var key = "fromLocal";
+                var key = "fromLoca4321l";
                 // do something with key here
                 return key
             }
