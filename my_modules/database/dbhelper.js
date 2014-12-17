@@ -1088,11 +1088,29 @@ exports.del_Admin = function (req, res) {
 };
 
 exports.Find_User_By_Identity_ID = function (req, res) {
-    var table = 'User';
+/*    var table = 'User';
     var condition = {
         Identity_ID: req.body.Identity_ID
     };
-    find(table, condition, res);
+    find(table, condition, res);*/
+    var id = req.body.Identity_ID;
+    connect.query('select * from User where Identity_ID = '+id, function(err, result) {
+        var ret = {};
+        if (!!err) {
+            ret.msg = 1;
+            ret.info = "Cannot query database";
+        } else {
+            if (result.affectedRows==0) {
+                ret.msg = 1;
+                ret.info = "No result found";
+            } else {
+                ret.msg = 0;
+                ret.info = "OK";
+                result.Province_ID = result.Area_ID / 100;
+                ret.content = result;
+            }
+        }
+    });
 };
 
 exports.Find_Admin_By_Admin_Name = function (req, res) {
@@ -1503,5 +1521,29 @@ exports.Del_Hospital = function (req, res) {
             msg: 0,
             info: '删除成功'
         });
+    });
+};
+
+// Delete a user
+// param: token, encrpttime, User_ID (separated by comma)
+exports.Del_User = function(req, res) {
+    var ids = req.body.User_ID;
+    connect.query('delete from User where User_ID in (' + ids + ')', funcrion(err, result) {
+        var ret = {}
+        if (!!err) {
+            ret.msg = 1;
+            ret.info = 'Cannot query database. ' + err.message;
+        } else {
+            if (result.affectedRows == 0) {
+                ret.msg = 1;
+                ret.info
+                res.json({
+                    msg: 1,
+                    info: 'No user are deleted'
+                });
+            } else {
+                res.json({
+            }
+        }
     });
 };
