@@ -2,15 +2,9 @@ $(function() {
     var uploader = Qiniu.uploader({
         runtimes: 'html5,flash,html4',    //上传模式,依次退化
         browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
-        //uptoken_url: 'http://hospital.szm.me/token',
+        //uptoken_url: 'http://hospital.wannakissyou.com/data/getToken',
         uptoken_url: 'http://127.0.0.1:12321/tok',
             //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
-        //uptoken : "pnpkm810BZXBB91qCC1ngB7W9VsuMA2PlDQ-3TLk:hb6uP-madyEm3HFNAJo3AiXm5nI=:eyJzY29wZSI6Imhvc3BpdGFsIiwiZGVhZGxpbmUiOjE0MTg4MTI3NTF9",
-            //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
-        // unique_names: true,
-            // 默认 false，key为文件名。若开启该选项，SDK会为每个文件自动生成key（文件名）
-        // save_key: true,
-            // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK在前端将不对key进行任何处理
         domain: 'http://hospital.qiniudn.com/',
             //bucket 域名，下载资源时用到，**必需**
         container: 'container',           //上传区域DOM ID，默认是browser_button的父元素，
