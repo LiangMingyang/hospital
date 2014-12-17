@@ -1,3 +1,4 @@
+var url   = require('url');
 var qiniu = require('qiniu');
 var config = require('../config.js');
 
@@ -25,7 +26,9 @@ function uploadFromBuffer(body, key, uptoken, cb) {
 }
 
 exports.getToken = function(req, res) {
-    res.json({uptoken: getUploadToken(config.qiniu.bucket)});
+    var parts = url.parse(req.url, true);
+    var func = parts.query.callbackparam;
+    res.end(func + "({uptoken: '" + getUploadToken('hospital') + "'});");
 };
 
 exports.uploadData = function(req, res) {
