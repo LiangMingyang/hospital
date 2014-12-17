@@ -1436,7 +1436,8 @@ exports.Find_User_By_Condition = function (req, res) {
     var columns = [
         'User_ID',
         'UserName',
-        'Identity_ID'
+        'Identity_ID',
+        'isChecked'
     ];
     if (req.body.start && req.body.size) {
         var start = req.body.start;
