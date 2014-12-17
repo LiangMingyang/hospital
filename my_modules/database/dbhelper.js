@@ -1441,3 +1441,21 @@ exports.Find_User_By_Condition = function (req, res) {
         find(table, condition, res, columns);
     }
 };
+
+exports.Add_Depart = function (req,res) {
+    var table = 'Depart';
+    var condition = req.body;
+    connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '添加成功'
+        });
+    });
+}

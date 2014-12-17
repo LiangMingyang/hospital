@@ -122,4 +122,6 @@ router.post('/Get_Old_Pwd_Admin', dbhelper.Get_Old_Pwd_Admin);
 
 router.post('/Find_User_By_Condition', dbhelper.Find_User_By_Condition);
 
+router.post('/Add_Depart', dbhelper.Add_Depart)
+
 module.exports = router;
