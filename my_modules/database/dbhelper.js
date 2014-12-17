@@ -3,34 +3,34 @@ var strftime = require("strftime");
 var connect = global.connect;
 
 exports.check = function (req, res, next) {
-    var secret = global.secret_key;
-    var sendtime = new Date(req.body.encrypttime);
-    var token = req.body.token;
-    if (!sendtime || !token) {
-        res.json({
-            msg: 1,
-            info: "格式不合法"
-        });
-        return;
-    }
-    var now = new Date();
-    var hash = crypto.createHash('sha1');
-    var delta = Math.abs(now - sendtime);
-    if (delta > 60 * 1000) {
-        res.json({
-            msg: 2,
-            info: "超时"
-        });
-        return;
-    }
-    var std = hash.update(secret + '$' + strftime("%F %T", sendtime)).digest('hex');
-    if (std != token) {
-        res.json({
-            msg: 3,
-            info: "token不正确"
-        });
-        return;
-    }
+    //var secret = global.secret_key;
+    //var sendtime = new Date(req.body.encrypttime);
+    //var token = req.body.token;
+    //if (!sendtime || !token) {
+    //    res.json({
+    //        msg: 1,
+    //        info: "格式不合法"
+    //    });
+    //    return;
+    //}
+    //var now = new Date();
+    //var hash = crypto.createHash('sha1');
+    //var delta = Math.abs(now - sendtime);
+    //if (delta > 60 * 1000) {
+    //    res.json({
+    //        msg: 2,
+    //        info: "超时"
+    //    });
+    //    return;
+    //}
+    //var std = hash.update(secret + '$' + strftime("%F %T", sendtime)).digest('hex');
+    //if (std != token) {
+    //    res.json({
+    //        msg: 3,
+    //        info: "token不正确"
+    //    });
+    //    return;
+    //}
     delete req.body.token;
     delete req.body.encrypttime;
     next();
@@ -56,22 +56,11 @@ var select = function (table, condition, callback, columns) { // SELECT语句的
     if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
-    var list;
-    if(typeof (table) == 'string') {
-        list = [];
-        list.push(table);
-        table = list;
-    }
-    if(typeof (columns) == 'string') {
-        list = [];
-        list.push(columns);
-        columns = list;
-    }
     if (columns) {
-        connect.query('SELECT ' + columns.join(',') + ' FROM '+table.join(',') + ' ' + condition, callback);
+        connect.query('SELECT ?? FROM ?? ' + condition,[columns,table], callback);
     }
     else {
-        connect.query('SELECT * FROM '+table.join(',') + ' ' + condition, callback);
+        connect.query('SELECT * FROM ?? ' + condition,[table], callback);
     }
 };
 
@@ -96,18 +85,7 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
     if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
-    var list;
-    if(typeof (table) == 'string') {
-        list = [];
-        list.push(table);
-        table = list;
-    }
-    if(typeof (columns) == 'string') {
-        list = [];
-        list.push(columns);
-        columns = list;
-    }
-    connect.query('SELECT COUNT(1) AS count FROM '+ table.join(',') + ' ' + condition, function (err, rows) {
+    connect.query('SELECT COUNT(1) AS count FROM ??' + condition, [table] , function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -117,8 +95,8 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
         }
         var count = rows[0].count;
         if (columns) {
-            connect.query('SELECT '+ columns.join(',') +' FROM '+ table.join(',') + ' ' + condition + ' LIMIT ??,??',
-                [start, size], function (err, rows) {
+            connect.query('SELECT ?? FROM ?? ' + condition + ' LIMIT ?,?',[columns,table,parseInt(start),parseInt(size)],
+                function (err, rows) {
                     if (err) {
                         res.json({
                             msg: 1,
@@ -134,8 +112,8 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
                 });
         }
         else {
-            connect.query('SELECT * FROM '+ table.join(',') + ' ' + condition + ' LIMIT ??,??',
-                [start, size], function (err, rows) {
+            connect.query('SELECT * FROM ?? ' + condition + ' LIMIT ?,?',[table,parseInt(start),parseInt(size)],
+                function (err, rows) {
                     if (err) {
                         res.json({
                             msg: 1,
@@ -378,8 +356,8 @@ exports.Check_History_Reservation_Simple = function (req, res) {
         'Doctor_Name'
     ];
     condition = jsonToAnd(condition);
-    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ?? LIMIT ??,??',
-        [columns, table, 'History_Reservation_Time', startDate, endDate, start, size], function (err, rows) {
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ?? LIMIT ?,?',
+        [columns, table, 'History_Reservation_Time', startDate, endDate, parseInt(start), parseInt(size)], function (err, rows) {
             if (err) {
                 res.json({
                     msg: 1,
@@ -506,7 +484,7 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
                 }
                 table = 'Reservation';
                 condition = req.body;
-                connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, result) { // 删除挂号条目
+                connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) { // 删除挂号条目
                     if (err) {
                         res.json({
                             msg: 1,
@@ -1142,7 +1120,7 @@ exports.Find_Admin_By_Admin_Name = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
     condition = jsonToAnd(condition);
-    connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, rows) {
+    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1318,7 +1296,7 @@ exports.Check_Admin_Repeat = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
     condition = jsonToAnd(condition);
-    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, table, function (err, rows) {
+    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, [table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1428,7 +1406,7 @@ exports.Del_Doctor = function (req, res) {
         }
     };
     condition = jsonToAnd(condition);
-    connect.query('DELETE FROM ?? WHERE ' + condition, table, function (err, result) {
+    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
