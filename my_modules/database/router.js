@@ -42,7 +42,7 @@ router.post('/Check_History_Reservation_Detail', dbhelper.Check_History_Reservat
 
 router.post('/Reservation', dbhelper.Reservation);
 
-router.post('/del_Reservation', dbhelper.Cancel_Reservation);
+router.post('/Cancel_Reservation', dbhelper.Cancel_Reservation);
 
 router.post('/Check_PayState', dbhelper.Check_PayState);
 
