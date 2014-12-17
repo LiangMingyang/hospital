@@ -3,34 +3,34 @@ var strftime = require("strftime");
 var connect = global.connect;
 
 exports.check = function (req, res, next) {
-    //var secret = global.secret_key;
-    //var sendtime = new Date(req.body.encrypttime);
-    //var token = req.body.token;
-    //if (!sendtime || !token) {
-    //    res.json({
-    //        msg: 1,
-    //        info: "格式不合法"
-    //    });
-    //    return;
-    //}
-    //var now = new Date();
-    //var hash = crypto.createHash('sha1');
-    //var delta = Math.abs(now - sendtime);
-    //if (delta > 60 * 1000) {
-    //    res.json({
-    //        msg: 2,
-    //        info: "超时"
-    //    });
-    //    return;
-    //}
-    //var std = hash.update(secret + '$' + strftime("%F %T", sendtime)).digest('hex');
-    //if (std != token) {
-    //    res.json({
-    //        msg: 3,
-    //        info: "token不正确"
-    //    });
-    //    return;
-    //}
+    var secret = global.secret_key;
+    var sendtime = new Date(req.body.encrypttime);
+    var token = req.body.token;
+    if (!sendtime || !token) {
+        res.json({
+            msg: 1,
+            info: "格式不合法"
+        });
+        return;
+    }
+    var now = new Date();
+    var hash = crypto.createHash('sha1');
+    var delta = Math.abs(now - sendtime);
+    if (delta > 60 * 1000) {
+        res.json({
+            msg: 2,
+            info: "超时"
+        });
+        return;
+    }
+    var std = hash.update(secret + '$' + strftime("%F %T", sendtime)).digest('hex');
+    if (std != token) {
+        res.json({
+            msg: 3,
+            info: "token不正确"
+        });
+        return;
+    }
     delete req.body.token;
     delete req.body.encrypttime;
     next();
@@ -548,16 +548,21 @@ exports.In_Cash = function (req, res) {
     var condition = {
         User_ID: req.body.User_ID
     };
-    var dest = {
-        Amount: Amount + req.body.Amout
-    };
-    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET Amount = Amount+' + req.body.Amount+' WHERE ' + condition, [table], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
                 info: err.message
             });
             return;
+        }
+        if(result.affectedRows == 0) {
+            res.json({
+                msg:1,
+                info:"充值失败"
+            })
+            return ;
         }
         res.json({
             msg: 0,
