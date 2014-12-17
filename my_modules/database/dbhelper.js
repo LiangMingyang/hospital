@@ -395,7 +395,7 @@ exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
     var endTime = dateString + ' 23:59:59';
     //var dateString = strftime("%F", date);
     //console.log(dataString); //2014-12-03
-    // TODO 这个strftime函数JS里有？如果有的话就用它了
+    // TODO 这个strftime函数JS里有？如果有的话就用它了 --对，是有的，完全可以这样使用 from lmy
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
     connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ??',
@@ -1181,38 +1181,54 @@ exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
 };
 
 exports.Get_Hospital_Number_By_Condition = function (req, res) {
-    var table = [
-        'Province',
-        'Area',
-        'Hospital'
-    ];
-    var condition = {
-        'Hospital.Area_ID': 'Area.Area_ID',
-        'Area.Province_ID': 'Province.Province_ID'
-    };
-    if (req.body.Province_ID) {
-        condition.Province_ID = req.body.Province_ID;
-    }
-    if (req.body.Area_ID) {
-        condition.Area_ID = req.body.Area_ID;
-    }
-    if (req.body.Hospital_Level) {
-        condition.Hospital_Level = req.body.Hospital_Level;
-    }
-    condition = jsonToAnd(condition);
-    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, table, function (err, rows) {
-        if (err) {
+    //var table = [
+    //    'Province',
+    //    'Area',
+    //    'Hospital'
+    //];
+    //var condition = {
+    //    'Hospital.Area_ID': 'Area.Area_ID',
+    //    'Area.Province_ID': 'Province.Province_ID'
+    //};
+    //if (req.body.Province_ID) {
+    //    condition.Province_ID = req.body.Province_ID;
+    //}
+    //if (req.body.Area_ID) {
+    //    condition.Area_ID = req.body.Area_ID;
+    //}
+    //if (req.body.Hospital_Level) {
+    //    condition.Hospital_Level = req.body.Hospital_Level;
+    //}
+    //condition = jsonToAnd(condition);
+    //connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, table, function (err, rows) {
+    //    if (err) {
+    //        res.json({
+    //            msg: 1,
+    //            info: err.message
+    //        });
+    //        return;
+    //    }
+    //    res.json({
+    //        msg: 0,
+    //        num: rows[0].count
+    //    });
+    //});
+    //TODO 现在写的姿势很不优雅，待优化
+    var table = 'Hospital';
+    var condition = req.body;
+    select(table,condition, function (err, rows) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
             res.json({
-                msg: 1,
-                info: err.message
+                msg: 0,
+                num: rows.length
             });
-            return;
-        }
-        res.json({
-            msg: 0,
-            num: rows[0].count
-        });
-    });
+    })
 };
 
 exports.Find_Doctor_By_Condition = function (req, res) {
