@@ -96,7 +96,18 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
     if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
-    connect.query('SELECT COUNT(1) AS count FROM ?? ' + condition, function (err, rows) {
+    var list;
+    if(typeof (table) == 'string') {
+        list = [];
+        list.push(table);
+        table = list;
+    }
+    if(typeof (columns) == 'string') {
+        list = [];
+        list.push(columns);
+        columns = list;
+    }
+    connect.query('SELECT COUNT(1) AS count FROM '+ table.join(',') + ' ' + condition, function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -106,8 +117,8 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
         }
         var count = rows[0].count;
         if (columns) {
-            connect.query('SELECT ?? FROM ?? ' + condition + ' LIMIT ??,??',
-                [columns, table, start, size], function (err, rows) {
+            connect.query('SELECT '+ columns.join(',') +' FROM '+ table.join(',') + ' ' + condition + ' LIMIT ??,??',
+                [start, size], function (err, rows) {
                     if (err) {
                         res.json({
                             msg: 1,
@@ -123,8 +134,8 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
                 });
         }
         else {
-            connect.query('SELECT * FROM ?? ' + condition + ' LIMIT ??,??',
-                [table, start, size], function (err, rows) {
+            connect.query('SELECT * FROM '+ table.join(',') + ' ' + condition + ' LIMIT ??,??',
+                [start, size], function (err, rows) {
                     if (err) {
                         res.json({
                             msg: 1,
