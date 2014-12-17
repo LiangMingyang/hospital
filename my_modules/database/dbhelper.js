@@ -1033,7 +1033,7 @@ var tupleToString = function (data, str) {
 
 exports.Give_Privilege = function (req, res) {
     var table = 'Manage';
-    var dest = tupleToString(res.body.Hospital_ID, res.body.Admin_ID);
+    var dest = tupleToString(req.body.Hospital_ID.split(','), req.body.Admin_ID);
     connect.query('INSERT INTO ?? (??, ??) VALUES ' + dest, [table, 'Hospital_ID', 'Admin_ID'], function (err, result) {
         if (err) {
             res.json({
@@ -1044,7 +1044,7 @@ exports.Give_Privilege = function (req, res) {
         }
         res.json({
             msg: 0,
-            info: '权限赋予成功'
+            info: '成功'
         });
     });
 };
