@@ -1,0 +1,52 @@
+body {
+
+}
+#title{
+	margin-left:40%
+}
+#title p{
+	font-size:30px;
+	font-family: "楷体";
+	color:#B14D24
+}
+#content{
+	margin-left:20%;
+	margin-top:-50px;
+}
+.pic_option{
+	color:blue;
+	cursor:pointer;
+}
+.pic_option:hover{
+	color:red;
+}
+#submitPic{
+	float:left;
+	margin-left:20px;
+}
+#cancelPic{
+	float:right;
+	margin-right:20px;
+}
+#Doctor_Major{
+	width:450px;
+}
+#doctor_picture{
+	cursor:pointer;
+	width:250px;
+	height: 300px;
+}
+#Hospital_Name{
+	color:blue;
+	cursor:pointer;
+}
+#Hospital_Name:hover{
+	color:red;
+	font-weight: 700;
+}
+#confirm_info_btn{
+	 background-color: #B14D24;
+	 font-size: 20px;
+	 color:white;
+	 margin-left:30%;
+}

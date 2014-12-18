@@ -1,0 +1,126 @@
+body {
+
+}
+#title{
+	margin-left:40%
+}
+#title p{
+	font-size:30px;
+	font-family: "楷体";
+	color:#B14D24
+}
+#Province_ID{
+	width:100px;
+}
+#Area_ID{
+	width:100px;
+}
+#condition_tb{
+	margin-left:300px;
+	margin-top:-30px;
+}
+#user_tb{
+	margin-left:20%;
+	margin-top:10px;
+
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+#user_tb th{
+	background-color: #658093;
+	border: 1px solid white;
+}
+#user_tb td{
+	text-align: center;
+	border: 1px solid white;
+}
+
+#th_id{
+	width:150px;
+}
+#th_un{
+	width:100px;
+}
+#th_status{
+	width:100px;
+}
+#th_lk{
+	width:100px;
+}
+#th_ck{
+	width:100px;
+}
+#del_btn{
+	background-color: #B14D24;
+	color:white;
+	font-weight: 700;
+	font-size:15px;
+}
+#show_user_btn{
+	cursor:pointer;
+	color:blue;
+	margin-left:80px;
+}
+#show_user_btn:hover{
+	color: red;
+	font-weight: 700;
+}
+#tb_footer{
+	margin-left:20%;
+}
+#go_btn3{
+	margin-left:50%;
+	cursor: pointer;
+}
+#go_btn3:hover{
+	font-weight: 700;
+	color:red;
+}
+#page_no3{
+	width:30px;
+	text-align: center;
+}
+.pass{
+	color:green;
+}
+.unpass{
+	color:red;
+}
+.detail_info{
+	color:blue;
+	cursor: pointer;
+}
+.detail_info:hover{
+	color:blue;
+	font-weight: 700;
+}
+.check_pass{
+	cursor:pointer;
+}
+.check_pass:hover{
+	font-weight: 700;
+}
+.check_unpass{
+	cursor:pointer;
+}
+.check_unpass:hover{
+	font-weight: 700;
+}
+#no_signal span{
+	color:red;
+}
+.tag{
+	display:block;
+	width:100px; 
+	float:left;
+	margin-top:10px;
+	font-family: '黑体'
+}
+.info{
+    margin-top:10px;
+	float:left;
+	font-family: '楷体'
+}
+#Location{
+	margin-left:100px;
+}

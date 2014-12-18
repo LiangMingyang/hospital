@@ -1,0 +1,66 @@
+body {
+
+}
+#title{
+	margin-left:40%
+}
+#title p{
+	font-size:30px;
+	font-family: "楷体";
+	color:#B14D24
+}
+#ID_tag{
+	margin-left:30%;
+	font-weight:700;
+	font-family: '楷体'
+}
+#ID{
+	width:200px;
+	font-size:15px;
+}
+#search{
+	background-color: #B14D24;
+	font-weight: 700;
+    color: white;
+}
+#user_info{
+	margin-top:30px;
+	margin-left: 25%;
+}
+.tag{
+	display: block;
+	float:left;
+	width:100px;
+	margin-left:30px;
+}
+.info{
+	float:left;
+}
+#Birthday{
+	float:left;
+}
+#user_info span{
+	float:left;
+}
+#user_info select{
+	float:left;
+	
+}
+#Province_ID{
+	width:80px;
+	margin-right:10px;
+}
+#Area_ID{
+	width:80px;
+	margin-right:10px;
+}
+#Location{
+	width:270px;
+}
+#save_change_btn{
+	background-color: #B14D24;
+	color:white;
+	font-weight: 700;
+	font-size:20px;
+	margin-left: 30%;
+}

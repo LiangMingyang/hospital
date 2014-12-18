@@ -1,0 +1,49 @@
+body {
+  
+}
+#title{
+	margin-left:40%
+}
+#title p{
+	font-size:30px;
+	font-family: "楷体";
+	color:#B14D24
+}
+#cash_in_tb{
+    margin-left:10%;
+    margin-right:10%;
+}
+#content{
+	background-color: white;
+	margin-left:20%;
+	margin-right:20%;
+}
+.tag{
+	background-color:#D7EEFF;
+	font-weight:700;
+	min-width: 300px;
+	font-size:20px;
+	background-clip: border-box;
+}
+.tag_1{
+	min-width: 300px;
+	font-size:20px;
+	border:1px solid white;
+	background-clip: border-box;
+}
+.tag_1 input{
+	border:none;
+	font-size: 20px;
+}
+#confirm_cash{
+	 background-color: #B14D24;
+	 font-size: 20px;
+	 color:white;
+	 margin-left:30%;
+}
+#amount{
+	background-color: #B14D24;
+	color:white;
+	font-weight:900;
+	font-size: 20px;
+}

@@ -1,0 +1,42 @@
+body {
+    background-color: #658093;
+}
+#title{
+	margin-left:45%;
+	font-size: 30px;
+	color:#B14D24;
+	font-weight: 700;
+	font-family: "楷体"
+}
+#register_tb{
+	font-size:20px;
+	margin-left:35%;
+}
+.tag{
+	width:200px;
+	text-align: center;
+}
+.tag_error{
+	color:red;
+	font-size:10px;
+	font-weight: 700;
+}
+#register{
+	margin-left:45%;
+}
+.sexicon{
+	width: 30px;
+	height: 30px;
+}
+#Province_ID{
+	cursor:pointer;
+	color: blue;
+}
+#Area_ID{
+	cursor:pointer;
+	color: blue;
+}
+#register_area{
+	position: relative;
+}
+

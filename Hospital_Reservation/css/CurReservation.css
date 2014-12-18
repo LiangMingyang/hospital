@@ -1,0 +1,101 @@
+body {
+
+}
+#reservation_tb{
+	margin-left:10%;
+	margin-top: 3%;
+	border-collapse: collapse; border-spacing: 0;
+}
+#reservation_tb tr
+{
+	background-color: #658093;
+	color:#FFFFFF;
+	font-family: "楷体";
+	font-size:20px;
+}
+#reservation_tb tr td{
+	border: 1px solid white;
+	padding:0;
+	text-align: center;
+}
+.detail{
+	background-color:#b14d24;
+	color:white;
+	font-size:15px;
+	font-weight:700;
+	margin-top:0;
+}
+
+.reservation{
+	
+	background-color:#b14d24;
+	color:white;
+	font-size:15px;
+	font-weight:700;
+}
+.appointment{
+	margin-left:10px;
+	background-color:#b14d24;
+	color:white;
+	font-size:15px;
+	font-weight:700;
+}
+.pay{
+	background-color:#FF9900;
+	color:white;
+	font-size:15px;
+	font-weight:700;
+	margin-top:0;
+	margin-left:10px;
+	margin-right:10px;
+}
+.cancel_reservation{
+	background-color:#b14d24;
+	color:white;
+	font-size:15px;
+	font-weight:700;
+}
+#num{
+	width: 50px;
+}
+#reservation_time{
+	width: 150px;
+}
+#reservation_doctor{
+	width: 100px;
+}
+#reservation_detail{
+	width: 100px;
+}
+#op_time{
+	width: 150px;
+}
+#op{
+	width: 300px;
+}
+#pay{
+	width: 100px;
+}
+#cancel{
+	width:100px;
+}
+.tag{
+	font-family: "楷体";
+	font-size:20px;
+	
+}
+.tag_1{
+
+}
+.pay_btn{
+	color:white;
+	background-color:#DB7701;
+	font-size:20px;
+	font-weight:700;
+}
+
+#Reseration_Symptom{
+	min-width: 300px;
+	min-height: 100px;
+	
+}
