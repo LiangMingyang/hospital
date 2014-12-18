@@ -202,8 +202,8 @@ exports.Find_Doctor = function (req, res) {
 exports.LogIn_User = function (req, res) {
     var table = 'User';
     var condition = req.body;
-    var password = condition.password;
-    delete condition.password;
+    var password = condition.PASSWORD;
+    delete condition.PASSWORD;
     select(table, condition, function (err, rows) {
         if (err) {
             res.json({
