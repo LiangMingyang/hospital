@@ -136,4 +136,6 @@ router.post('/Add_Doctor_Time', dbhelper.Add_Doctor_Time);
 
 router.post('/Find_Doctor_Time', dbhelper.Find_Doctor_Time);
 
+router.post('/Del_Doctor_Time', dbhelper.Del_Doctor_Time);
+
 module.exports = router;

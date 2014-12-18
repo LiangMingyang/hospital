@@ -1598,7 +1598,7 @@ exports.Del_User = function (req, res) {
 exports.Add_Doctor_Time = function (req, res) {
     var table = 'Doctor_Time';
     var dest = tupleToString(req.body.Duty_Time.split(','), req.body.Doctor_ID);
-    connect.query('INSERT INTO ?? (??, ??) VALUES ' + dest, [table, 'Hospital_ID', 'Admin_ID'], function (err, result) {
+    connect.query('INSERT INTO ?? (??, ??) VALUES ' + dest, [table, 'Duty_Time','Doctor_ID' ], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1616,3 +1616,26 @@ exports.Add_Doctor_Time = function (req, res) {
 exports.Find_Doctor_Time = function (req, res) {
     find('Doctor_Time', req.body, res);
 };
+
+exports.Del_Doctor_Time = function (req, res) {
+    var table = 'Doctor_Time';
+    var condition_doctor = {
+        Doctor_ID: req.body.Doctor_ID
+    };
+    condition_doctor = jsonToAnd(condition_doctor);
+    var condition_duty = ' (' + res.body.Duty_Time + ') ';
+    connect.query('DELETE FROM ?? WHERE ' + condition_doctor + ' AND ?? IN ' + condition_duty,
+        [table, 'Duty_Time'], function (err, result) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                info: '删除成功'
+            });
+        });
+}
