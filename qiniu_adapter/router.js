@@ -4,5 +4,7 @@ var qn = require('./index');
 
 router.post('/getToken', qn.getToken);
 router.post('/upload', qn.uploadData);
+router.get('/getToken', qn.getToken);
+router.get('/upload', qn.uploadData);
 
 module.exports = router;

@@ -2,8 +2,8 @@ $(function() {
     var uploader = Qiniu.uploader({
         runtimes: 'flash,html4',    //上传模式,依次退化
         browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
-        //uptoken_url: 'http://hospital.wannakissyou.com/data/getToken',
-        uptoken_url: 'http://127.0.0.1:12321/tok',
+        uptoken_url: 'http://hospital.wannakissyou.com/data/getToken',
+        //uptoken_url: 'http://127.0.0.1:12321/tok',
             //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
         domain: 'http://hospital.qiniudn.com/',
             //bucket 域名，下载资源时用到，**必需**
