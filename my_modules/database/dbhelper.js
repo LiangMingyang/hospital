@@ -1612,3 +1612,7 @@ exports.Add_Doctor_Time = function (req, res) {
         });
     });
 };
+
+exports.Find_Doctor_Time = function (req, res) {
+    find('Doctor_Time', req.body, res);
+};
