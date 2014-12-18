@@ -14,7 +14,7 @@ p {
 </head>
 <body>
 <p>系统检测到您的IP：{{ip}}<br>来自{{city}}，{{isp}}网络。<br>已为您选择最近线路，<span id="counter">10</span>秒后自动跳转。</p>
-<p><a href="http://hospital.wannakissyou.com{{url}}">直接跳转</a></p>
+<p><a href="http://hospital.wannakissyou.com{{url}}?region={{region}}&city={{city}}">直接跳转</a></p>
 <script>
 var c = document.getElementById("counter");
 var n = 10;
@@ -22,7 +22,7 @@ setInterval(function() {
     --n;
     c.innerText = n;
     if (n<=0) {
-        window.location = "http://hospital.wannakissyou.com{{url}}";
+        window.location = "http://hospital.wannakissyou.com{{url}}?region={{region}}&city={{city}}";
     }
 }, 1000);
 </script>
