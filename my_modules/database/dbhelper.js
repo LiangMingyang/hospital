@@ -1594,3 +1594,21 @@ exports.Del_User = function (req, res) {
         res.json(ret);
     });
 };
+
+exports.Add_Doctor_Time = function (req, res) {
+    var table = 'Doctor_Time';
+    var dest = tupleToString(req.body.Duty_Time.split(','), req.body.Doctor_ID);
+    connect.query('INSERT INTO ?? (??, ??) VALUES ' + dest, [table, 'Hospital_ID', 'Admin_ID'], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            info: '成功'
+        });
+    });
+};

@@ -132,4 +132,6 @@ router.post('/Update_User', dbhelper.Update_User);
 
 router.post('/Del_User', dbhelper.Del_User);
 
+router.post('/Add_Doctor_Time', dbhelper.Add_Doctor_Time);
+
 module.exports = router;
