@@ -165,7 +165,8 @@ CREATE TABLE `History_Reservation` (
   `History_Reservation_ID` int(11) NOT NULL AUTO_INCREMENT,
   `User_ID` int(11) NOT NULL,
   `Doctor_ID` int(11) NOT NULL,
-  `History_Reservation_Time` datetime NOT NULL,
+  `History_Reservation_Time` date NOT NULL,
+  `Duty_Time` int(2) NOT NULL,
   `History_Reservation_Symptom` varchar(50) DEFAULT NULL,
   `History_Reservation_Paied` int(1) NOT NULL,
   `History_Pay_Time` datetime DEFAULT NULL,
@@ -281,8 +282,9 @@ CREATE TABLE `Reservation` (
   `User_ID` int(11) NOT NULL,
   `Doctor_ID` int(11) NOT NULL,
   `Reservation_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Reservation_Time` datetime NOT NULL,
-  `Reseration_Symptom` varchar(50) DEFAULT NULL,
+  `Reservation_Time` date NOT NULL,
+  `Duty_Time` int(2) NOT NULL,
+  `Reservation_Symptom` varchar(50) DEFAULT NULL,
   `Reservation_Payed` int(1) NOT NULL,
   `Reservation_PayTime` datetime DEFAULT NULL,
   `Reservation_PayAmount` decimal(4,2) DEFAULT NULL,
@@ -301,7 +303,7 @@ CREATE TABLE `Reservation` (
 
 LOCK TABLES `Reservation` WRITE;
 /*!40000 ALTER TABLE `Reservation` DISABLE KEYS */;
-INSERT INTO `Reservation` VALUES (1,1,1,'2014-11-30 00:48:58','ss',1,'2014-11-30 00:49:08',12.00,'2014-11-30 00:49:13');
+INSERT INTO `Reservation` VALUES (1,1,1,'2014-11-30','71','ss',1,'2014-11-30 00:49:08',12.00,'2014-11-30 00:49:13');
 /*!40000 ALTER TABLE `Reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 

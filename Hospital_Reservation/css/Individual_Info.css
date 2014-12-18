@@ -1,0 +1,77 @@
+body {
+ 
+}
+#title{
+	margin-left:40%
+}
+#title p{
+	font-size:30px;
+	font-family: "楷体";
+	color:#B14D24
+}
+#individual_info_tb{
+    margin-left:10%;
+    margin-right:10%;
+}
+#content{
+	background-color: white;
+	margin-left:20%;
+	margin-right:15%;
+}
+.tag{
+	background-color:#D7EEFF;
+	font-weight:700;
+	min-width: 300px;
+	font-size:20px;
+	background-clip: border-box;
+}
+.tag_1{
+	min-width: 300px;
+	font-size:20px;
+	border:1px solid white;
+	background-clip: border-box;
+}
+.tag_1 input{
+	border:none;
+	font-size: 20px;
+}
+#change_pwd_a{
+	font-weight:400;
+	color:blue;
+	cursor: pointer;
+	margin-left:20%;
+}
+#pwd_area span{
+	font-weight:700;
+	font-family: "楷体"
+}
+#pwd_area input{
+	background-color: #0099CC;
+	font-size:20px;
+	color:white;
+	font-weight:700;
+}
+#Province{
+	width: 70px;
+}
+#Area{
+	width:100px;
+}
+#confim_update{
+	margin-left:35%;
+	 background-color: #B14D24;
+	 font-size: 20px;
+	 color:white;
+}
+#confirm_pwd_btn{
+	background-color: #B14D24;
+	color:white;
+	font-size: 700;
+	margin-left:35%;
+}
+#cancel_pwd_btn{
+	background-color: #B14D24;
+	color:white;
+	font-size: 700;
+	margin-left:5%;
+}

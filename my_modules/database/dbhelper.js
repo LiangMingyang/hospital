@@ -400,7 +400,8 @@ exports.Check_History_Reservation_Simple = function (req, res) {
         'History_Reservation_ID',
         'History_Reservation_Time',
         'History_Operation_Time',
-        'Doctor_Name'
+        'Doctor_Name',
+        'Duty_Time'
     ];
     condition = jsonToAnd(condition);
     connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ?? LIMIT ?,?',
@@ -441,26 +442,43 @@ exports.Check_History_Reservation_Detail = function (req, res) {
 exports.Reservation = function (req, res) {
     var table = [
         'Reservation',
-        'Doctor'
+        'Doctor',
+        'Doctor_Time'
     ];
     var condition = {
         'Doctor.Doctor_ID': req.body.Doctor_ID,
+        'Reservation.Reservation_Time': req.body.Reservation_Time,
+        'Doctor_Time.Duty_Time': req.body.Duty_Time,
         relation: {
-            'Reservation.Doctor_ID': 'Doctor.Doctor_ID'
+            'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+            'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
         }
     };
     var columns = [
         'Doctor_Limit',
         'Doctor_Fee'
     ];
-    var date = new Date();
-    var dateString = strftime("%F", date);
-    var startTime = dateString + ' 00:00:00';
-    var endTime = dateString + ' 23:59:59';
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
-    connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ??',
-        [columns, table, 'Reservation_Time', startTime, endTime], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+    connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition, [columns, table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows[0].count >= rows[0].Doctor_Limit) { // 若不小于Doctor_Limit，返回挂号数已满
+            res.json({
+                msg: 2,
+                info: '预约已满'
+            });
+            return;
+        }
+        table = 'Reservation';
+        condition = req.body;
+        condition.Reservation_PayAmount = rows[0].Doctor_Fee; // 之前顺便查了Doctor_Fee，节省了一次查询
+        connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) { // 插入挂号信息
             if (err) {
                 res.json({
                     msg: 1,
@@ -468,30 +486,12 @@ exports.Reservation = function (req, res) {
                 });
                 return;
             }
-            if (rows[0].count >= rows[0].Doctor_Limit) { // 若不小于Doctor_Limit，返回挂号数已满
-                res.json({
-                    msg: 2,
-                    info: '预约已满'
-                });
-                return;
-            }
-            table = 'Reservation';
-            condition = req.body;
-            condition.Reservation_PayAmount = rows[0].Doctor_Fee; // 之前顺便查了Doctor_Fee，节省了一次查询
-            connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) { // 插入挂号信息
-                if (err) {
-                    res.json({
-                        msg: 1,
-                        info: err.message
-                    });
-                    return;
-                }
-                res.json({
-                    msg: 0,
-                    info: '挂号成功'
-                });
+            res.json({
+                msg: 0,
+                info: '挂号成功'
             });
         });
+    });
 };
 
 exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
@@ -689,7 +689,7 @@ exports.Check_Register = function (req, res) {
             });
             return;
         }
-        if (rows.length==0) {
+        if (rows.length == 0) {
             res.json({
                 msg: 1,
                 info: "Not found"
@@ -709,12 +709,12 @@ exports.Check_Register = function (req, res) {
         }
     };
     connect.query('update User set isChecked = ' + condition.isChecked +
-    ' where User_ID=' + condition.User_ID,  function(err, rows) {
+    ' where User_ID=' + condition.User_ID, function (err, rows) {
         if (!!err) {
             console.log(err.message);
-            return ;
+            return;
         } else {
-            if (rows.affectedRows==0) {
+            if (rows.affectedRows == 0) {
                 res.json({
                     msg: 1,
                     info: "No line affected!"
@@ -744,15 +744,7 @@ exports.Get_Reservation_Info = function (req, res) {
             'Depart.Hospital_ID': 'Hospital.Hospital_ID'
         }
     };
-    var columns = [
-        'UserName',
-        'Doctor_Name',
-        'Reservation_ID',
-        'Reservation_Time',
-        'Operation_Time',
-        'Doctor_Name'
-    ];
-    find_range(table, condition, start, size, res, columns);
+    find_range(table, condition, start, size, res);
 };
 
 exports.Search_By_Identity = function (req, res) {
@@ -768,15 +760,7 @@ exports.Search_By_Identity = function (req, res) {
             'Reservation.User_ID': 'User.User_ID'
         }
     };
-    var columns = [
-        'UserName',
-        'Doctor_Name',
-        'Reservation_ID',
-        'Reservation_Time',
-        'Operation_Time',
-        'Doctor_Name'
-    ];
-    find(table, condition, res, columns);
+    find(table, condition, res);
 };
 
 //exports.Set_CreditRank_user_ID = function (req, res) {
@@ -1161,7 +1145,7 @@ exports.Find_User_By_Identity_ID = function (req, res) {
     };
     find(table, condition, res);
 };
-    
+
 exports.Find_Admin_By_Admin_Name = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
@@ -1363,6 +1347,8 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         'Reservation'
     ];
     var condition = {
+        Reservation_Time: req.body.Reservation_Time,
+        Duty_Time: req.body.Duty_Time,
         relation: {
             'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
             'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
@@ -1376,43 +1362,24 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
     if (req.body.Hospital_ID) {
         condition.Hospital_ID = req.body.Hospital_ID;
     }
-    if (req.body.Doctor_Level) {
-        condition.Doctor_Level = req.body.Doctor_Level;
-    }
-    if (req.body.Duty_Time) {
-        condition.Duty_Time = req.body.Duty_Time;
-    }
     var columns = [
         'Doctor_ID',
         'Doctor_Name'
     ];
-    var date = new Date(req.body.Reservation_Time);
-    var dateString = strftime("%F", date);
-    var startTime = dateString;
-    var endTime = dateString;
-    if (req.body.Duty_Time % 2 == 1) { // Duty_Time是上午
-        startTime += ' 00:00:00';
-        endTime += ' 11:59:59';
-    }
-    else {
-        startTime += ' 12:00:00';
-        endTime += ' 23:59:59';
-    }
     condition = jsonToAnd(condition);
-    connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ??',
-        [columns, table, 'Reservation_Time', startTime, endTime], function (err, rows) {
-            if (err) {
-                res.json({
-                    msg: 1,
-                    info: err.message
-                });
-                return;
-            }
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+        if (err) {
             res.json({
-                msg: 0,
-                content: rows
+                msg: 1,
+                info: err.message
             });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
         });
+    });
 };
 
 function Config(table, condition, dest, callback) {
@@ -1579,14 +1546,14 @@ exports.Del_Hospital = function (req, res) {
 };
 
 // Update user
-exports.Update_User = function(req, res) {
+exports.Update_User = function (req, res) {
     var table = 'User';
     var condition = {
         User_ID: req.body.User_ID
     };
     /*var dest = {
-        Password: req.body.Password
-    };*/
+     Password: req.body.Password
+     };*/
     var dest = req.body;
     delete dest.User_ID;
     condition = jsonToAnd(condition);
@@ -1606,9 +1573,9 @@ exports.Update_User = function(req, res) {
 
 // Delete a user
 // param: token, encrpttime, User_ID (separated by comma)
-exports.Del_User = function(req, res) {
+exports.Del_User = function (req, res) {
     var ids = req.body.User_ID;
-    connect.query('delete from User where User_ID in (' + ids + ')', function(err, result) {
+    connect.query('delete from User where User_ID in (' + ids + ')', function (err, result) {
         var ret = {}
         if (!!err) {
             ret.msg = 1;

@@ -1,0 +1,12 @@
+<?php
+    if(!isset($_SESSION))session_start();
+    print_r($_SESSION);
+?>
+<script>
+	function testparentFunc(){
+		alert("parent");
+	}
+</script>
+<div class="conright">     
+        	<iframe  id='rightFrame' src="test1.php" width="100%" id="frame" frameborder="no" border="0" scrolling="no"></iframe>
+  </div>

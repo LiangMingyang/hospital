@@ -1,0 +1,35 @@
+body {
+
+}
+#search_area{
+	margin-left:20%;
+}
+#search_area p{
+	float:left;
+}
+#search_area input{
+	float:left;
+}
+#search_area p{
+	font-size:15px;
+	font-weight:700;
+}
+#StartDate{
+	margin-left:10px;
+	margin-right: 30px;
+	margin-top:12px;
+}
+#EndDate{
+	margin-left:10px;
+	margin-top:12px;
+}
+#search{
+	background-color: #B14D24;
+	color:white;
+	font-weight:700;
+	margin-left:50px;
+	margin-top:12px;
+}
+#presentation_area{
+	margin-left:25%;
+}

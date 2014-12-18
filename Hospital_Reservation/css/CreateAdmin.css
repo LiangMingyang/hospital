@@ -1,0 +1,43 @@
+body {
+
+}
+#title{
+	margin-left:40%
+}
+#title p{
+	font-size:30px;
+	font-family: "楷体";
+	color:#B14D24
+}
+#Admin_Area{
+	background-color: white;
+	width:500px;
+	height:200px;
+	margin-left:30%;
+}
+#Admin_Name{
+	background-color: #D7EEFF;
+}
+#Password{
+	background-color: #D7EEFF;
+}
+#Admin_Area span{
+	font-size: 20px;
+	font-weight: 700;
+	color: #B14D24;
+	margin-left:50px;
+}
+#Admin_Area input{
+	font-size: 20px;
+	font-weight: 700;
+}
+#createadmin{
+	background-color: #B14D24;
+	color:white;
+	font-size:20px;
+	font-family: '楷体';
+	margin-left: 45%;
+}
+#GO_btn{
+	
+}

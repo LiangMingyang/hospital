@@ -1,0 +1,93 @@
+/**
+ * @author acer
+ */
+function createAdmin(){
+	var repeat=false;
+	var encrypttime=getEncryptTime();
+	var Admin_Name=$('#Admin_Name').val();
+	$.ajax({
+		url:'../php/TransferStation.php',
+		type:'POST',
+		dataType:'json',
+		data:{
+			url:"Check_Admin_Repeat",
+			Admin_Name:Admin_Name,
+			encrypttime:encrypttime
+		},
+		success:function(data){
+			if(data.msg=='0'){
+				if(data.repeat==1){
+			      repeat=true;   	
+				}
+			}else{
+				art.dialog({
+					title:'系统消息',
+					content:'系统异常，异常信息：'+data.info,
+					icon:"error",
+					ok:true,
+					okVal:'确定'
+				});
+				repeat='error';
+			}
+		},
+		error:function(data){
+			art.dialog({
+					title:'系统消息',
+					content:'与服务器交互失败！',
+					icon:'error',
+					ok:true,
+					okVal:'确定'
+				});
+			repeat='error';
+		}
+	});
+	if(repeat=='error'){
+			return;
+	}
+	if(repeat){
+		$('#repeat_signal').show();
+	}else{
+		var Admin_Name=$('#Admin_Name').val();
+		var Password=hex_sha1($('#Password').val());
+		var encrypttime=getEncryptTime();
+		$.ajax({
+			url:'../php/TransferStation.php',
+			type:'POST',
+			dataType:'json',
+			data:{
+				url:'Add_Admin',
+				encrypttime:encrypttime,
+				Admin_Name:Admin_Name,
+				Password:Password
+			},
+			success:function(data){
+				if(data.msg==1){
+					art.dialog({
+						title:'系统消息',
+						icon:'succeed',
+						content:'操作成功！',
+						ok:true,
+						okVal:'确定'
+					});
+				}else{
+					art.dialog({
+						title:'系统消息',
+						icon:'error',
+						content:'操作失败！错误信息：'+data.info,
+						ok:true,
+						okVal:'确定'
+					});
+				}
+			},
+			error:function(data){
+				art.dialog({
+						title:'系统消息',
+						icon:'error',
+						content:'与服务器交互失败！错误信息：'+data.info,
+						ok:true,
+						okVal:'确定'
+					});
+			}
+		});
+	}
+}

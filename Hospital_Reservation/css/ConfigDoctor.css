@@ -1,0 +1,91 @@
+body {
+
+}
+#title{
+	margin-left:40%
+}
+#title p{
+	font-size:30px;
+	font-family: "楷体";
+	color:#B14D24
+}
+#tag_head{
+	margin-left:20%;
+	margin-top:-10px;
+}
+#Hospital_ID{
+	width:100px;
+}
+#Depart_ID{
+	width:100px;
+}
+#show_doctor_btn{
+	margin-left: 5%;
+	color:blue;
+	cursor:pointer;
+}
+#show_doctor_btn:hover{
+	color:red;
+}
+#return_doctor_btn{
+	margin-left: 5%;
+	color:blue;
+	cursor:pointer;
+}
+#return_doctor_btn:hover{
+	color:red;
+}
+#doctor_tb{
+	margin-left:20%;
+	margin-top:10px;
+	background-color:#C1C1C1;
+}
+#doctor_tb tr td{
+	width:150px;
+	height:50px;
+	font-size:20px;
+	cursor:pointer;
+	color:blue;
+	text-align: center;
+	background-color:white;
+}
+#doctor_info_area{
+	margin-left:15%;
+}
+
+.pic_option{
+	color:blue;
+	cursor:pointer;
+}
+.pic_option:hover{
+	color:red;
+}
+#submitPic{
+	float:left;
+	margin-left:20px;
+}
+#cancelPic{
+	float:right;
+	margin-right:20px;
+}
+#Doctor_Major{
+	width:450px;
+}
+#doctor_picture{
+	cursor:pointer;
+	width:250px;
+	height: 300px;
+}
+#confirm_info_btn{
+	 background-color: #B14D24;
+	 font-size: 20px;
+	 color:white;
+	 margin-left:15%;
+}
+#del_doctor_btn{
+	background-color: #B14D24;
+	font-size: 20px;
+	color:white;
+	margin-left:10px;
+}
+

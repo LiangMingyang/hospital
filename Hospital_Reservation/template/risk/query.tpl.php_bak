@@ -1,0 +1,208 @@
+<?php
+/**
+ * query.tpl.php-.
+ * @author Xu Guozhi<xuguozhi09@gmail.com>
+ *
+ * @copyright Copyright (c) 2012, by thss, P.R.China
+ *
+ * @modification history 
+ * ---------------------
+ * 2012-4-16,created by Xu Guozhi
+ */
+include risk_header_inc();
+ ?>
+ <script>
+ function showMore(){
+	 if($('.more').eq(0).css('display')=='none'){
+			$('.more').each(function(){
+				$(this).show();
+				});
+			showSql();
+			$('#showmore').removeClass('down');
+			$('#showmore').addClass('up');
+			$('#showmore').html('收起');
+			$('#advance').val(1);
+		 }else{
+			 $('.more').each(function(){
+				 $(this).hide();});
+				$('#showmore').removeClass('up');
+				$('#showmore').addClass('down');
+				$('#showmore').html('更多');
+				$('#advance').val(0);
+				$('.sql').hide();
+		}
+ }
+ function showSql(){
+	if($('#opclass').val()==3){
+		$('.sql').show();
+	}else{
+		$('.sql').hide();
+		}
+	 }
+ function checkall(obj){
+		flag = $(obj).attr("checked");
+		if(flag == 'checked')
+			$("input[name='item']").attr("checked",flag);
+		else{
+			$("input[name='item']").removeAttr("checked");
+			$(obj).removeAttr("checked");
+		}
+	}
+ function checkall(obj){
+		flag = $(obj).attr("checked");
+		if(flag == 'checked')
+			$("input[name='item']").attr("checked",flag);
+		else
+			$("input[name='item']").removeAttr("checked");
+	}
+	function uncheckall(obj){
+		flag = obj.checked;
+		if(flag){
+			types = document.getElementsByName("item");
+			for(var i = 0; i < types.length; ++i){
+				if(!types[i].checked)
+					return;
+			}
+			document.getElementsByName("checkAllItems")[1].checked = true;
+		}else
+			document.getElementsByName("checkAllItems")[1].checked = false;
+
+	}
+	
+	$(function(){
+		$('#riskDetail').dialog({
+			autoOpen: false,
+			resizable: true,
+			height:'auto',
+			width:'800',
+			modal: false,
+			position:"top",
+			title:"报警事件详情"
+		});
+		})
+	
+	function go(pageNo){
+		if(pageNo==-1)
+			pageNo = $('#goNum').val();
+		$('#pageNo').val(pageNo);
+		queryRisk.submit();
+		}
+
+	function searchClick() {
+		$("#searchHidden").val(1);
+		document.queryRisk.submit();
+		}
+ </script>
+
+<!-- 审计事件模块的js -->
+
+<script type="text/javascript" src="<?php echo JS_PATH?>risk/risk.js?"></script>
+
+ <body>
+<h5 class="title102"><em>报警事件查询</em></h5>
+<div class="box102 p20">
+  <form action="" method="post" name="queryRisk" id="searchForm">
+  <input type="hidden" name="searchHidden" id="searchHidden" value="<?php echo $searchFlag?>"/>
+	<table border="0" cellspacing="0" cellpadding="0" width="100%" class="tab3">
+             	<tbody>
+                	<tr>
+                		<td>数据库：</td>
+                		<td>
+                		<select name="serviceId"><option value="">全部</option>
+                		<?php foreach ($servers as $service) {
+                			?>
+                			<option value="<?php echo $service['ServiceId']?>"><?php echo $service['ServerName'].":".$service['Name'].":".$service['ServiceName']?></option>
+                			<?php
+                		}?>
+                		</select>
+                		</td>
+                		<th>开始时间：</th><td><input name="beginDate" id='beginDate' value='<?php echo $beginDate?$beginDate:date('Y-m-d');?>' class="Wdate" onClick="WdatePicker()" type="text">
+                		<input name="beginTime" id="beginTime" value='<?php echo $beginTime?$beginTime:date('00:00');?>' class="WTime" onClick="WdatePicker({dateFmt:'HH:mm'})" type="text">
+                		</td>
+               		    <th>
+                        	结束时间：</th><td><input name="endDate" id='endDate' value='<?php echo $endDate?$endDate:date('Y-m-d');?>' maxlength="10" class="Wdate" onClick="WdatePicker()" type="text">
+                        	<input name="endTime" id='endTime' value='<?php echo $endTime?$endTime:date('H:i');?>' class="WTime" onClick="WdatePicker({dateFmt:'HH:mm'})" type="text">
+                        	</td>              
+                      	<td><a href="javascript:void(0)" onclick="showMore()" id="showmore" class="down"  hidefocus="true">更多</a></td>         
+                      </tr>
+                      <tr class="more" style="display:none">
+                      	<th>客户端IP：</th><td><input type="text" name="ip" value='<?php echo ($ip)?>'/></td>
+                      	<th>登录名：</th><td><input type="text" name="loginName" value="<?php echo $loginName?>"></td>
+                      	<th>操作类型：</th><td><select name="opClass" id="opclass" onchange="showSql()"><option value="">全部</option><?php foreach ($opclasses as $op){?>
+                      	<option value="<?php echo $op['OpClass']?>" <?php if($op['OpClass']==$opclass) echo "selected"?>><?php echo $op['Description']?></option><?php }?></select></td>
+                      	<td></td>
+                      </tr>
+                      <tr class="sql" style="display:none">
+                      	<th>数据库对象：</th><td><input type="text" name="object" value="<?php echo $object?>"></td>
+                      	<th>SQL语句类型：</th><td><select name="sqlType"><option value="">全部</option>
+                      	<?php foreach ($sqltypes as $type){?><option value="<?php echo $type['SqlType']?>" <?php if($type['SqlType']==$sqlType) echo "selected"?>><?php echo $type['Description']?></option><?php }?></select></td>
+                      	<th>SQL语句内容：</th><td><input type="text" name="keyword" value="<?php echo $keyword?>"></td>
+                      	<td></td>
+                      </tr>
+                      <tr class="more" style="display:none">
+                      	<!-- 
+                      	<th>执行结果：</th><td><select name="execResult"><option value="">全部</option><option value="1">成功</option><option value="0">失败</option></select></td>
+                      	<th>响应时间：</th><td><input type="text" name="execTime" value="<?php echo $execTime?>"></td>
+                      	
+                      	 -->
+
+                      	<th>风险等级：</th><td><select name="riskLevel"><option value="">全部</option>
+                      	<?php 
+                      	foreach ($riskLevelList as $risk){
+                      		if($risk['RiskLevel']>0){
+                      		?>
+                      		<option value="<?php echo $risk['RiskLevel']?>" <?php if($risk['RiskLevel']==$riskLevel) echo "selected"?>><?php echo $risk['Description']?></option>
+                      		<?php
+                      		}
+                      		
+                      	}
+                      	?>
+                      	</select>
+                      	<td></td>
+                      </tr>
+                      <tr>
+                      	<td colspan="7">
+	                      	<a href="javascript:void(0)" class="neibu" id="searchButton">查询</a>
+	                      	<input type="hidden" name="advance" id="advance" value="<?php echo $advance?>"/>
+                      	</td>
+                     </tr>            
+                    </tbody>
+	</table>
+  </form>
+</div>
+
+
+<!-- 风险事件查询结果 -->
+<div id="queryDiv" class="box102 p20" style="display: block;position: relative;margin-top: 5px;height: 600px;">
+<?php 
+foreach ($riskLevelList as $risk){
+if($risk['RiskLevel']>0){
+    ?>
+   <img src="<?php echo IMAGE_PATH?>risklevel<?php echo $risk['RiskLevel']?>.gif"/><?php echo $risk['Description'].";&nbsp;&nbsp;"?>
+    <?php
+    }
+}
+?>
+
+<br/>
+<br/>
+
+<table id="queryGrid"></table>
+</div>
+
+ <div id="riskDetail" style="display:none">
+ </div>
+ 
+ <div id="deleteConfirm" title="确定删除吗？">
+        <p>确定删除所选的报警事件吗？</p>
+      </div>
+      
+ <script type="text/javascript">
+ $(".tblist").flexigrid(
+		 {width:930, 
+		  height:600});
+ </script>
+
+ </body>
+ </html>
+
