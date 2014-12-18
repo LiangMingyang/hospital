@@ -515,6 +515,7 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
             condition = {
                 User_ID: rows[0].User_ID
             };
+            condition = jsonToAnd(condition);
             connect.query('UPDATE ?? SET Amount = Amount + ' + rows[0].Reservation_PayAmount + ' WHERE ' + condition,
                 [table], function (err, result) { // 退款过程
                     if (err) {
@@ -526,6 +527,7 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
                     }
                     table = 'Reservation';
                     condition = req.body;
+                    condition = jsonToAnd(condition);
                     connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) { // 删除挂号条目
                         if (err) {
                             res.json({
