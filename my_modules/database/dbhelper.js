@@ -202,6 +202,8 @@ exports.Find_Doctor = function (req, res) {
 exports.LogIn_User = function (req, res) {
     var table = 'User';
     var condition = req.body;
+    var password = condition.password;
+    delete condition.password;
     select(table, condition, function (err, rows) {
         if (err) {
             res.json({
@@ -213,14 +215,55 @@ exports.LogIn_User = function (req, res) {
         if (rows.length == 0) {
             res.json({
                 msg: 1,
-                info: "用户名或密码不正确"
+                info: "用户名不存在"
             });
             return;
         }
-        res.json({
-            msg: 0,
-            content: rows[0]
-        });
+        var user = rows[0];
+        ///判断用户是否被锁定了
+        //TODO:暂时被锁定了不会更新LastLoginTime
+        var last = new Date(user.LastLogInTime);
+        var now = new Date();
+        if(user.FailTime >= 3 && (now-last) < 60*60*1000 ) {
+            res.json({
+                msg:1,
+                info:"该用户被锁定，请联系管理员"
+            })
+            return ;
+        }
+        ///判断登陆是否成功
+        user.LastLogInTime = strftime("%F %T", now);
+        if(user.PASSWORD == password) {
+            user.FailTime = 0;
+            Config('User', condition, user, function (err, result) {
+                if(err) {
+                    res.json({
+                        msg:1,
+                        info:err.message
+                    })
+                    return ;
+                }
+                res.json({
+                    msg:0,
+                    content: user
+                })
+            })
+        } else {
+            if(user.FailTime<3)++user.FailTime;
+            Config('User',condition,user, function (err, result) {
+                if(err) {
+                    res.json({
+                        msg:1,
+                        info:err.message
+                    })
+                    return ;
+                }
+                res.json({
+                    msg:1,
+                    info:"密码不正确"
+                })
+            })
+        }
     });
 };
 
@@ -242,10 +285,14 @@ exports.LogIn_Admin = function (req, res) {
             });
             return;
         }
-        res.json({
-            msg: 0,
-            content: rows[0]
-        });
+        var admin = rows[0];
+        admin.LastLogInTime = strftime("%F %T",new Date());
+        Config('Admin', condition, admin, function (err, result) {
+            res.json({
+                msg: 0,
+                content: admin
+            })
+        })
     });
 };
 
@@ -1368,14 +1415,18 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         });
 };
 
-exports.Config_User = function (req, res) {
+function Config(table, condition, dest, callback) {
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], callback);
+}
+
+exports.Config_User = function (req, res, callback) {
     var table = 'User';
     var condition = {
         User_ID: req.body.User_ID
     };
     var dest = req.body;
-    condition = jsonToAnd(condition);
-    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+    Config(table,condition,dest,function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
