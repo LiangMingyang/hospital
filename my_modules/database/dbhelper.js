@@ -39,13 +39,13 @@ exports.check = function (req, res, next) {
 var jsonToAnd = function (data) {
     var list = [];
     var relation = data.relation;
-    if(relation) {
+    if (relation) {
         for (var key in relation) {
             list.push(key + ' = ' + relation[key]);
         }
     }
     for (var key in data) {
-        if(key == 'relation')continue;
+        if (key == 'relation')continue;
         list.push(key + ' = ' + '\'' + data[key] + '\'');
     }
     return ' ' + list.join(' AND ') + ' ';
@@ -57,10 +57,10 @@ var select = function (table, condition, callback, columns) { // SELECT语句的
         condition = ' WHERE ' + condition;
     }
     if (columns) {
-        connect.query('SELECT ?? FROM ?? ' + condition,[columns,table], callback);
+        connect.query('SELECT ?? FROM ?? ' + condition, [columns, table], callback);
     }
     else {
-        connect.query('SELECT * FROM ?? ' + condition,[table], callback);
+        connect.query('SELECT * FROM ?? ' + condition, [table], callback);
     }
 };
 
@@ -85,7 +85,7 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
     if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
-    connect.query('SELECT COUNT(1) AS count FROM ??' + condition, [table] , function (err, rows) {
+    connect.query('SELECT COUNT(1) AS count FROM ?? ' + condition, [table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -95,8 +95,8 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
         }
         var count = rows[0].count;
         if (columns) {
-            connect.query('SELECT ?? FROM ?? ' + condition + ' LIMIT ?,?',[columns,table,parseInt(start),parseInt(size)],
-                function (err, rows) {
+            connect.query('SELECT ?? FROM ?? ' + condition + ' LIMIT ?,?',
+                [columns, table, parseInt(start), parseInt(size)], function (err, rows) {
                     if (err) {
                         res.json({
                             msg: 1,
@@ -112,7 +112,7 @@ var find_range = function (table, condition, start, size, res, columns) { // 用
                 });
         }
         else {
-            connect.query('SELECT * FROM ?? ' + condition + ' LIMIT ?,?',[table,parseInt(start),parseInt(size)],
+            connect.query('SELECT * FROM ?? ' + condition + ' LIMIT ?,?', [table, parseInt(start), parseInt(size)],
                 function (err, rows) {
                     if (err) {
                         res.json({
@@ -163,7 +163,7 @@ exports.Register = function (req, res) {
             });
         });
     };
-    select(table, {'Identity_ID': condition.Identity_ID}, callback);
+    select(table, {Identity_ID: condition.Identity_ID}, callback);
 };
 
 exports.Find_Hospital = function (req, res) {
@@ -341,7 +341,7 @@ exports.Check_History_Reservation_Simple = function (req, res) {
     ];
     var condition = {
         History_Reservation_ID: req.body.Reservation_ID,
-        relation:{
+        relation: {
             'History_Reservation.Doctor_ID': 'Doctor.Doctor_ID'
         }
     };
@@ -357,7 +357,8 @@ exports.Check_History_Reservation_Simple = function (req, res) {
     ];
     condition = jsonToAnd(condition);
     connect.query('SELECT ?? FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ?? LIMIT ?,?',
-        [columns, table, 'History_Reservation_Time', startDate, endDate, parseInt(start), parseInt(size)], function (err, rows) {
+        [columns, table, 'History_Reservation_Time', startDate, endDate, parseInt(start), parseInt(size)],
+        function (err, rows) {
             if (err) {
                 res.json({
                     msg: 1,
@@ -390,7 +391,7 @@ exports.Check_History_Reservation_Detail = function (req, res) {
     find(table, condition, res);
 };
 
-exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
+exports.Reservation = function (req, res) {
     var table = [
         'Reservation',
         'Doctor'
@@ -405,14 +406,10 @@ exports.Reservation = function (req, res) { // 写晕了，谁来帮帮我
         'Doctor_Limit',
         'Doctor_Fee'
     ];
-    // JS中貌似不存在能直接格式化成MySQL的datetime格式的东西
     var date = new Date();
-    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var dateString = strftime("%F", date);
     var startTime = dateString + ' 00:00:00';
     var endTime = dateString + ' 23:59:59';
-    //var dateString = strftime("%F", date);
-    //console.log(dataString); //2014-12-03
-    // TODO 这个strftime函数JS里有？如果有的话就用它了 --对，是有的，完全可以这样使用 from lmy
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
     connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + ' AND ?? BETWEEN ?? AND ??',
@@ -471,20 +468,8 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
             condition = {
                 User_ID: rows[0].User_ID
             };
-            var dest = {
-                Amount: Amount + rows[0].Reservation_PayAmount
-            };
-            connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) { // 退款过程
-                if (err) {
-                    res.json({
-                        msg: 1,
-                        info: err.message
-                    });
-                    return;
-                }
-                table = 'Reservation';
-                condition = req.body;
-                connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) { // 删除挂号条目
+            connect.query('UPDATE ?? SET Amount = Amount + ' + rows[0].Reservation_PayAmount + ' WHERE ' + condition,
+                [table], function (err, result) { // 退款过程
                     if (err) {
                         res.json({
                             msg: 1,
@@ -492,12 +477,22 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
                         });
                         return;
                     }
-                    res.json({
-                        msg: 0,
-                        info: '挂号已取消'
+                    table = 'Reservation';
+                    condition = req.body;
+                    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) { // 删除挂号条目
+                        if (err) {
+                            res.json({
+                                msg: 1,
+                                info: err.message
+                            });
+                            return;
+                        }
+                        res.json({
+                            msg: 0,
+                            info: '挂号已取消'
+                        });
                     });
                 });
-            });
         }
     };
     select(table, condition, callback, columns);
@@ -549,26 +544,27 @@ exports.In_Cash = function (req, res) {
         User_ID: req.body.User_ID
     };
     condition = jsonToAnd(condition);
-    connect.query('UPDATE ?? SET Amount = Amount+' + req.body.Amount+' WHERE ' + condition, [table], function (err, result) {
-        if (err) {
+    connect.query('UPDATE ?? SET Amount = Amount + ' + req.body.Amount + ' WHERE ' + condition,
+        [table], function (err, result) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            if (result.affectedRows == 0) {
+                res.json({
+                    msg: 1,
+                    info: "充值失败"
+                });
+                return;
+            }
             res.json({
-                msg: 1,
-                info: err.message
+                msg: 0,
+                info: '充值成功'
             });
-            return;
-        }
-        if(result.affectedRows == 0) {
-            res.json({
-                msg:1,
-                info:"充值失败"
-            })
-            return ;
-        }
-        res.json({
-            msg: 0,
-            info: '充值成功'
         });
-    });
 };
 
 exports.Pay_Reservation = function (req, res) {
@@ -646,20 +642,41 @@ exports.Check_Register = function (req, res) {
             });
             return;
         }
+        if (rows.length==0) {
+            res.json({
+                msg: 1,
+                info: "Not found"
+            });
+            return;
+        }
         if (rows[0].isChecked == 1) {
             res.json({
                 msg: 0,
                 Mall: rows[0].Mail,
                 Phone: rows[0].Phone
             });
-        }
-        else {
+        } else {
             res.json({
                 msg: 0
             });
         }
     };
-    select(table, condition, callback, columns);
+    connect.query('update User set isChecked = ' + condition.isChecked +
+    ' where User_ID=' + condition.User_ID,  function(err, rows) {
+        if (!!err) {
+            console.log(err.message);
+            return ;
+        } else {
+            if (rows.affectedRows==0) {
+                res.json({
+                    msg: 1,
+                    info: "No line affected!"
+                });
+                return;
+            }
+        }
+        select(table, condition, callback, columns);
+    });
 };
 
 exports.Get_Reservation_Info = function (req, res) {
@@ -772,7 +789,7 @@ exports.Create_Hospital = function (req, res) {
             });
         });
     };
-    select(table, {'Hospital_Name': condition.Hospital_Name}, callback);
+    select(table, {Hospital_Name: condition.Hospital_Name}, callback);
 };
 
 exports.Get_HospitalInfo_simple = function (req, res) {
@@ -787,7 +804,7 @@ exports.Get_HospitalInfo_simple = function (req, res) {
         }
     };
     var columns = [
-        'Hospital_ID',
+        'Manage.Hospital_ID',
         'Hospital_Name'
     ];
     find(table, condition, res, columns);
@@ -934,7 +951,7 @@ exports.Add_Doctor = function (req, res) {
             });
         });
     };
-    select(table, {'Doctor_Name': condition.Doctor_Name}, callback);
+    select(table, {Doctor_Name: condition.Doctor_Name}, callback);
 };
 
 exports.Set_DoctorInfo = function (req, res) {
@@ -992,7 +1009,7 @@ exports.Add_Admin = function (req, res) {
             });
         });
     };
-    select(table, {'Admin_Name': condition.Admin_Name}, callback);
+    select(table, {Admin_Name: condition.Admin_Name}, callback);
 };
 
 exports.Get_AdminInfo = function (req, res) {
@@ -1011,10 +1028,10 @@ exports.Get_Privilege = function (req, res) {
         'Manage'
     ];
     var condition = {
+        'Manage.Admin_ID': req.body.Admin_ID,
         relation: {
             'Manage.Hospital_ID': 'Hospital.Hospital_ID'
-        },
-        'Manage.Admin_ID': req.body.Admin_ID
+        }
     };
     var columns = [
         'Hospital_ID',
@@ -1033,7 +1050,7 @@ var tupleToString = function (data, str) {
 
 exports.Give_Privilege = function (req, res) {
     var table = 'Manage';
-    var dest = tupleToString(res.body.Hospital_ID, res.body.Admin_ID);
+    var dest = tupleToString(req.body.Hospital_ID.split(','), req.body.Admin_ID);
     connect.query('INSERT INTO ?? (??, ??) VALUES ' + dest, [table, 'Hospital_ID', 'Admin_ID'], function (err, result) {
         if (err) {
             res.json({
@@ -1044,7 +1061,7 @@ exports.Give_Privilege = function (req, res) {
         }
         res.json({
             msg: 0,
-            info: '权限赋予成功'
+            info: '成功'
         });
     });
 };
@@ -1055,7 +1072,7 @@ exports.Del_Privilege = function (req, res) {
         Admin_ID: req.body.Admin_ID
     };
     condition_admin = jsonToAnd(condition_admin);
-    var condition_hospital = ' (' + res.body.Hospital_ID.join(', ') + ') ';
+    var condition_hospital = ' (' + res.body.Hospital_ID + ') ';
     connect.query('DELETE FROM ?? WHERE ' + condition_admin + ' AND ?? IN ' + condition_hospital,
         [table, 'Hospital_ID'], function (err, result) {
             if (err) {
@@ -1097,7 +1114,7 @@ exports.Find_User_By_Identity_ID = function (req, res) {
     };
     find(table, condition, res);
 };
-
+    
 exports.Find_Admin_By_Admin_Name = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
@@ -1132,15 +1149,12 @@ exports.Get_Area_Info_By_Province_ID = function (req, res) {
 };
 
 exports.Find_Hospital_By_Condition = function (req, res) {
-    var table = [
-        'Hospital'
-    ];
-    var condition = {
-    };
+    var table = 'Hospital';
+    var condition = {};
     if (req.body.Province_ID) {
         //condition.Province_ID = req.body.Province_ID;
         condition.relation = {
-            'Area_ID div 100':req.body.Province_ID  //因为地区整除100即省份号
+            'Area_ID div 100': req.body.Province_ID  //因为地区整除100即省份号
         }
     }
     if (req.body.Area_ID) {
@@ -1210,7 +1224,7 @@ exports.Get_Hospital_Number_By_Condition = function (req, res) {
     //    condition.Hospital_Level = req.body.Hospital_Level;
     //}
     //condition = jsonToAnd(condition);
-    //connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, table, function (err, rows) {
+    //connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, [table], function (err, rows) {
     //    if (err) {
     //        res.json({
     //            msg: 1,
@@ -1226,19 +1240,19 @@ exports.Get_Hospital_Number_By_Condition = function (req, res) {
     //TODO 现在写的姿势很不优雅，待优化
     var table = 'Hospital';
     var condition = req.body;
-    select(table,condition, function (err, rows) {
-            if (err) {
-                res.json({
-                    msg: 1,
-                    info: err.message
-                });
-                return;
-            }
+    select(table, condition, function (err, rows) {
+        if (err) {
             res.json({
-                msg: 0,
-                num: rows.length
+                msg: 1,
+                info: err.message
             });
-    })
+            return;
+        }
+        res.json({
+            msg: 0,
+            num: rows.length
+        });
+    });
 };
 
 exports.Find_Doctor_By_Condition = function (req, res) {
@@ -1325,8 +1339,8 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         'Doctor_ID',
         'Doctor_Name'
     ];
-    var date = new Date(Date.parse(req.body.Reservation_Time.replace(/-/g, "/")));
-    var dateString = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    var date = new Date(req.body.Reservation_Time);
+    var dateString = strftime("%F", date);
     var startTime = dateString;
     var endTime = dateString;
     if (req.body.Duty_Time % 2 == 1) { // Duty_Time是上午
@@ -1430,7 +1444,8 @@ exports.Find_User_By_Condition = function (req, res) {
     var columns = [
         'User_ID',
         'UserName',
-        'Identity_ID'
+        'Identity_ID',
+        'isChecked'
     ];
     if (req.body.start && req.body.size) {
         var start = req.body.start;
@@ -1442,7 +1457,7 @@ exports.Find_User_By_Condition = function (req, res) {
     }
 };
 
-exports.Add_Depart = function (req,res) {
+exports.Add_Depart = function (req, res) {
     var table = 'Depart';
     var condition = req.body;
     connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
@@ -1472,12 +1487,12 @@ exports.Del_Depart = function (req, res) {
             });
             return;
         }
-        if(result.affectedRows == 0) {
+        if (result.affectedRows == 0) {
             res.json({
-                msg:1,
-                info:"删除失败"
-            })
-            return ;
+                msg: 1,
+                info: "删除失败"
+            });
+            return;
         }
         res.json({
             msg: 0,
@@ -1498,16 +1513,64 @@ exports.Del_Hospital = function (req, res) {
             });
             return;
         }
-        if(result.affectedRows == 0) {
+        if (result.affectedRows == 0) {
             res.json({
-                msg:1,
-                info:"删除失败"
-            })
-            return ;
+                msg: 1,
+                info: "删除失败"
+            });
+            return;
         }
         res.json({
             msg: 0,
             info: '删除成功'
         });
+    });
+};
+
+// Update user
+exports.Update_User = function(req, res) {
+    var table = 'User';
+    var condition = {
+        User_ID: req.body.User_ID
+    };
+    /*var dest = {
+        Password: req.body.Password
+    };*/
+    var dest = req.body;
+    delete dest.User_ID;
+    condition = jsonToAnd(condition);
+    connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0
+        });
+    });
+};
+
+// Delete a user
+// param: token, encrpttime, User_ID (separated by comma)
+exports.Del_User = function(req, res) {
+    var ids = req.body.User_ID;
+    connect.query('delete from User where User_ID in (' + ids + ')', function(err, result) {
+        var ret = {}
+        if (!!err) {
+            ret.msg = 1;
+            ret.info = 'Cannot query database. ' + err.message;
+        } else {
+            if (result.affectedRows == 0) {
+                ret.msg = 1;
+                ret.info = 'No user are deleted';
+            } else {
+                ret.msg = 0;
+                ret.info = "OK";
+            }
+        }
+        res.json(ret);
     });
 };

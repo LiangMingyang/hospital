@@ -42,7 +42,7 @@ router.post('/Check_History_Reservation_Detail', dbhelper.Check_History_Reservat
 
 router.post('/Reservation', dbhelper.Reservation);
 
-router.post('/del_Reservation', dbhelper.Cancel_Reservation);
+router.post('/Cancel_Reservation', dbhelper.Cancel_Reservation);
 
 router.post('/Check_PayState', dbhelper.Check_PayState);
 
@@ -127,5 +127,9 @@ router.post('/Add_Depart', dbhelper.Add_Depart);
 router.post('/Del_Depart', dbhelper.Del_Depart);
 
 router.post('/Del_Hospital', dbhelper.Del_Hospital);
+
+router.post('/Update_User', dbhelper.Update_User);
+
+router.post('/Del_User', dbhelper.Del_User);
 
 module.exports = router;
