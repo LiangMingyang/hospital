@@ -1648,7 +1648,7 @@ exports.Del_Doctor_Time = function (req, res) {
         Doctor_ID: req.body.Doctor_ID
     };
     condition_doctor = jsonToAnd(condition_doctor);
-    var condition_duty = ' (' + res.body.Duty_Time + ') ';
+    var condition_duty = ' (' + req.body.Duty_Time + ') ';
     connect.query('DELETE FROM ?? WHERE ' + condition_doctor + ' AND ?? IN ' + condition_duty,
         [table, 'Duty_Time'], function (err, result) {
             if (err) {
