@@ -1237,6 +1237,40 @@ exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
         });
 };
 
+exports.Get_History_Reservation = function (req, res) {
+    var table = "History_Reservation";
+    var debug = connect.query('SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? LIMIT ?,?',
+        [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time, parseInt(req.body.start), parseInt(req.body.size)],
+        function (err, rows) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ?? BETWEEN ? AND ?' ,
+                [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time],
+                function (err, count) {
+                    if (err) {
+                        res.json({
+                            msg: 2,
+                            info: err.message
+                        });
+                        return;
+                    }
+                    var total = count[0].count;
+                    res.json({
+                        msg: 0,
+                        total: total,
+                        content: rows
+                    });
+                });
+        });
+    console.log(debug.sql);
+};
+
+
 exports.Get_Hospital_Number_By_Condition = function (req, res) {
     //var table = [
     //    'Province',
@@ -1438,7 +1472,7 @@ exports.Del_Doctor = function (req, res) {
     // I know someone (lmy) would say this code should use jsonToAnd and other utils provided.
     // But delete from multiple table is different!
     var did = req.body.Doctor_ID;
-    connection.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
+    connect.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1446,7 +1480,7 @@ exports.Del_Doctor = function (req, res) {
             });
             return;
         }
-        connection.query('delete from Doctor where Doctor_ID='+did, function(err, result) {
+        connect.query('delete from Doctor where Doctor_ID='+did, function(err, result) {
             if (!!err) {
                 res.json({
                     msg: 1,
@@ -1648,7 +1682,7 @@ exports.Del_Doctor_Time = function (req, res) {
         Doctor_ID: req.body.Doctor_ID
     };
     condition_doctor = jsonToAnd(condition_doctor);
-    var condition_duty = ' (' + res.body.Duty_Time + ') ';
+    var condition_duty = ' (' + req.body.Duty_Time + ') ';
     connect.query('DELETE FROM ?? WHERE ' + condition_doctor + ' AND ?? IN ' + condition_duty,
         [table, 'Duty_Time'], function (err, result) {
             if (err) {
@@ -1668,7 +1702,7 @@ exports.Del_Doctor_Time = function (req, res) {
 exports.Update_Doctor_Time = function(req, res) {
     var did = req.body.Doctor_ID;
     var times = req.body.Duty_Time.split(',');
-    connection.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
+    connect.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1676,7 +1710,7 @@ exports.Update_Doctor_Time = function(req, res) {
             });
             return;
         }
-        connection.query('insert into Doctor_Time (Doctor_ID, Duty_Time) values '+times.map(function(e){return '('+did+','+e+')';}).join(','), function(err, result) {
+        connect.query('insert into Doctor_Time (Doctor_ID, Duty_Time) values '+times.map(function(e){return '('+did+','+e+')';}).join(','), function(err, result) {
             if (!!err) {
                 res.json({
                     msg: 1,
