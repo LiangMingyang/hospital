@@ -1399,11 +1399,11 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         condition.Hospital_ID = req.body.Hospital_ID;
     }
     var columns = [
-        'Doctor_ID',
+        //'Doctor_ID',
         'Doctor_Name'
     ];
     condition = jsonToAnd(condition);
-    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+    connect.query('SELECT Doctor.Doctor_ID as Doctor_ID, ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1725,3 +1725,4 @@ exports.Update_Doctor_Time = function(req, res) {
         });
     });
 };
+
