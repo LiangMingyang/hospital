@@ -1664,3 +1664,30 @@ exports.Del_Doctor_Time = function (req, res) {
             });
         });
 }
+
+exports.Update_Doctor_Time = function(req, res) {
+    var did = req.body.Doctor_ID;
+    var times = req.body.Duty_Time.split(',');
+    connection.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
+        if (!!err) {
+            res.json({
+                msg: 1,
+                info: 'Cannot delete, let alone update.'
+            });
+            return;
+        }
+        connection.query('insert into Doctor_Time (Doctor_ID, Duty_Time) values '+times.map(function(e){return '('+did+','+e+')';}).join(','), function(err, result) {
+            if (!!err) {
+                res.json({
+                    msg: 1,
+                    info: 'Cannot insert new values.'
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                info: 'OK'
+            });
+        });
+    });
+};
