@@ -1249,10 +1249,23 @@ exports.Get_History_Reservation = function (req, res) {
                 });
                 return;
             }
-            res.json({
-                msg: 0,
-                content:rows
-            });
+            connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ?? BETWEEN ?? AND ??' ,
+                [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time],
+                function (err, count) {
+                    if (err) {
+                        res.json({
+                            msg: 1,
+                            info: err.message
+                        });
+                        return;
+                    }
+                    var total = count[0].count;
+                    res.json({
+                        msg: 0,
+                        total: total,
+                        content: rows
+                    });
+                });
         });
 };
 
