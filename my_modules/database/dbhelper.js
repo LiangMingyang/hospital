@@ -1239,8 +1239,8 @@ exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
 
 exports.Get_History_Reservation = function (req, res) {
     var table = "History_Reservation";
-    connect.query('SELECT * FROM ?? WHERE ?? BETWEEN ?? AND ??',
-        [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time],
+    connect.query('SELECT * FROM ?? WHERE ?? BETWEEN ?? AND ?? LIMIT ?,?',
+        [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time, parseInt(req.body.start), parseInt(req.body.size)],
         function (err, rows) {
             if (err) {
                 res.json({
@@ -1254,7 +1254,7 @@ exports.Get_History_Reservation = function (req, res) {
                 content:rows
             });
         });
-}
+};
 
 
 exports.Get_Hospital_Number_By_Condition = function (req, res) {
