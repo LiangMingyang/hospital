@@ -1398,11 +1398,13 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
     if (req.body.Hospital_ID) {
         condition.Hospital_ID = req.body.Hospital_ID;
     }
+    // TODO: Doctor_ID appears in multiple tables, current solution is very dirty.
     var columns = [
         //'Doctor_ID',
         'Doctor_Name'
     ];
     condition = jsonToAnd(condition);
+    // use Doctor.Doctor_ID to avoid ambiguous, and then rename it to Doctor_ID to satisfy API requirement.
     connect.query('SELECT Doctor.Doctor_ID as Doctor_ID, ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
         if (err) {
             res.json({
