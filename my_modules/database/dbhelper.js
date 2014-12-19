@@ -1411,9 +1411,9 @@ exports.Config_User = function (req, res, callback) {
 };
 
 exports.Del_Doctor = function (req, res) {
-    var table = [
-        'Doctor',
-        'Doctor_Time'
+    /*var table = [
+        'Doctor_Time',
+        'Doctor'
     ];
     var condition = {
         'Doctor.Doctor_ID': req.body.Doctor_ID,
@@ -1433,6 +1433,31 @@ exports.Del_Doctor = function (req, res) {
         res.json({
             msg: 0,
             info: '该医生信息已删除'
+        });
+    });*/
+    // I know someone (lmy) would say this code should use jsonToAnd and other utils provided.
+    // But delete from multiple table is different!
+    var did = req.body.Doctor_ID;
+    connection.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
+        if (!!err) {
+            res.json({
+                msg: 1,
+                info: 'Cannot delete from Doctor_Time, let alone Doctor.'
+            });
+            return;
+        }
+        connection.query('delete from Doctor where Doctor_ID='+did, function(err, result) {
+            if (!!err) {
+                res.json({
+                    msg: 1,
+                    info: 'Can delete from Doctor_Time, but cannot from Doctor, wierd.'
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                info: 'OK'
+            });
         });
     });
 };
