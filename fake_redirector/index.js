@@ -1,15 +1,15 @@
-var http    = require('http',
+var http    = require('http');
 var express = require('express');
 var request = require('request');
 var cheerio = require('cheerio');
 
 var app = express();
 
-app.set('views', './views',
-app.set('view engine', 'hbs',
+app.set('views', './views');
+app.set('view engine', 'hbs');
 app.engine('hbs', require('hbs').__express);
 
-app.enable('trust proxy',
+app.enable('trust proxy');
 
 var ip2geo = ['北京市', '天津市', '上海市', '重庆市',
 '河北省', '河南省', '云南省', '辽宁省', '黑龙江省', '湖南省', '安徽省', '山东省',
