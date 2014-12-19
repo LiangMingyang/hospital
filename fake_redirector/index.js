@@ -28,8 +28,9 @@ app.get('*', function(req, response) {
                 isp = data.data.isp;
                 region = data.data.region;
                 city = data.data.city;
+                reg = region.substr(0,2);
                 for (var i = 0; i < ip2geo.length; ++i) {
-                    if (ip2geo[i].substr(0,2)==region.substr(0,2)) {
+                    if (ip2geo[i].substr(0,2)==reg) {
                         province = i;
                         break;
                     }
