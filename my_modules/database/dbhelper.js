@@ -1237,6 +1237,26 @@ exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
         });
 };
 
+exports.Get_History_Reservation = function (req, res) {
+    var table = "History_Reservation";
+    connect.query('SELECT * FROM ?? WHERE ?? BETWEEN ?? AND ??',
+        [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time],
+        function (err, rows) {
+            if (err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
+            res.json({
+                msg: 0,
+                content:rows
+            });
+        });
+}
+
+
 exports.Get_Hospital_Number_By_Condition = function (req, res) {
     //var table = [
     //    'Province',
