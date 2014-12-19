@@ -1239,7 +1239,7 @@ exports.Get_History_Reservation_For_Flexigrid = function (req, res) {
 
 exports.Get_History_Reservation = function (req, res) {
     var table = "History_Reservation";
-    connect.query('SELECT * FROM ?? WHERE ?? BETWEEN ?? AND ?? LIMIT ?,?',
+    var debug = connect.query('SELECT * FROM ?? WHERE ?? BETWEEN ? AND ? LIMIT ?,?',
         [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time, parseInt(req.body.start), parseInt(req.body.size)],
         function (err, rows) {
             if (err) {
@@ -1249,12 +1249,12 @@ exports.Get_History_Reservation = function (req, res) {
                 });
                 return;
             }
-            connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ?? BETWEEN ?? AND ??' ,
+            connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ?? BETWEEN ? AND ?' ,
                 [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time],
                 function (err, count) {
                     if (err) {
                         res.json({
-                            msg: 1,
+                            msg: 2,
                             info: err.message
                         });
                         return;
@@ -1267,6 +1267,7 @@ exports.Get_History_Reservation = function (req, res) {
                     });
                 });
         });
+    console.log(debug.sql);
 };
 
 
