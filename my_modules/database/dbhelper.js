@@ -1438,7 +1438,7 @@ exports.Del_Doctor = function (req, res) {
     // I know someone (lmy) would say this code should use jsonToAnd and other utils provided.
     // But delete from multiple table is different!
     var did = req.body.Doctor_ID;
-    connection.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
+    connect.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1446,7 +1446,7 @@ exports.Del_Doctor = function (req, res) {
             });
             return;
         }
-        connection.query('delete from Doctor where Doctor_ID='+did, function(err, result) {
+        connect.query('delete from Doctor where Doctor_ID='+did, function(err, result) {
             if (!!err) {
                 res.json({
                     msg: 1,
@@ -1668,7 +1668,7 @@ exports.Del_Doctor_Time = function (req, res) {
 exports.Update_Doctor_Time = function(req, res) {
     var did = req.body.Doctor_ID;
     var times = req.body.Duty_Time.split(',');
-    connection.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
+    connect.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1676,7 +1676,7 @@ exports.Update_Doctor_Time = function(req, res) {
             });
             return;
         }
-        connection.query('insert into Doctor_Time (Doctor_ID, Duty_Time) values '+times.map(function(e){return '('+did+','+e+')';}).join(','), function(err, result) {
+        connect.query('insert into Doctor_Time (Doctor_ID, Duty_Time) values '+times.map(function(e){return '('+did+','+e+')';}).join(','), function(err, result) {
             if (!!err) {
                 res.json({
                     msg: 1,
