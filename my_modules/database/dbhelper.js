@@ -1399,7 +1399,7 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         ") as t1"+
     ")";
     console.log("SQL> " + sql);
-    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+    connect.query(sql, function (err, rows) {
         if (err) {
         console.log("ERR:" + sql);
             res.json({
