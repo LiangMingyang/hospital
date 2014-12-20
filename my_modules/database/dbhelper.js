@@ -1374,20 +1374,56 @@ exports.Check_Admin_Repeat = function (req, res) {
     });
 };
 
+// TODO: very dirty SQL query!!!!!!!!!!!!!!!!!!!!!!
 exports.Find_Doctor_By_Condition_Free = function (req, res) {
-    var table = [
+    var c1 = "";    // condition depart_ID
+    var c2 = "";    // condition hospital_ID
+    if (req.body.Depart_ID) {
+        c1 = "and Doctor.Depart_ID = " + req.body.Depart_ID;
+    }
+    if (req.body.Hospital_ID) {
+        c2 = "and Depart.Hospital_ID = " + req.body.Hospital_ID;
+    }
+    var sql =
+    "select Doctor.Doctor_ID, Doctor.Doctor_Name from Doctor, Depart " +
+    "where Doctor.Depart_ID = Depart.Depart_ID " +
+    c1 +
+    c2 +
+    "and Doctor.Doctor_ID not in ( " +
+        "select t1.did from ( " +
+            "select Doctor.Doctor_ID as did, Doctor.Doctor_Limit from Doctor, Reservation, Doctor_Time" +
+            " where Reservation.Doctor_ID = Doctor_Time.Doctor_ID and Doctor_Time.Doctor_ID = Doctor.Doctor_ID " +
+                " and Reservation.Duty_Time = Doctor_Time.Duty_Time and Doctor_Time.Duty_Time = " + req.body.Duty_Time +
+                " and Reservation.Reservation_Time = " + req.body.Reservation_Time +
+            " group by Doctor.Doctor_ID having count(Reservation.Reservation_ID) >= Doctor.Doctor_Limit" +
+        ") as t1"+
+    ")";
+    console.log("SQL> " + sql);
+    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+        if (err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            content: rows
+        });
+    });
+    
+/*    var table = [
         'Depart',
         'Hospital',
         'Doctor',
-        'Doctor_Time',
-        'Reservation'
+        'Doctor_Time'
     ];
     var condition = {
         Reservation_Time: req.body.Reservation_Time,
         'Doctor_Time.Duty_Time': req.body.Duty_Time,
         relation: {
             'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
-            'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
             'Doctor.Depart_ID': 'Depart.Depart_ID',
             'Depart.Hospital_ID': 'Hospital.Hospital_ID'
             //'Reservation.Duty_Time': 'Doctor_Time.Duty_Time'
@@ -1419,7 +1455,7 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
             content: rows
         });
     });
-    console.log("SQL: " + q.sql);
+    console.log("SQL: " + q.sql);*/
 };
 
 function Config(table, condition, dest, callback) {
