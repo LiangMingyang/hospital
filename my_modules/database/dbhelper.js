@@ -1388,8 +1388,8 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         relation: {
             'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
             'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
-            'Doctor.Hospital_ID': 'Hospital.Hospital_ID',
-            'Hospital.Depart_ID': 'Depart.Depart_ID'
+            'Doctor.Depart_ID': 'Depart.Depart_ID',
+            'Depart.Hospital_ID': 'Hospital.Hospital_ID'
         }
     };
     if (req.body.Depart_ID) {
