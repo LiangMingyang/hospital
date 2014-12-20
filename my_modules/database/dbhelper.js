@@ -1384,12 +1384,13 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
     ];
     var condition = {
         Reservation_Time: req.body.Reservation_Time,
-        Duty_Time: req.body.Duty_Time,
+        'Duty_Time.Duty_Time': req.body.Duty_Time,
         relation: {
             'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
             'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
             'Doctor.Depart_ID': 'Depart.Depart_ID',
-            'Depart.Hospital_ID': 'Hospital.Hospital_ID'
+            'Depart.Hospital_ID': 'Hospital.Hospital_ID',
+            'Reservation.Duty_Time': 'Doctor_Time.Duty_Time'
         }
     };
     if (req.body.Depart_ID) {
