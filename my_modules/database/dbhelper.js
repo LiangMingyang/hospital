@@ -360,7 +360,7 @@ exports.Check_Reservation_Simple = function (req, res) {
         'Doctor_Name',
         'Reservation_Payed'
     ];
-    find(table, condition, res, columns);
+    find(table, condition, res);
 };
 
 exports.Check_Reservation_Detail = function (req, res) {
