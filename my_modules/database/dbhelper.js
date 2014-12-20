@@ -1406,7 +1406,7 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
     ];
     condition = jsonToAnd(condition);
     // use Doctor.Doctor_ID to avoid ambiguous, and then rename it to Doctor_ID to satisfy API requirement.
-    connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+    var q = connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1419,6 +1419,7 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
             content: rows
         });
     });
+    console.log("SQL: " + q);
 };
 
 function Config(table, condition, dest, callback) {
