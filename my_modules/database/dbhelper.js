@@ -1419,7 +1419,7 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
             content: rows
         });
     });
-    console.log("SQL: " + q);
+    console.log("SQL: " + q.sql);
 };
 
 function Config(table, condition, dest, callback) {
