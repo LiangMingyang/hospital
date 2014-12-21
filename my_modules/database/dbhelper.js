@@ -444,6 +444,17 @@ exports.Check_History_Reservation_Detail = function (req, res) {
     find(table, condition, res);
 };
 
+function twoDigits(d) {
+    if(0 <= d && d < 10) return "0" + d.toString();
+    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+    return d.toString();
+}
+
+function currentDatetime() {
+    var date = new Date();
+    return date.getUTCFullYear() + "-" + twoDigits(1 + date.getUTCMonth()) + "-" + twoDigits(date.getUTCDate()) + " " + twoDigits(date.getUTCHours()) + ":" + twoDigits(date.getUTCMinutes()) + ":" + twoDigits(date.getUTCSeconds());
+};
+
 exports.Reservation = function (req, res) {
     var table = [
         'Reservation',
@@ -484,7 +495,7 @@ exports.Reservation = function (req, res) {
         table = 'Reservation';
         condition = req.body;
         condition.Reservation_PayAmount = rows[0].Doctor_Fee; // 之前顺便查了Doctor_Fee，节省了一次查询
-        //condition.Operation_Time = 
+        condition.Operation_Time = currentDatetime();
         connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) { // 插入挂号信息
             if (err) {
                 res.json({
