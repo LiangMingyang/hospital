@@ -641,6 +641,13 @@ exports.Pay_Reservation = function (req, res) {
             });
             return;
         }
+        if (rows.length < 1) {
+            res.json({
+                msg: 1,
+                info: 'No record'
+            });
+            return;
+        }
         if (rows[0].Reservation_Payed == 0) {
             res.json({
                 msg: 1,
