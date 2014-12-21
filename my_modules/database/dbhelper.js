@@ -4,6 +4,8 @@ var connect = global.connect;
 
 exports.check = function (req, res, next) {
     next();
+    delete req.body.token;
+    delete req.body.encrypttime;
     return;
 
     var secret = global.secret_key;
