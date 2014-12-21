@@ -517,14 +517,24 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
             });
             return;
         }
-        if (rows[0].Reservation_Payed == 0) { // 如果已支付过挂号费，需要退款
+        if (rows[0].Reservation_Payed == 1) { // 如果已支付过挂号费，需要退款
             table = 'User';
             condition = {
                 User_ID: rows[0].User_ID
             };
             condition = jsonToAnd(condition);
-            connect.query('UPDATE ?? SET Amount = Amount + ' + rows[0].Reservation_PayAmount + ' WHERE ' + condition,
-                [table], function (err, result) { // 退款过程
+            connect.query('UPDATE ?? SET Amount = Amount + ' + rows[0].Reservation_PayAmount + ' WHERE ' + condition, [table], function (err, result) { // 退款过程
+                if (err) {
+                    res.json({
+                        msg: 1,
+                        info: err.message
+                    });
+                    return;
+                }
+                table = 'Reservation';
+                condition = req.body;
+                condition = jsonToAnd(condition);
+                connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) { // 退款成功，则删除挂号条目
                     if (err) {
                         res.json({
                             msg: 1,
@@ -532,23 +542,29 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
                         });
                         return;
                     }
-                    table = 'Reservation';
-                    condition = req.body;
-                    condition = jsonToAnd(condition);
-                    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) { // 删除挂号条目
-                        if (err) {
-                            res.json({
-                                msg: 1,
-                                info: err.message
-                            });
-                            return;
-                        }
-                        res.json({
-                            msg: 0,
-                            info: '挂号已取消'
-                        });
+                    res.json({
+                        msg: 0,
+                        info: '挂号已取消，已退款'
                     });
                 });
+            });
+        } else {    // 若没有支付，则直接删除记录
+            table = 'Reservation';
+            condition = req.body;
+            condition = jsonToAnd(condition);
+            connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) { // 退款成功，则删除挂号条目
+                if (err) {
+                    res.json({
+                        msg: 1,
+                        info: err.message
+                    });
+                    return;
+                }
+                res.json({
+                    msg: 0,
+                    info: '挂号已取消，未退款'
+                });
+            });
         }
     };
     select(table, condition, callback, columns);
@@ -671,7 +687,8 @@ exports.Pay_Reservation = function (req, res) {
             Reservation_PayTime: req.body.Reservation_PayTime
         };
         condition = jsonToAnd(condition);
-        connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+        //connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
+        connect.query('UPDATE Reservation, User SET Amount=Amount-'+rows[0].Reservation_PayAmount+ ', Reservation_Payed=1, Reservation_PayTime='+req.body.Reservation_PayTime+' WHERE ' + condition, function (err, result) {
             if (err) {
                 res.json({
                     msg: 1,
