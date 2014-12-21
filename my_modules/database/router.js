@@ -144,6 +144,8 @@ router.post('/Get_History_Reservation', dbhelper.Get_History_Reservation);
 
 router.post('/Get_Cash', dbhelper.Get_Cash);
 
-router.post('/Get_Password', dbhelper.Get_Password);
+router.post('/Get_Password_Admin', dbhelper.Get_Password_Admin);
+
+router.post('/Get_Password_User', dbhelper.Get_Password_User);
 
 module.exports = router;

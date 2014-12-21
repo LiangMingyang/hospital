@@ -1804,9 +1804,33 @@ exports.Get_Cash = function(req, res) {
     });
 };
 
+// IN: Admin_ID, OUT: msg, Password
+exports.Get_Password_Admin = function(req, res) {
+    connect.query('Select PASSWORD from Admin where Admin_ID=' + req.body.Admin_ID, function(err, rows) {
+        if (!!err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows.length<1) {
+            res.json({
+                msg: 1,
+                info: 'No such admin'
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            password: rows[0].PASSWORD
+        });
+    });
+};
+
 // IN: User_ID, OUT: msg, Password
-exports.Get_Password = function(req, res) {
-    connect.query('Select Amount from User where User_ID=' + req.body.User_ID, function(err, rows) {
+exports.Get_Password_User = function(req, res) {
+    connect.query('Select PASSWORD from User where User_ID=' + req.body.User_ID, function(err, rows) {
         if (!!err) {
             res.json({
                 msg: 1,
