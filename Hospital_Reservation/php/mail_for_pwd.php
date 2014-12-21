@@ -10,7 +10,7 @@
     	}  
     	return $randpwd;  
     }  
-	$conn=mysql_connect("localhost","root","");
+	$conn=mysql_connect("localhost","root","root");
 	if(!$conn){
 		echo "Fail to Connect ".mysql_error();
 	}
