@@ -647,7 +647,7 @@ exports.Pay_Reservation = function (req, res) {
             });
             return;
         }
-        if (rows[0].Reservation_Payed == 0) {
+        if (rows[0].Reservation_Payed == 1) {
             res.json({
                 msg: 1,
                 info: '挂号单已支付过'
@@ -667,7 +667,7 @@ exports.Pay_Reservation = function (req, res) {
         };
         var dest = {
             Amount: Amount - rows[0].Reservation_PayAmount,
-            Reservation_Payed: 0,
+            Reservation_Payed: 1,
             Reservation_PayTime: req.body.Reservation_PayTime
         };
         condition = jsonToAnd(condition);
