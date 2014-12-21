@@ -484,6 +484,7 @@ exports.Reservation = function (req, res) {
         table = 'Reservation';
         condition = req.body;
         condition.Reservation_PayAmount = rows[0].Doctor_Fee; // 之前顺便查了Doctor_Fee，节省了一次查询
+        //condition.Operation_Time = 
         connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) { // 插入挂号信息
             if (err) {
                 res.json({
@@ -681,11 +682,11 @@ exports.Pay_Reservation = function (req, res) {
                 'Reservation.User_ID': 'User.User_ID'
             }
         };
-        var dest = {
+        /*var dest = {
             Amount: Amount - rows[0].Reservation_PayAmount,
             Reservation_Payed: 1,
             Reservation_PayTime: req.body.Reservation_PayTime
-        };
+        };*/
         condition = jsonToAnd(condition);
         //connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
         connect.query('UPDATE Reservation, User SET Amount=Amount-'+rows[0].Reservation_PayAmount+ ', Reservation_Payed=1, Reservation_PayTime='+req.body.Reservation_PayTime+' WHERE ' + condition, function (err, result) {
