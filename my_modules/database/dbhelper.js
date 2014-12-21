@@ -688,7 +688,7 @@ exports.Pay_Reservation = function (req, res) {
         ];
         condition = {
             Reservation_ID: req.body.Reservation_ID,
-            'User.User_ID': req.body.User_ID,
+            //'User.User_ID': req.body.User_ID,
             relation: {
                 'Reservation.User_ID': 'User.User_ID'
             }
