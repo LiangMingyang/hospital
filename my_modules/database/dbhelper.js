@@ -1781,3 +1781,27 @@ exports.Update_Doctor_Time = function(req, res) {
     });
 };
 
+// IN: User_ID, OUT: msg, Amount
+exports.Get_Cash = function(req, res) {
+    connect.query('Select Amount from User where User_ID=' + req.body.User_ID, function(err, rows) {
+        if (!!err) {
+            res.json({
+                msg: 1,
+                info: err.message
+            });
+            return;
+        }
+        if (rows.length<1) {
+            res.json({
+                msg: 1,
+                info: 'No such user'
+            });
+            return;
+        }
+        res.json({
+            msg: 0,
+            amount: rows[0].Amount
+        });
+    });
+};
+

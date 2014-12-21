@@ -142,4 +142,6 @@ router.post('/Update_Doctor_Time', dbhelper.Update_Doctor_Time);
 
 router.post('/Get_History_Reservation', dbhelper.Get_History_Reservation);
 
+router.post('/Get_Cash', dbhelper.Get_Cash);
+
 module.exports = router;
