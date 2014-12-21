@@ -8,56 +8,62 @@
     <script type="text/javascript" src="js/sha1.js"></script>
 
     <script type="text/javascript" src="js/hospitaltime.js"></script>
-     <!-- 导航栏-->
+
+    <!-- 导航栏-->
     <link href="css/topanv.v1.0.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="js/topanv.js"></script>
 
     <!--弹窗-->
-    <script type="text/javascript"  src="js/jquery.hDialog.min.js"></script>
+    <script type="text/javascript"  src="js/jquery.hDialog.js"></script>
     <link rel="stylesheet" href="css/common.css"/><!-- 基本样式 -->
     <link rel="stylesheet" href="css/animate.min.css"/> <!-- 动画效果 -->
-     <?php
+
+    <?php
     @header('Content-type: text/html;charset=UTF-8');
     //http://localhost:63342/SystemAnalysisProject/hospitaltime.php?hpid=3&dpmid=5&dpmname=%E7%9C%BC%E7%A7%91
     //输出医院id和科室id
         echo '<script type="text/javascript">var hospital_id='.$_REQUEST['hpid'].';'.'var department_id='.$_REQUEST['dpmid'].';var department_name=\''.$_REQUEST['dpmname'].'\';</script>';
     ?>
+
     <?php
-         session_start();
-    	 if (isset($_SESSION['UserName']))
-    	 {echo "<script type='text/javascript'>var username=".$_SESSION['UserName'].";</script>";}
-    	  //保存
-    	if($_SESSION['isUser']==""){
-    		$_SESSION['isUser']=$_POST['isUser'];
-    		if($_SESSION['isUser']=='1'){
-        		$_SESSION["Province_ID"]=$_POST["Province_ID"];
-        		$_SESSION["Province_Name"]=$_POST['Province_Name'];
-        		$_SESSION["Credit_Rank"]=$_POST['Credit_Rank'];
-        		$_SESSION["UserName"]=$_POST['UserName'];
-        		$_SESSION["User_ID"]=$_POST['User_ID'];
-        		$_SESSION["Credit_Rank"]=$_POST["Credit_Rank"];
-        		$_SESSION["Area_ID"]=$_POST['Area_ID'];
-        		$_SESSION["Area_Name"]=$_POST['Area_Name'];
-        		$_SESSION["Appointment_Limit"]=$_POST['Appointment_Limit'];
-        		$_SESSION["Identity_ID"]=$_POST['Identity_ID'];
-        		$_SESSION["Sex"]=$_POST["Sex"];
-        		$_SESSION["Birthday"]=$_POST['Birthday'];
-        		$_SESSION["Location"]=$_POST['Location'];
-        		$_SESSION["Phone"]=$_POST['Phone'];
-        		$_SESSION["Mail"]=$_POST['Mail'];
-        		$_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
-        		unset($_SESSION['rd_token']);
-        		$_SESSION['rd_token']="";
-    		}
-    		else if($_SESSION['isUser']=='0'){
-        		$_SESSION['Admin_ID']=$_POST['Admin_ID'];
-        		$_SESSION['Admin_Name']=$_POST['Admin_Name'];
-        		$_SESSION['isSuper']=$_POST['isSuper'];
-        		$_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
-        		unset($_SESSION['rd_token']);
-        		$_SESSION['rd_token']="";
-    		}
-    	}
+    session_start();
+    if (isset($_SESSION['UserName']))
+    {echo "<script type='text/javascript'>var username=\"".$_SESSION['UserName']."\";</script>";}
+    echo "<script type='text/javascript'>var User_ID=2;</script>";
+    //登陆之后跳转回来的时候将登陆信息保存
+    if (isset($_SESSION['tiaozhuan']))//判断是否跳转到本页面
+        if($_SESSION['isUser']==""){
+            $_SESSION['isUser']=$_POST['isUser'];
+            if($_SESSION['isUser']=='1'){
+                $_SESSION["Province_ID"]=$_POST["Province_ID"];
+                $_SESSION["Province_Name"]=$_POST['Province_Name'];
+                $_SESSION["Credit_Rank"]=$_POST['Credit_Rank'];
+                $_SESSION["UserName"]=$_POST['UserName'];
+                $_SESSION["User_ID"]=$_POST['User_ID'];
+                echo "<script type='text/javascript'>var User_ID=".$_SESSION['User_ID'].";</script>";
+                $_SESSION["Credit_Rank"]=$_POST["Credit_Rank"];
+                $_SESSION["Area_ID"]=$_POST['Area_ID'];
+                $_SESSION["Area_Name"]=$_POST['Area_Name'];
+                $_SESSION["Appointment_Limit"]=$_POST['Appointment_Limit'];
+                $_SESSION["Identity_ID"]=$_POST['Identity_ID'];
+                $_SESSION["Sex"]=$_POST["Sex"];
+                $_SESSION["Birthday"]=$_POST['Birthday'];
+                $_SESSION["Location"]=$_POST['Location'];
+                $_SESSION["Phone"]=$_POST['Phone'];
+                $_SESSION["Mail"]=$_POST['Mail'];
+                $_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
+                unset($_SESSION['rd_token']);
+                $_SESSION['rd_token']="";
+            }
+            else if($_SESSION['isUser']=='0'){
+                $_SESSION['Admin_ID']=$_POST['Admin_ID'];
+                $_SESSION['Admin_Name']=$_POST['Admin_Name'];
+                $_SESSION['isSuper']=$_POST['isSuper'];
+                $_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
+                unset($_SESSION['rd_token']);
+                $_SESSION['rd_token']="";
+            }
+        }
     ?>
 </head>
 <body>
@@ -76,7 +82,7 @@
             </div>
         </div>
         <div id="btn"> <a style="color:#FFF" target="_blank" href="#">注册</a> </div>
-        <div id="btn"> <a style="color:#FFF" target="_self" href="./php/login.php">登录</a> </div>
+        <div id="btn"> <a style="color:#FFF" target="_blank" href="#">登陆</a> </div>
         <div id="btn"> <a style="color:#FFF" target="_blank" href="#">您所在的城市为：[]，点击可更换</a> </div>
     </div>
 </div>
@@ -173,22 +179,12 @@
                     </table>
 
                     <table align="center" border="0" cellpadding="1" cellspacing="1" width="800" id="doctorcontent">
-                        <tbody><tr>
+                        <tbody id="doctortbody"><tr>
                             <td class="tdtitle">医生</td>
                             <td class="tdtitle">时间段</td>
                             <td class="tdtitle">操作</td></tr>
-                        <tr>
-                            <td>徐敏丽</td>
-                            <td><a href="javascript:void(0)" onclick="return tgai()" target="_balnk">预约挂号</a></td>
-                        </tr>
                         </tbody></table>
                 </div>
-                <div style="float: left; display: block;" id="cboxTitle">全国预约挂号统一平台</div>
-                <div style="float: left; display: none;" id="cboxCurrent"></div>
-                <div style="float: left; display: none;" id="cboxNext"></div>
-                <div style="float: left; display: none;" id="cboxPrevious"></div>
-                <div style="float: left; display: none;" id="cboxSlideshow"></div>
-                <div style="float: left;" id="cboxClose" onclick="boxclose()">close</div>
             </div>
             <div style="float: left; height: 761px;" id="cboxMiddleRight"></div>
         </div>
@@ -238,12 +234,13 @@
     <form action="" method="post" onsubmit="return false;">
         <ul class="list">
             <li>
-                <strong>请将您的病状简要描述一下：<font color="#ff0000">*</font></strong>
-                <div class="fl"><input type="text" name="Reseration_Symptom" value="" class="ipt Reseration_Symptom" /></div>
+                <strong>请简要描述一下您的病状：<font color="#ff0000">*</font></strong>
+                <div class="fl"><textarea name="Reseration_Symptom"  class="ipt Reseration_Symptom"></textarea></div>
             </li>
             <li><input type="submit" value="确认提交" class="submitBtn" /></li>
         </ul>
     </form>
 </div><!-- HBox end -->
+
 </body>
 </html>

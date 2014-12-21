@@ -1,52 +1,4 @@
-<?php
-    session_start();
-	//session_register('isUser');
-	$_SESSION['isUser']="";
-    if (isset($_SESSION['UserName']))
-    {echo "<script type='text/javascript'>var username=".$_SESSION['UserName'].";</script>";}
-    $_SESSION['rd_token']="#";
-    //$_SESSION['User_ID']=="#"
-    if (isset($_SESSION['Province_ID']))
-    {echo "<script type='text/javascript'>var Province_ID="  .$_SESSION["Province_ID"].   ";var Province_Name="  .  $_SESSION["Province_Name"] .";</script>";}
-    
-	if (isset($_SESSION['tiaozhuan']))
-	//if ($_SERVER[ 'HTTP_REFERER' ]!="")
-	if($_SESSION['isUser']==""){
-   		$_SESSION['isUser']=$_POST['isUser'];
-   		if($_SESSION['isUser']=='1'){
-   	  		$_SESSION["Province_ID"]=$_POST["Province_ID"];
-      		$_SESSION["Province_Name"]=$_POST['Province_Name'];
-      		$_SESSION["Credit_Rank"]=$_POST['Credit_Rank'];
-      		$_SESSION["UserName"]=$_POST['UserName'];
-      		$_SESSION["User_ID"]=$_POST['User_ID'];  
-	  		$_SESSION["Credit_Rank"]=$_POST["Credit_Rank"];
-      		$_SESSION["Area_ID"]=$_POST['Area_ID'];
-      		$_SESSION["Area_Name"]=$_POST['Area_Name'];
-      		$_SESSION["Appointment_Limit"]=$_POST['Appointment_Limit'];
-      		$_SESSION["Identity_ID"]=$_POST['Identity_ID'];			 	
-	  		$_SESSION["Sex"]=$_POST["Sex"];
-      		$_SESSION["Birthday"]=$_POST['Birthday'];
-      		$_SESSION["Location"]=$_POST['Location'];
-      		$_SESSION["Phone"]=$_POST['Phone'];
-	  		$_SESSION["Mail"]=$_POST['Mail'];		
-	  		$_SESSION['LastLogInTime']=$_POST['LastLogInTime'];	
-			unset($_SESSION['rd_token']);
-		    $_SESSION['rd_token']=""; 				 
-   		}
-   		else if($_SESSION['isUser']=='0'){
-   	 		$_SESSION['Admin_ID']=$_POST['Admin_ID'];
-	 		$_SESSION['Admin_Name']=$_POST['Admin_Name'];
-	 		$_SESSION['isSuper']=$_POST['isSuper'];
-	 		$_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
-			unset($_SESSION['rd_token']);
-		    $_SESSION['rd_token']="";
-   		}
-}
-  //if($_SESSION['rd_token']=='#'||$_SESSION['isUser']!="1"&&$_SESSION['isUser']!="0"){
- //	 echo "<script>window.location.href='../php/login.php'</script>";}
-  
-	?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -77,10 +29,56 @@
     <!--筛选、列表-->
     <link rel="stylesheet" href="css/hospitallist.css" type="text/css" />
 
-   
+    <?php
+    session_start();
+    if (!isset($_SESSION['rd_token']))
+        $_SESSION['rd_token']="#";//#未登录 空已登录
+
+    //$_SESSION['User_ID']=="#"
+    if (isset($_SESSION['Province_ID']))
+    {echo "<script type='text/javascript'>var Province_ID="  .$_SESSION["Province_ID"].   ";var Province_Name="  .  $_SESSION["Province_Name"] .";</script>";}
+    if (isset($_SESSION['UserName']))
+    {echo "<script type='text/javascript'>var username=".$_SESSION['UserName'].";</script>";}
+
+    //登陆之后跳转回来的时候将登陆信息保存
+    if (isset($_SESSION['tiaozhuan']))
+    {//判断是否跳转到本页面
+        unset($_SESSION['tiaozhuan']);
+        if($_SESSION['isUser']==""){
+            $_SESSION['isUser']=$_POST['isUser'];
+            if($_SESSION['isUser']=='1'){
+                $_SESSION["Province_ID"]=$_POST["Province_ID"];
+                $_SESSION["Province_Name"]=$_POST['Province_Name'];
+                $_SESSION["Credit_Rank"]=$_POST['Credit_Rank'];
+                $_SESSION["UserName"]=$_POST['UserName'];
+                $_SESSION["User_ID"]=$_POST['User_ID'];
+                $_SESSION["Credit_Rank"]=$_POST["Credit_Rank"];
+                $_SESSION["Area_ID"]=$_POST['Area_ID'];
+                $_SESSION["Area_Name"]=$_POST['Area_Name'];
+                $_SESSION["Appointment_Limit"]=$_POST['Appointment_Limit'];
+                $_SESSION["Identity_ID"]=$_POST['Identity_ID'];
+                $_SESSION["Sex"]=$_POST["Sex"];
+                $_SESSION["Birthday"]=$_POST['Birthday'];
+                $_SESSION["Location"]=$_POST['Location'];
+                $_SESSION["Phone"]=$_POST['Phone'];
+                $_SESSION["Mail"]=$_POST['Mail'];
+                $_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
+                //unset($_SESSION['rd_token']);
+                $_SESSION['rd_token']="";
+            }
+            else if($_SESSION['isUser']=='0'){
+                $_SESSION['Admin_ID']=$_POST['Admin_ID'];
+                $_SESSION['Admin_Name']=$_POST['Admin_Name'];
+                $_SESSION['isSuper']=$_POST['isSuper'];
+                $_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
+                //unset($_SESSION['rd_token']);
+                $_SESSION['rd_token']="";
+            }
+        }
+    }
+    ?>
 </head>
 <body>
-
 
 <!-- 导航栏代码begin -->
 <div id="topnavbar" style="display: block;">
@@ -96,17 +94,18 @@
           </div>
       </div>
       <?php
+      
       if ($_SESSION['rd_token']=="#")
       {
           echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_blank\" href=\"php/register.php\">注册</a> </div>";
-          echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_self\" href=\"php/login.php?lastweb=".$_SERVER[ 'REQUEST_URI' ]."\">登陆</a> </div>";
+          echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_self\" href=\"php/login.php?lastweb=../index.php\">登录</a> </div>";
       }
       else {
-          echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_self\" href=\"php/IndividualCenter.php\">".$_SESSION["UserName"]."点击进去个人中心</a> </div>";
+          echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_self\" href=\"php/IndividualCenter.php\">".$_SESSION['UserName']."点击进入个人中心</a> </div>";
       }
 
       ?>
-      <div id="btn"> <a style="color:#FFF" target="_blank" href="#">您所在的城市为：[]，点击可更换</a> </div>
+      <div id="btn"> <a style="color:#FFF" target="_blank" href="#">您所在的城市为：[<span><?php  echo $_REQUEST['Province_Name'] ?>  </span> ]，点击可更换</a> </div>
   </div>
 </div>
 <!-- 导航栏代码end -->

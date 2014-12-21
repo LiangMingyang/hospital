@@ -86,13 +86,13 @@ function Find_Doctor_By_Condition_Free(Hospital_ID,Depart_ID,Duty_Time,Reservati
         //complete :function(){$("#load").hide();},//AJAX请求完成时隐藏loading提示
         success: function(msg) {//msg为返回的数据，在这里做数据绑定
             //var data = eval("("+msg+")").content;
+            if (msg.msg!=0)return;
             var data = msg.content;
             doctor[Hospital_ID.toString()+Depart_ID.toString()+Reservation_Time.toString()]=msg.content;
-            //return (data.length>0);
             if (data.length>0)
             {
                 $(divid).attr("class","greenbg");
-                $(divid+" a").attr("onclick",'showdoctor('+hospital_id+','+department_id+',\"'+Reservation_Time+'\")');
+                $(divid+" a").attr("onclick",'showdoctor('+hospital_id+','+department_id+',\''+Reservation_Time+'\')');
                 $(divid+" span").empty().append("预约");
             }
         }
@@ -171,7 +171,6 @@ function gen_calendar(year,month)//month已经+1
         //<td class="detailtext"><div class="orgbg"><a class="iframe cboxElement" href="ghao.php?hpid=142&amp;keid=1220114&amp;date1=2014-12-15" title="北京市预约挂号统一平台"><p>15</p><span>约满</span></a></div></td>
         //<td class="detailtext"><div class="greenbg"><a class="iframe cboxElement" href="ghao.php?hpid=142&amp;keid=1220114&amp;date1=2014-12-16" title="北京市预约挂号统一平台"><p>16</p><span>预约</span></a></div></td>
         gen_num++;
-
         if ((i>=myDate.getDate()&&month-1==myDate.getMonth()&&year==myDate.getFullYear())||(month-1>myDate.getMonth()&&year>=myDate.getFullYear())||(year>myDate.getFullYear()))
         {
             genstart=true;
@@ -181,23 +180,27 @@ function gen_calendar(year,month)//month已经+1
             var Reservation_Time=myDate.getFullYear()+'-'+(month)+'-'+i;
             var Duty_Time=new Date(Date.parse((year+'-'+(month)+'-'+i).replace(/\-/g,"/"))).getDay();
             if (Duty_Time==0)Duty_Time=7;
-            if (Find_Doctor_By_Condition_Free(hospital_id,department_id,Duty_Time+'1',Reservation_Time)||Find_Doctor_By_Condition_Free(hospital_id,department_id,Duty_Time+'2',Reservation_Time))
+            Find_Doctor_By_Condition_Free(hospital_id,department_id,Duty_Time+'1',Reservation_Time,'#day'+i);
+            Find_Doctor_By_Condition_Free(hospital_id,department_id,Duty_Time+'2',Reservation_Time,'#day'+i);
+            newelement+='<div class="orgbg" id=\"day'+i+'\"><a class="iframe cboxElement" href="javascript:void(0)" onclick=""';
+            newelement+='><p>'+i+'</p><span>约满</span></a></div></td>';
+            /*if (Find_Doctor_By_Condition_Free(hospital_id,department_id,Duty_Time+'1',Reservation_Time)||Find_Doctor_By_Condition_Free(hospital_id,department_id,Duty_Time+'2',Reservation_Time))
             {
                 newelement+='<div class="greenbg" id=\"day'+i+'\"><a class="iframe cboxElement" href="javascript:void(0)" onclick="';
                 newelement+='showdoctor('+hospital_id+','+department_id+',\"'+Reservation_Time+'\")';
                 newelement+='"><p>'+i+'</p><span>预约</span></a></div></td>';
-                /*$("#calendar").append('<div class="greenbg"><a class="iframe cboxElement" href="javascript:void(0)" onclick="');
-                $("#calendar").append('showdoctor('+hospital_id+','+department_id+',\"'+Reservation_Time+'\")');
-                $("#calendar").append('"><p>'+i+'</p><span>预约</span></a></div></td>');*/
+                //$("#calendar").append('<div class="greenbg"><a class="iframe cboxElement" href="javascript:void(0)" onclick="');
+                //$("#calendar").append('showdoctor('+hospital_id+','+department_id+',\"'+Reservation_Time+'\")');
+                //$("#calendar").append('"><p>'+i+'</p><span>预约</span></a></div></td>');
             }else
             {
                 //newelement+='<div class="orgbg">';
                 newelement+='<div class="orgbg" id=\"day'+i+'\"><a class="iframe cboxElement" href="javascript:void(0)" onclick=""';
                 newelement+='><p>'+i+'</p><span>约满</span></a></div></td>';
-                /*$("#calendar").append('<div class="orgbg">');
-                $("#calendar").append('<div class="greenbg"><a class="iframe cboxElement" href="javascript:void(0)"');
-                $("#calendar").append('><p>'+i+'</p><span>约满</span></a></div></td>');+*/
-            }
+                //$("#calendar").append('<div class="orgbg">');
+                //$("#calendar").append('<div class="greenbg"><a class="iframe cboxElement" href="javascript:void(0)"');
+                //$("#calendar").append('><p>'+i+'</p><span>约满</span></a></div></td>');
+            }*/
             newelement+='</td>';
             $("#calendar").append(newelement);
         }
@@ -220,16 +223,21 @@ function gen_calendar(year,month)//month已经+1
 function showdoctor(Hospital_ID,Depart_ID,Reservation_Time)
 {
     var data=doctor[Hospital_ID.toString()+Depart_ID.toString()+Reservation_Time.toString()];
-    var DutyTime=new Date(Reservation_Time).getDay();
+    var Duty_Time=new Date(Date.parse((Reservation_Time).replace(/\-/g,"/"))).getDay();
+    if (Duty_Time==0)Duty_Time=7;
     //$("doctorcontent").append('<tbody><tr><td class="tdtitle">医生</td><td class="tdtitle">操作</td></tr><tr>');
     $.each(data,function(idx,item){
-        var newelement='<tr><td>'+item.Doctor_Name+'</td><td>上午</td><td><a class="doctororder" href="javascript:void(0)" onclick="initHbox('+item.Doctor_ID+','+DutyTime+'1'+','+User_ID+','+Reservation_Time+','+'") target="_balnk">预约挂号</a></td></tr>';
-        $("#doctorcontent tbody").append(newelement);
-        newelement='<tr><td>'+item.Doctor_Name+'</td><td>下午</td><td><a class="doctororder" href="javascript:void(0)" onclick="initHbox('+item.Doctor_ID+','+DutyTime+'2'+','+User_ID+','+Reservation_Time+','+'") target="_balnk">预约挂号</a></td></tr>';
-        $("#doctorcontent tbody").append(newelement);
+        var newelement='<tr><td>' +item.Doctor_Name+'</td><td>上午</td><td><a class=\"doctororder\" href="javascript:void(0)" ';
+        newelement+='onclick=\"initHbox('+item.Doctor_ID+','+User_ID+',\''+Reservation_Time+'\','+(Duty_Time+'1')+')\">';
+        newelement+='预约挂号</a></td></tr>';
+        $("#doctortbody").append(newelement);
+        var newelement='<tr><td>' +item.Doctor_Name+'</td><td>上午</td><td><a class=\"doctororder\" href="javascript:void(0)" ';
+        newelement+='onclick=\"initHbox('+item.Doctor_ID+','+User_ID+',\''+Reservation_Time+'\','+(Duty_Time+'2')+')\">';
+        newelement+='预约挂号</a></td></tr>';
+        $("#doctortbody").append(newelement);
     });
 
-    $(".doctororder").hDialog();
+    $(".doctororder").hDialog({width: 500,height: 350});
     $("#cboxOverlay").css({"display":"block","opacity":"0.9"});
     $("#colorbox").css({"display":"block"});
 }
@@ -255,7 +263,7 @@ function Reservation(Doctor_ID,User_ID,Reservation_Time,DutyTime,Reseration_Symp
             Doctor_ID:Doctor_ID,
             User_ID:User_ID,
             Reservation_Time:Reservation_Time,
-            DutyTime:DutyTime,
+            Duty_Time:DutyTime,
             Reseration_Symptom:Reseration_Symptom
         },//要发送的数据
         //complete :function(){$("#load").hide();},//AJAX请求完成时隐藏loading提示
@@ -263,7 +271,10 @@ function Reservation(Doctor_ID,User_ID,Reservation_Time,DutyTime,Reseration_Symp
             if (msg.msg==0)
             {
                 alert("预约成功！");
-            }else alert("预约失败！");
+                $(".doctororder").hDialog('close',{box:'#HBox'});
+            }else {
+                alert("预约失败！");
+            }
         }
     });
 }

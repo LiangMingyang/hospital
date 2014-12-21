@@ -6,16 +6,22 @@ function command(module,url)
 	$('#rightFrame').attr('src',WEB_ROOT+module+'/'+url);
 }
 function logout(){
+	var logoutval=false;
 	art.dialog({
 		title:'提示',
 		content:'确定退出吗？',
 		icon:'warning',
 		okVal:'确定',
 		ok:function(){
+			logoutval=true;
 			$.ajax({
 				type: "post",//使用post方法访问后台
 				dataType: "json",//返回json格式的数据
-				url:'php/logout.php'
+				url:'../php/logout.php',
+				async:false,
+				success:function(data){
+					logoutval=true;
+				}
 			});
 			window.location.href="../php/login.php";
 		},

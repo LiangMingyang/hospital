@@ -65,7 +65,7 @@ function Get_HospitalInfo_detail(hospital_id)
                 newelement+='</label>';
                 $(".listbox .hospital").append(newelement);
 
-                $(".listbox .notes img").attr("src",item.Hospital_Picture_url);
+                $(".listbox .notes img").attr("src",item.Hospital_Picture_Url);
                 newelement="<li>联系地址："+item.Hospital_Location+"</li>"+"<li>医院简介："+item.Hospital_Introduction+"</li>"+"<li>开诊时间："+item.Reservation_Start_Time+"</li>"+"<li>结诊时间："+item.Reservation_End_Time+"</li>";
                 $(".listbox .notes span").append(newelement);
             });

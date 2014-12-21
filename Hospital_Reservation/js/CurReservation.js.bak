@@ -444,7 +444,7 @@ function printAppointmentSheet(t){
 		},
 		success:function(data){
 			if(data.msg=='0'){	
-				data=data.content[0];	
+				data=data.content;	
 				data.Reservation_Time=getStandardDt_only(data.Reservation_Time);
 				if(data.Duty_Time%10==1){
 					data.Reservation_Time+="上午";

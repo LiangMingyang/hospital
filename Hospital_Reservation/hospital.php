@@ -28,6 +28,40 @@
     //$_SESSION['User_ID']=="#"
     if (isset($_SESSION['Province_ID']))
     {echo "<script type='text/javascript'>var Province_ID="  .$_SESSION["Province_ID"].   ";var Province_Name="  .  $_SESSION["Province_Name"] .";</script>";}
+
+    //登陆之后跳转回来的时候将登陆信息保存
+    if (isset($_SESSION['tiaozhuan']))//判断是否跳转到本页面
+        if($_SESSION['isUser']==""){
+            $_SESSION['isUser']=$_POST['isUser'];
+            if($_SESSION['isUser']=='1'){
+                $_SESSION["Province_ID"]=$_POST["Province_ID"];
+                $_SESSION["Province_Name"]=$_POST['Province_Name'];
+                $_SESSION["Credit_Rank"]=$_POST['Credit_Rank'];
+                $_SESSION["UserName"]=$_POST['UserName'];
+                $_SESSION["User_ID"]=$_POST['User_ID'];
+                $_SESSION["Credit_Rank"]=$_POST["Credit_Rank"];
+                $_SESSION["Area_ID"]=$_POST['Area_ID'];
+                $_SESSION["Area_Name"]=$_POST['Area_Name'];
+                $_SESSION["Appointment_Limit"]=$_POST['Appointment_Limit'];
+                $_SESSION["Identity_ID"]=$_POST['Identity_ID'];
+                $_SESSION["Sex"]=$_POST["Sex"];
+                $_SESSION["Birthday"]=$_POST['Birthday'];
+                $_SESSION["Location"]=$_POST['Location'];
+                $_SESSION["Phone"]=$_POST['Phone'];
+                $_SESSION["Mail"]=$_POST['Mail'];
+                $_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
+                unset($_SESSION['rd_token']);
+                $_SESSION['rd_token']="";
+            }
+            else if($_SESSION['isUser']=='0'){
+                $_SESSION['Admin_ID']=$_POST['Admin_ID'];
+                $_SESSION['Admin_Name']=$_POST['Admin_Name'];
+                $_SESSION['isSuper']=$_POST['isSuper'];
+                $_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
+                unset($_SESSION['rd_token']);
+                $_SESSION['rd_token']="";
+            }
+        }
     ?>
 </head>
 <body>
