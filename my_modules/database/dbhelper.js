@@ -460,14 +460,15 @@ exports.Reservation = function (req, res) {
     ];
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
-    connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition, [columns, table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
-        if (err) {
+    var q = connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition, [columns, table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+        if (!!err) {
             res.json({
                 msg: 1,
                 info: err.message
             });
             return;
         }
+        console.log('The count of reservation is ' + rows[0] + ' and doctor limit is ' + rows[0]);
         if (rows[0].count >= rows[0].Doctor_Limit) { // 若不小于Doctor_Limit，返回挂号数已满
             res.json({
                 msg: 2,
@@ -492,6 +493,7 @@ exports.Reservation = function (req, res) {
             });
         });
     });
+    console.log(q.sql);
 };
 
 exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
