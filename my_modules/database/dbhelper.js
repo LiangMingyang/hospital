@@ -700,7 +700,7 @@ exports.Pay_Reservation = function (req, res) {
         };*/
         condition = jsonToAnd(condition);
         //connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
-        connect.query('UPDATE Reservation, User SET Amount=Amount-'+rows[0].Reservation_PayAmount+ ', Reservation_Payed=1, Reservation_PayTime='+currentDatetime();+' WHERE ' + condition, function (err, result) {
+        connect.query('UPDATE Reservation, User SET Amount=Amount-'+rows[0].Reservation_PayAmount+ ', Reservation_Payed=1, Reservation_PayTime='+currentDatetime()+' WHERE ' + condition, function (err, result) {
             if (err) {
                 res.json({
                     msg: 1,
