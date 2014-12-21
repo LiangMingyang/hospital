@@ -3,6 +3,9 @@ var strftime = require("strftime");
 var connect = global.connect;
 
 exports.check = function (req, res, next) {
+    next();
+    return;
+
     var secret = global.secret_key;
     var sendtime = new Date(req.body.encrypttime);
     var token = req.body.token;
