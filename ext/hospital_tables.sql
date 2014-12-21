@@ -29,10 +29,10 @@ CREATE TABLE Hospital (
     Hospital_Level INT (2),
     Hospital_Introduction VARCHAR (200),
     Hospital_Name VARCHAR (30) NOT NULL,
-    Hospital_Location VARCHAR (20),
+    Hospital_Location VARCHAR (50),
     Reservation_Start_Time DATETIME,
     Reservation_End_Time DATETIME,
-    Hospital_Picture_url VARCHAR (50),
+    Hospital_Picture_url VARCHAR (200),
     PRIMARY KEY (Hospital_ID),
     FOREIGN KEY (Area_ID) REFERENCES Area(Area_ID) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8;
@@ -53,7 +53,7 @@ CREATE TABLE Doctor (
     Doctor_Fee DECIMAL (4, 2),
     Doctor_Limit INT (2),
     Doctor_Major VARCHAR (30),
-    Doctor_Picture_url VARCHAR (50),
+    Doctor_Picture_url VARCHAR (200),
     PRIMARY KEY (Doctor_ID),
     FOREIGN KEY (Depart_ID) REFERENCES Depart(Depart_ID) ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8;
