@@ -58,7 +58,7 @@ var jsonToAnd = function (data) {
 
 var select = function (table, condition, callback, columns) { // SELECT语句的封装，便于重用
     condition = jsonToAnd(condition);
-    if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
+    if (condition.trim() != '') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
     if (columns) {
@@ -626,8 +626,7 @@ exports.In_Cash = function (req, res) {
 exports.Pay_Reservation = function (req, res) {
     var table = 'Reservation';
     var condition = {
-        Reservation_ID: req.body.Reservation_ID,
-        User_ID: req.body.User_ID
+        Reservation_ID: req.body.Reservation_ID
     };
     var columns = [
         'Reservation_Payed',
