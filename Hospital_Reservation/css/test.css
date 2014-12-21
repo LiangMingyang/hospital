@@ -1,0 +1,75 @@
+body{
+    text-align: center;
+}
+.hospital_list{
+    width: 987px;
+    clear: both;
+    margin: 0px auto;
+    overflow: hidden;
+}
+.hospital_list .content{
+    float: left;
+    overflow: hidden;
+    width: 967px;
+    margin: 10px;
+    display: inline;
+    text-align: left;
+}
+
+.hospital_list ul {
+    padding:0;
+    margin:0;
+}
+.hospital_list li{
+    width: 463px;
+    margin: 10px;
+    float:left;
+    overflow: hidden;
+}
+.hospital_list li strong {
+    float: left;
+    overflow: hidden;
+    width: 305px;
+    margin-left: 10px;
+    color: #035B9E;
+    font-family: 微软雅黑;
+    font-size: 14px;
+    font-weight: bold;
+    font-style: normal;
+    line-height: 24px;
+    text-align: left;
+}
+.hospital_list p{
+    float: left;
+    overflow: hidden;
+    width: 305px;
+    margin-left: 10px;
+    color: #565656;
+    font-family: 微软雅黑;
+    font-size: 13px;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 20px;
+    text-align: left;
+}
+
+.hospital_list li img {
+    vertical-align: top;
+    float: left;
+    overflow: hidden;
+    width: 136px;
+    height: 104px;
+    border: 1px solid #CCC;
+    padding: 4px;
+}
+
+.hospital_list a{
+    text-decoration: none;
+    font-size: 14px;
+    color: #035B9E;
+}
+
+.hospital_list abbr{
+    border: 0px none;
+}
+

@@ -1,0 +1,143 @@
+.hospital_list{
+    width: 987px;
+    clear: both;
+    margin: 0px auto;
+    overflow: hidden;
+}
+.hospital_list .content{
+    float: left;
+    overflow: hidden;
+    width: 967px;
+    margin: 10px;
+    display: inline;
+    text-align: left;
+}
+
+.hospital_list ul {
+    padding:0;
+    margin:0;
+}
+.hospital_list li{
+    width: 463px;
+    margin: 10px;
+    float:left;
+    overflow: hidden;
+}
+.hospital_list li strong {
+    float: left;
+    overflow: hidden;
+    width: 305px;
+    margin-left: 10px;
+    color: #035B9E;
+    font-family: 微软雅黑;
+    font-size: 14px;
+    font-weight: bold;
+    font-style: normal;
+    line-height: 24px;
+    text-align: left;
+}
+.hospital_list p{
+    float: left;
+    overflow: hidden;
+    width: 305px;
+    margin-left: 10px;
+    color: #565656;
+    font-family: 微软雅黑;
+    font-size: 13px;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 20px;
+    text-align: left;
+}
+
+.hospital_list li img {
+    vertical-align: top;
+    float: left;
+    overflow: hidden;
+    width: 136px;
+    height: 104px;
+    border: 1px solid #CCC;
+    padding: 4px;
+}
+
+.hospital_list a{
+    text-decoration: none;
+    font-size: 14px;
+    color: #035B9E;
+}
+
+.hospital_list abbr{
+    border: 0px none;
+}
+
+.listbox {
+
+    width: 987px;
+    clear: both;
+    overflow: hidden;
+    margin: 50px auto;
+    background-color: #FFFFFF;
+}
+
+.listbox .areaList {
+    float: left;
+    overflow: hidden;
+    width: 937px;
+    margin: 10px 25px;
+}
+.listbox .title{
+    float: left;
+    overflow: hidden;
+    width: 83px;
+    font-family: 微软雅黑;
+    font-size: 14px;
+    font-weight: bold;
+    font-style: normal;
+    color: #565656;
+    display: inline;
+    line-height: 25px;
+}
+.listbox ul {
+    margin: 0px;
+}
+.listbox li {
+    float: left;
+    overflow: hidden;
+    color: #565656;
+    font-family: 微软雅黑;
+    font-size: 13px;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 25px;
+    height: 25px;
+    text-align: center;
+    padding: 0px 4px;
+    margin: 0px 5px;
+    display: inline-block;
+}
+
+.listbox a, a:visited {
+    font-family: 微软雅黑;
+    outline-style: none;
+    color: #535353;
+    text-decoration: none;
+}
+
+.listbox .selected, .selected:link, .selected:visited, .selected:hover {
+    background: none repeat scroll 0% 0% #FD8B00;
+    color: #FFF;
+    display: inline-block;
+    line-height: 25px;
+    height: 25px;
+    text-align: center;
+    text-decoration: none;
+    padding: 0px 4px;
+}
+.listbox .listboxline{
+    width: 937px;
+    clear: both;
+    overflow: hidden;
+    margin: 0px auto;
+    height: 9px;
+    background: url('/img/v2_line.gif') repeat-x scroll left center transparent;
+}

@@ -5,23 +5,17 @@
 require_once '../include/common.inc.php';
 require_once '../include/global.func.php';
 include header_inc();
-session_destroy();
+unset($_SESSION);
 unset($_POST);
-if(isset($_POST)){
-	echo "set";
-}else{
-	echo "unset";
-}
-
 if(!isset($_SESSION))
+session_unset();
+session_destroy();
 session_start();
-$_SESSION['isUser']="";
 $_SESSION['rd_token']='#';
-print_r($_SESSION);
  ?>
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<form id="backinfo_User" action="../php/IndividualCenter.php" method="post" style="display: none">
+<form id="backinfo_User" action="<?php $_SESSION['tiaozhuan']="1";echo $_REQUEST['lastweb'];?>" method="post" style="display: none">
 	<input id="Province_ID" name="Province_ID" type="text"/>
 	<input id="Province_Name" name="Province_Name" type="text"/>
 	<input id="Area_ID" name="Area_ID" type="text"/>

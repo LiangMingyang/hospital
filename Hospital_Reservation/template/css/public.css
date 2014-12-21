@@ -1,0 +1,40 @@
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,a{margin:0;padding:0;}
+body{
+	text-align:left;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+}
+html{color:#656565;}
+table{border-collapse:collapse;border-spacing:0;}
+fieldset,img,abbr,acronym{border:0;}
+input,select,textarea{ vertical-align:middle;}
+
+address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}
+ol,ul{list-style:none;}
+q:before,q:after{content:'';}
+h1,h2,h3,h4,h6{font-size:100%;font-weight:normal;}
+a{text-decoration:none;}
+
+.fl{float:left;display:inline;}
+.fr{float:right;display:inline;}
+.clear{clear:both; height:0px; overflow:hidden}
+.clearfix:after{content:'.';clear:both;height:0;overflow:hidden;display:block;visibility:hidden;}
+.clearfix,.zoom{zoom:1;}
+.zoom{overflow:hidden}
+.text_c { text-align:center;}
+
+.ml-20{ margin-left:20px;}
+.mr-32{ margin-right:32px;}
+.pb_60 { padding-bottom:60px;}
+.p20 { padding:20px;}
+.mt_25 { margin-top:25px;}
+
+.conTxt1,.conTxt2,.conTxt3{ font-family:"微软雅黑"; color:#006599; line-height:200%}
+.conTxt1{font-size:30px;}
+.conTxt2{font-size:24px;}
+.conTxt3{font-size:14px;font-weight:bold}
+.del{text-decoration:line-through}
+a:focus {
+outline: none;
+}
+a:focus{outline: none;-moz-outline-style: none; }

@@ -1,0 +1,51 @@
+<?php
+    if(!isset($_SESSION))
+	session_start();
+    date_default_timezone_set('PRC');
+    require_once('../include/HttpClient.class.php');
+	$url="http://hospital.wannakissyou.com/Get_History_Reservation";
+	$_POST['encrypttime']=date('Y-m-d H:i:s');
+	$token="songzimingdb$".$_POST['encrypttime'];
+	$arr=split("!",$_POST['query']);
+	$data['Reservation_Start_Time']=$arr[0];
+	//$data['Reservation_Start_Time']='2014-11-08';
+	$data['Reservation_End_Time']=$arr[1];
+	$data['encrypttime']=$arr[2];
+	$data['token']=sha1($data['encrypttime']);
+	$data['start']=($_POST['page']-1)*$_POST['rp'];
+    $data['size']=$_POST['rp'];
+	$pageContents = HttpClient::quickPost($url,$data); 
+
+	$ans=array();
+	$ans['rows']=array();
+	$tmp_content=json_decode($pageContents,true); 
+	if($tmp_content['msg']==0)
+	{
+		$ans['total']=$tmp_content['total'];
+		$tmp_content=$tmp_content['content'];
+		
+	}else{
+		$tmp_content['total']=0;
+		$tmp_content=array();
+	}
+
+	$len=count($tmp_content);
+	for($i=0;$i<$len;$i++){
+		$content_item=$tmp_content[$i];
+		$entry['id']=$content_item['Reservation_ID'];
+		$cell=array();
+		if($content_item['History_Reservation_Paied']==0){
+			$content_item['History_Reservation_Paied']='已支付';
+		}else{
+			$content_item['History_Reservation_Paied']='未支付';
+		}
+		$content_item['History_Reservation_Time']=date('Y-m-d',strtotime($content_item['History_Reservation_Time'])) ;
+		$content_item['History_Operation_Time']=date('Y-m-d',strtotime($content_item['History_Operation_Time']));
+		array_push($cell,$content_item['History_Reservation_ID'],$content_item['History_Reservation_Time'],
+		$content_item['History_Operation_Time'],$content_item['History_Reservation_Paied'],$content_item['Doctor_ID']);
+		$entry['cell']=$cell;
+		array_push($ans['rows'],$entry);
+	}
+	echo json_encode($ans);
+	
+?>

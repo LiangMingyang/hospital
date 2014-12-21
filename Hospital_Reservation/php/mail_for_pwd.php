@@ -1,5 +1,6 @@
 <?php
   require('../include/phpmailer/class.phpmailer.php');
+  date_default_timezone_set('PRC');
   function create_password($pw_length) 
     {  
     	$randpwd = '';  

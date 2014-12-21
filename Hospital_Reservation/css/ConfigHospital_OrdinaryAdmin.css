@@ -10,7 +10,7 @@ body {
 	color:#B14D24
 }
 #title_introduction{
-	margin-left:50%;
+	margin-left:55%;
 	font-size: 20px;
 	font-weight: 700;
 }
@@ -75,8 +75,8 @@ body {
 }
 #hospital_tb{
 	background-color: white;
-	margin-top:50px;
-	margin-left:40%;
+	margin-top:10px;
+	margin-left:35%;
 	width:500px;
 }
 #hospital_tb tr td{
@@ -87,7 +87,7 @@ body {
 	cursor:pointer;
 }
 #page_div{
-	margin-left:40%;
+	margin-left:35%;
 }
 #page_div span{
 	font-family: '楷体';
@@ -209,4 +209,19 @@ body {
 }
 #repeat_signal{
 	color:red;
+}
+#del_depart_btn{
+	background-color: #B14D24;
+	color:white;
+	margin-right:10px;
+}
+#depart_info_tb{
+	background-color: white;
+}
+#depart_info_tb tr td{
+	background-color: #0099CC;
+	color:white;
+	text-align: center;
+	font-size:20px;
+	width:100px;
 }

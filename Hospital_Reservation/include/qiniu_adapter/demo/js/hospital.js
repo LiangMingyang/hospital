@@ -2,8 +2,8 @@ $(function() {
     var uploader = Qiniu.uploader({
         runtimes: 'html5,flash,html4',    //上传模式,依次退化
         browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
-        //uptoken_url: 'http://hospital.wannakissyou.com/data/getToken',
-        uptoken_url: 'http://127.0.0.1:12321/tok',
+        uptoken_url: 'http://hospital.wannakissyou.com/data/getToken',
+        //uptoken_url: 'http://127.0.0.1:12321/tok',
             //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
         domain: 'http://hospital.qiniudn.com/',
             //bucket 域名，下载资源时用到，**必需**
@@ -38,8 +38,28 @@ $(function() {
                    // var domain = up.getOption('domain');
                    // var res = parseJSON(info);
                    // var sourceLink = domain + res.key; 获取上传成功后的文件的Url
+               
+                    art.dialog({
+                    	title:'系统提示',
+                    	icon:'succeed',
+                    	content:'上传成功！',
+                    	ok:true,
+                    	okVal:'确定'
+                    });
+                    var id=$('#pickfiles img').attr('id');
+                    var url=$('#picture_url').val();
+                    $('#'+id).attr('src',url);
             },
             'Error': function(up, err, errTip) {
+            	    $('#picture_url').val(pic_url);
+                    $('#picture_name').val(key);
+                    art.dialog({
+                    	title:'系统提示',
+                    	icon:'error',
+                    	content:'上传失败！',
+                    	ok:true,
+                    	okVal:'确定'
+                    });
                    //上传出错时,处理相关的事情
             },
             'UploadComplete': function() {
@@ -48,9 +68,13 @@ $(function() {
             'Key': function(up, file) {
                 // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
                 // 该配置必须要在 unique_names: false , save_key: false 时才生效
-                var key = "fromLocal";
+                var myDate=new Date();
+                var key = "pic_"+myDate.getTime();
+                //var key="picture_upload_logo.jpg";
+                var pic_url="http://hospital.qiniudn.com/"+key;
+                $('#picture_url').val(pic_url);
                 // do something with key here
-                return key
+                return key;
             }
         }
     });

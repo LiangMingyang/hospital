@@ -11,12 +11,26 @@
 		echo "Fail to Connect ".mysql_error();
 	}
 	mysql_select_db("password_reset");
-	$select="select User_ID from Reset_Pwd where ID=$Reset_ID 
-	         and randstr='$randstr'";
-    $ans=mysql_query($select);
+	$select="select User_ID,Time from Reset_Pwd where ID=$Reset_ID 
+	         and rand_str='$randstr'";
+	//echo $select;
+    $ans=mysql_query($select,$conn);
 	$row=mysql_fetch_assoc($ans);
-	if($row[0]!=''){
-		$User_ID=$row[0];
+	//print_r($row);
+	/*
+	echo strtotime('now')-strtotime($row['Time']);
+	echo "\n";
+	echo date('Y-m-d H:i:s');
+	echo "\n";
+	echo "now  ".strtotime('now');
+	echo "\n";
+	echo "rr   ".strtotime($row['Time']);
+	echo "\n";
+	echo $row['Time'];
+	 * 
+	 */
+	if($row['User_ID']!='' && strtotime('now')-strtotime($row['Time'])<=30*60){
+		$User_ID=$row['User_ID'];
 		$url="http://hospital.wannakissyou.com/UpdatePwd_User";
 		$data=array();
 		$data['encrypttime']=$_POST['encrypttime'];
@@ -33,6 +47,8 @@
 			mysql_query($delete_sql);
 		}
 	}else{
+		$delete="delete from Reset_Pwd where ID=$Reset_ID";
+		mysql_query($delete);
 		$res=array();
 		$res['msg']=1;
 		$res['info']='链接已失效';

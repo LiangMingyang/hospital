@@ -1,0 +1,50 @@
+* {
+    margin : 0;
+    padding : 0;
+}
+html {
+    height : 100%;
+}
+body {
+    height : 100%;
+    color : #000000;
+    cursor : default;
+    font-size : 11px;
+    line-height : 16px;
+    text-align : left;
+    /*background-color : #00ffee;*/
+    background-image:url('../img/background.gif');
+    background-position : top center;
+    background-repeat : repeat;
+    background-attachment: scroll;
+    font-family : Tahoma, sans-serif;
+}
+
+.listbox{width:987px;clear:both;overflow:hidden;height:0px auto;margin:20px auto;background:url("../img/v2_lmnrbgt.gif") repeat-y 0 0;}
+
+.hospital{width:962px;clear:both;height:42px;margin:15px auto;margin-bottom:0px;overflow:hidden;background:url("../img/v2_endlm.jpg") no-repeat left top;}
+.hospital p{float:left;overflow:hidden;width:464px;margin-left:20px; display:inline;font-family:微软雅黑;font-size:20px;font-weight:bold;font-style:bold;color:#035B9E;text-align:left;line-height:42px;}
+.hospital label{float:right;overflow:hidden;margin-right:20px;font-family:微软雅黑;font-size:13px;font-weight:normal;font-style:normal;color:#565656;line-height:42px;}
+.hospital strong{font-weight:bold;color:#035B9E;margin-left:20px;}
+.notes{width:962px;clear:both;height:0px auto;margin:0px auto;overflow:hidden;background-color:#E9F6FD;text-align:left;font-family:微软雅黑;font-size:13px;font-weight:normal;font-style:normal;}
+.notes img{float:left;overflow:hidden;width:188px;height:141px;border:1px #CCCCCC solid;padding:4px;margin:20px;}
+.notes span{float:right;overflow:hidden;width:700px;margin:20px 20px 20px 0px;line-height:24px;}
+.notes span li{clear:both;list-style-type:none;line-height:24px;font-family:微软雅黑;font-size:14px;font-weight:normal;font-style:normal;color:#565656;text-align:left;background:url(http://images.guahao114.com/images/v2_icon9.gif) left top no-repeat;padding:0 0 0 15px;_padding:0 0 0 0px;}
+
+
+.yybox{width:962px;clear:both;overflow:hidden;height:0px auto;margin-left:12px;margin-top:20px;}
+.yyleft{float:left;overflow:hidden;width:962px;}
+.yytitle{width:962px;float:left;overflow:hidden;height:30px;border-bottom:1px #4DAAE3 solid;}
+.yytitle p{float:left;overflow:hidden;width:120px;height:28px;border:1px #4DAAE3 solid;border-bottom:0px;margin-left:40px;text-align:center;line-height:28px;font-family:微软雅黑;font-size:14px;font-weight:bold;font-style:normal;color:#035B9E;background:#E9F6FD; }
+.yytitle p a{color:#035B9E;}
+.yytext{width:962px;float:left;overflow:hidden;line-height:25px;font-family:微软雅黑;font-size:13px;font-weight:normal;font-style:normal;color:#565656;text-align:left;margin:20px 0;}
+.yyksbox{float:left;overflow:hidden;width:962px;border:1px #B4E0FC solid;margin:2px 0;background:#E9F6FD;}
+
+.yyksdl{float:left;overflow:hidden;width:145px;text-align:center;line-height:100%;font-size:18px;color:#035B9E;font-weight:bold;padding:10px 5px;height:100%;}
+.yyksxl{float:right;overflow:hidden;text-align:center;width:950px;background:#FFF;border-left:1px #B4E0FC solid;}
+.ks_content{float:left;width:950px;margin:5px 0px 5px 5px;min-height:50px;_height:50px;}
+.ks_content ul{margin:0px;}
+.ks_content li{float:left;overflow:hidden;width:130px;color:#565658;font-family:微软雅黑;font-size:13px;font-weight:normal;font-style:normal;line-height:24px;text-align:left;}
+.ks_content li a:link{color:#565656;}
+.ks_content li a:visited{color:#565656;}
+.ks_content li a:hover{color:#c00;text-decoration:underline;}

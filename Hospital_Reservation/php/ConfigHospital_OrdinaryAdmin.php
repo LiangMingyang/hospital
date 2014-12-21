@@ -67,7 +67,7 @@
 							<option value="32">一级乙等</option>
 							<option value="33">一级丙等</option>
 						</select>
-						<a id="add_depart_btn" onclick="add_depart()">添加科室</a>
+						<a id="add_depart_btn" onclick="config_depart()">管理科室</a>
 					</td>
 					
 				</tr>
@@ -113,13 +113,21 @@
 			</form>
 		</div>
 		<div id="add_depart_div" style="display: none">
-			<span>科室名</span>
+			<span>现有科室</span>
+			<table id="depart_info_tb">
+			</table>
+			<span>待增加科室名</span>
 			<input type="text" id="Depart_Name" />
+			<input type="button" id="confirm_2"  value="确定" onclick="confirm_op()"/>
 			<br />
 			<span id="repeat_signal" style="display: none">该医院已经存在此科室名</span>
 			<br />
-			<input type="button" id="confirm_2"  value="确定" onclick="confirm_op()"/>
-			<input type="button" id="cancel_2" value="取消" onclick="cancel_op()" />
+			<span>待删除科室名</span>
+			<select id="del_depart_select">
+				
+			</select>
+			<input type="button" value="删除" id="del_depart_btn"  onclick="del_Dpart()"/>
+			<br />
 		</div>
 	</body>
 	

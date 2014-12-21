@@ -10,7 +10,7 @@ body {
 	color:#B14D24
 }
 #tag_head{
-	margin-left:20%;
+	margin-left:25%;
 	margin-top:-10px;
 }
 #Hospital_ID{
@@ -88,4 +88,24 @@ body {
 	color:white;
 	margin-left:10px;
 }
-
+#no_record_signal{
+	margin-left: 40%;
+	color:red;
+}
+#show_duty_time{
+	margin-left:20px;
+	cursor:pointer;
+	color:blue;
+}
+#save_duty_time_btn{
+	 background-color: #B14D24;
+	 font-size: 20px;
+	 color:white;
+	 margin-left:30%;
+}
+#close_dlg_btn{
+	 background-color: #B14D24;
+	 font-size: 20px;
+	 color:white;
+	 margin-left:10px;
+}

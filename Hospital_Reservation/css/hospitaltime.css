@@ -1,0 +1,78 @@
+margin : 0;
+padding : 0;
+}
+html {
+    height : 100%;
+}
+body {
+    height : 100%;
+    color : #000000;
+    cursor : default;
+    font-size : 11px;
+    line-height : 16px;
+    text-align : left;
+    /*background-color : #00ffee;*/
+    background-image:url('../img/background.gif');
+    background-position : top center;
+    background-repeat : repeat;
+    background-attachment: scroll;
+    font-family : Tahoma, sans-serif;
+}
+
+.listbox{width:987px;clear:both;overflow:hidden;height:0px auto;margin:20px auto;background:url(../img/v2_lmnrbgt.gif) repeat-y 0 0;}
+
+.hospital{width:962px;clear:both;height:42px;margin:15px auto;margin-bottom:0px;overflow:hidden;background:url(../img/v2_endlm.jpg) no-repeat left top;}
+.hospital p{float:left;overflow:hidden;width:424px;margin-left:20px; display:inline;font-family:微软雅黑;font-size:20px;font-weight:bold;font-style:bold;color:#035B9E;text-align:left;line-height:42px;}
+.hospital label{float:right;overflow:hidden;margin-right:20px;font-family:微软雅黑;font-size:13px;font-weight:normal;font-style:normal;color:#565656;line-height:42px;}
+.hospital strong{font-weight:bold;color:#035B9E;margin-left:20px;}
+.notes{width:962px;clear:both;height:0px auto;margin:0px auto;overflow:hidden;background:url(../img/v2_zyts.gif) no-repeat left top;background-color:#E9F6FD;text-align:left;font-family:微软雅黑;font-size:13px;font-weight:normal;font-style:normal;}
+.notes p{float:right;overflow:hidden;width:820px;margin:0px 25px 0px 0px;line-height:22px;font-size:15px;font-weight:bold;font-style:normal;color:#F80219;line-height:35px;text-align:left;}
+.notes span{float:right;overflow:hidden;width:820px;margin:0px 25px 20px 0px;line-height:22px;}
+
+.notes_gh{width:962px;clear:both;height:0px auto;margin:0px auto;overflow:hidden;background:url(../img/v2_zyts.gif) no-repeat left top;background-color:#E9F6FD;text-align:left;font-family:微软雅黑;font-size:13px;font-weight:normal;font-style:normal;}
+.notes_ght{float:right;overflow:hidden;width:800px;margin:0px 25px 0px 0px;line-height:22px;font-size:15px;font-weight:bold;font-style:normal;color:#F80219;line-height:35px;text-align:left;}
+.notes_ghn{float:right;overflow:hidden;width:800px;margin:0px 25px 20px 0px;line-height:22px;}
+.notes_tishi{float:right;overflow:hidden;width:800px;margin:0px -10px 20px 0px;background:url(../img/v2_endtishi.gif) no-repeat left top;height:53px;line-height:53px;font-size:16px;color:#F80219;font-family:微软雅黑;font-weight:normal;font-style:normal;text-align:left;text-indent:3em;}
+
+
+.tabletitle{float:left;overflow:hidden;width:920px;height:31px;margin:0px 15px;_margin:0px 8px;}
+.tabletitle strong{float:left;overflow:hidden;font-family:微软雅黑;font-size:14px;font-weight:bold;font-style:bold;color:#035B9E;text-align:left;line-height:31px;}
+.tabletitle span{float:right;overflow:hidden;margin-top:2px;}
+.tabletitle p{float:left;overflow:hidden;font-family:微软雅黑;font-size:13px;font-weight:normal;font-style:normal;color:#ADACAC;text-align:left;line-height:31px;}
+.detail{width:962px;clear:both;height:0px auto;margin:10px auto;overflow:hidden;}
+
+.detailtext{width:117px;height:79px;background:#FFFFFF;}
+.detailtext p{float:left;overflow:hidden;width:100px;height:25px;margin-left:15px;_margin-left:0px;_padding-left:5px;line-height:25px;font-size:14px;color:#565656;text-align:left;font-weight:bold;}
+.detailtext span{float:left;overflow:hidden;width:100px;height:25px;margin-top:25px;line-height:25px;font-size:14px;color:#FFFFFF;text-align:right;font-weight:bold;}
+.detailtext b{float:left;overflow:hidden;width:100px;height:25px;margin-left:15px;line-height:25px;font-size:14px;color:#DBD8D8;text-align:left;font-weight:bold;}
+.greenbg{width:117px;height:79px;background:url(http://images.guahao114.com/images/v2_yybg.gif) no-repeat left top;}
+.greenbg a{display:block;cursor:hand;width:117px;height:79px;text-decoration:none;}
+.greenbg a:hover{background:url(http://images.guahao114.com/images/v2_yybg1.gif) no-repeat left top;text-decoration:none;}
+.orgbg{width:117px;height:79px;background:url(http://images.guahao114.com/images/v2_ymbg.gif) no-repeat left top;}
+.orgbg a{display:block;cursor:hand;width:117px;height:79px;text-decoration:none;}
+.orgbg a:hover{background:url(http://images.guahao114.com/images/v2_ymbg1.gif) no-repeat left top;text-decoration:none;}
+.detailbt{width:131px;background:url(http://images.guahao114.com/images/v2_data.gif) no-repeat left top;background-color:#E9F6FD;}
+.datatext{line-height:36px;background:#FFFFFF;width:117px;text-align:center;}
+.datatextb{line-height:36px;background:#FFFFFF;width:117px;text-align:center;font-weight:bold;}
+.red1{color:#FA4A00;}
+.green1{color:#34C004;}
+
+.nyr{clear:both;overflow:hidden;width:100%;margin:0px auto;}
+.nyr_up{background:url(http://images.guahao114.com/images/v2_pageup01.gif) no-repeat center top;display:block;height:50px;width:100%;}
+.nyr_up a{display:block;height:50px;width:100%;cursor:hand;text-decoration:none;}
+.nyr_up a:hover{background:url(http://images.guahao114.com/images/v2_pageup02.gif) no-repeat center top;}
+
+.nyr_center{color:#035B9E;font-size:14px;font-family:微软雅黑;font-weight:bold;font-style:normal;line-height:30px;text-align:center;}
+
+.nyr_down{background:url(http://images.guahao114.com/images/v2_pagedown01.gif) no-repeat center bottom;display:block;height:50px;width:100%;}
+.nyr_down a{display:block;height:50px;width:100%;cursor:hand;text-decoration:none;}
+.nyr_down a:hover{background:url(http://images.guahao114.com/images/v2_pagedown02.gif) no-repeat center top;}
+
+
+#cboxLoadedContent table,td,tr,th{font-size:12px;}
+#cboxLoadedContent table{background:#B8D9F5;}
+#cboxLoadedContent td{text-align:center;line-height:23px;background:#FFF;padding:2px;font-size:14px;color:#565656;}
+#cboxLoadedContent .tdtitle{height:23px;background:url(images/v2_ghtablebg.gif) repeat-x left top;color:#035B9E;}
+#cboxLoadedContent .floatgh{width:840px;margin:20px auto;background:#fff;line-height:30px;border:1px #67A1E2 solid;}
+#cboxLoadedContent .riqidh{height:29px;background:url(images/v2_ghtablebg.gif) repeat-x left top;}
+#cboxLoadedContent .riqitd{height:29px;background:url(images/v2_ghtabletdbg.gif) repeat-x left bottom;text-align:center;line-height:37px;font-family:微软雅黑;font-size:12px;color:#FFF;font-weight:bold;}

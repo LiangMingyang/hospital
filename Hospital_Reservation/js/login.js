@@ -29,6 +29,15 @@ function login_user(type){
 		success:function(data){
 			if(data.msg=='0'){	
 				    data=data.content;
+				    if(data.isChecked==0){
+				    	art.dialog({
+				    		title:'系统提示',
+				    		content:'用户尚未被审核',
+				    		ok:true,
+				    		okVal:'确定'
+				    	});
+				    	return;
+				    }
 					$('#UserName').val(data.UserName);
 					$('#User_ID').val(data.User_ID);
 				 	$('#Province_ID').val(data.Province_ID);
@@ -43,8 +52,15 @@ function login_user(type){
 				 	$('#Location').val(data.Location);
 				 	$('#Phone').val(data.Phone);
 				 	$('#Mail').val(data.Mail);
-				 	var sdt=getStandardDate(data.LastLogInTime);
-				 	$('#LastLogInTime_User').val(sdt);
+				 	//alert(data.LastLogInTime);
+				 	/*
+				 	if(isNaN(data.LastLogInTime)){
+				 		data.LastLogInTime=getStandardDate(data.LastLogInTime);
+				 	}
+				 	*/
+				 	//var sdt=getStandardDate(data.LastLogInTime);
+				 	//alert(sdt);
+				 	$('#LastLogInTime_User').val(data.LastLogInTime);
 			     	$('#backinfo_User').submit();
 			}else{
 				art.dialog({
@@ -90,8 +106,7 @@ function login_admin(type){
 					$('#Admin_Name').val(Admin_Name);
 					$('#Admin_ID').val(data.Admin_ID);
 					$('#isSuper').val(data.isSuper);
-					var sdt=getStandardDate(data.LastLogInTime);
-					$('#LastLogInTime_Admin').val(sdt);
+					$('#LastLogInTime_Admin').val(data.LastLogInTime);
 					$('#backinfo_Admin').submit();	
 			}else{
 				art.dialog({
@@ -116,7 +131,7 @@ function login_admin(type){
 }
 function find_pwd(){
 	var type=$('input[name="radiobutton"]:checked').val();
-	if(type==1){
+	if(type==0){
 		art.dialog({
 			title:'系统提示',
 			content:'管理员请联系超级管理员进行密码重置！',
@@ -126,6 +141,7 @@ function find_pwd(){
 		return;
 	}
 	else{
+		$('#Identity_ID').val('');
 		art.dialog({
 		title:'找回密码',
 		content:document.getElementById('find_pwd_div'),
@@ -148,8 +164,7 @@ function send_mail(){
 	var encrypttime=getEncryptTime();
 	var Identity_ID=$('#Identity_ID').val();
 	$.ajax({
-		url:"../test_province.php",
-		//url:'../php/TransferStation.php',
+		url:'../php/TransferStation.php',
 		type:'POST',
 		dataType:'json',
 		data:{
@@ -159,6 +174,7 @@ function send_mail(){
 		},
 		success:function(data){
 			if(data.msg==0){
+				data=data.content[0];
 				var User_ID=data.User_ID;
 				var Mail=data.Mail;
 				send_mail_mk(User_ID,Mail);
@@ -176,7 +192,7 @@ function send_mail(){
 		error:function(data){
 			  art.dialog({
 					title:'系统消息',
-					content:'拉取医院信息失败，请稍后重试！',
+					content:'与服务器交互失败，请稍后重试！',
 					icon:'error',
 					cancel:true,
 					cancelVal:'关闭',

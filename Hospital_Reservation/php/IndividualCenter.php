@@ -2,10 +2,11 @@
 require_once '../include/common.inc.php';
 require_once '../include/global.func.php';
 include header_inc();
-
+header('Cache-Control:no-cache,must-revalidate');  
+header('Pragma:no-cache'); 
 if(!isset($_SESSION))
 session_start();
-$_SESSION['rd_token']='#';
+if($_SESSION['isUser']==""){
    		$_SESSION['isUser']=$_POST['isUser'];
    		if($_SESSION['isUser']=='1'){
    	  		$_SESSION["Province_ID"]=$_POST["Province_ID"];
@@ -25,7 +26,7 @@ $_SESSION['rd_token']='#';
 	  		$_SESSION["Mail"]=$_POST['Mail'];		
 	  		$_SESSION['LastLogInTime']=$_POST['LastLogInTime'];	
 			unset($_SESSION['rd_token']);
-		    $_SESSION['rd_token']=""; 					 
+		    $_SESSION['rd_token']=""; 				 
    		}
    		else if($_SESSION['isUser']=='0'){
    	 		$_SESSION['Admin_ID']=$_POST['Admin_ID'];
@@ -35,10 +36,12 @@ $_SESSION['rd_token']='#';
 			unset($_SESSION['rd_token']);
 		    $_SESSION['rd_token']="";
    		}
-  if($_SESSION['rd_token']=='#'){
+}
+  if($_SESSION['rd_token']=='#'||$_SESSION['isUser']!="1"&&$_SESSION['isUser']!="0"){
  	 echo "<script>window.location.href='../php/login.php'</script>";
   }
-  session_destroy();
+  //print_r($_SESSION);
+  
 ?>
 
 <link href="../include/main.css" rel="stylesheet" type="text/css" />
@@ -97,7 +100,7 @@ $(document).bind("click", function (e) {
 	 value=" <?php  echo $_SESSION['Admin_ID'] ?> " />
 	<input type="text" style="display:none" id="User_ID" name= "<?php echo $_SESSION['UserName'] ?> "
 	 value=" <?php  echo $_SESSION['User_ID'] ?>" />
-    <div class="ml-20 fl">当前所在位置：<a href="<?php echo WEB_ROOT?>">首页</a><em id="secondNav"></em></div>
+    <div class="ml-20 fl">返回位置：<a href="../">首页</a><em id="secondNav"></em></div>
     <div class="fr mr-32">
         <em><?php
 if($_SESSION['isUser']==0){
@@ -130,7 +133,7 @@ else if($_SESSION['isUser']==1){
         <div class="conleft">
         	<table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#457387"><tr><td>
     
-        		<div>
+        		<div <?php if($_SESSION['isUser']=='0') echo "style='display:none''" ?> >
             		<p><span>预约记录</span><em class="array">&nbsp;</em></p>
             		<ul style="display:none">
             	   		<li><a onclick="check_reservation()">查看当前预约</a></li>
@@ -146,11 +149,11 @@ else if($_SESSION['isUser']==1){
             	<div <?php if($_SESSION['isUser']=='1') echo "style='display:none''" ?>>
             		<p><span>管理医院</span><em class="array">&nbsp;</em></p>
             		<ul style="display:none">
-						<li <?php if($_SESSION['isSuper']!='1'&&false) echo "style='display:none''" ?> ><a onclick="create_hospital()" >添加医院</a></li>
-						<li><a onclick="config_hospital()">配置医院信息</a></li>
-						<li><a onclick="config_hospital_ordinary_admin()">配置医院信息</a></li>
-						<li><a onclick="create_doctor()">添加医生</a></li>
-						<li><a onclick="config_doctor()">配置医生信息</a></li>
+						<li <?php if($_SESSION['isSuper']!='1') echo "style='display:none''" ?> ><a onclick="create_hospital()" >添加医院</a></li>
+						<li <?php if($_SESSION['isSuper']!='1') echo "style='display:none''" ?> ><a onclick="config_hospital()">配置医院信息</a></li>
+						<li <?php if($_SESSION['isSuper']=='1') echo "style='display:none''" ?> ><a  onclick="config_hospital_ordinary_admin()">配置医院信息</a></li>
+						<li <?php if($_SESSION['isSuper']=='1') echo "style='display:none''" ?> ><a onclick="create_doctor()">添加医生</a></li>
+						<li <?php if($_SESSION['isSuper']=='1') echo "style='display:none''" ?> ><a onclick="config_doctor()">配置医生信息</a></li>
 					</ul>
             	</div>
             	<div <?php if($_SESSION['isUser']=='1') echo "style='display:none''" ?>>
@@ -161,7 +164,7 @@ else if($_SESSION['isUser']==1){
 					</ul>
             	</div>
             
-            	<div <?php if($_SESSION['isSuper']!='1') echo "style='display:none''" ?>>
+            	<div <?php if($_SESSION['isSuper']!='1'|| $_SESSION['isUser']=='1') echo "style='display:none''" ?>>
             		<p><span>管理管理员</span><em class="array">&nbsp;</em></p>
             		<ul style="display:none">
 						<li><a onclick="create_admin()">创建管理员</a></li>

@@ -1,0 +1,77 @@
+@charset "utf-8";
+
+#page-wrap ol, ul { list-style: none; }
+#page-wrap blockquote, q { quotes: none; }
+
+
+/* 删除br, hr */
+#page-wrap br, hr { display: none; }
+
+
+/* 设置标题字体大小 */
+#page-wrap h1, h2, h3, h4, h5, h6 { font-weight: normal; color: #111; }
+#page-wrap h1 {
+	font-size: 36px; 
+	line-height: 1; 
+	margin-bottom: 0.5em; 
+}
+#page-wrap h2 {
+	font-size: 24px; 
+	margin-bottom: 0.75em;
+}
+#page-wrap h3 {
+	font-size: 18px; 
+	line-height: 1; 
+	margin-bottom: 1em;
+}
+#page-wrap h4 { font-size: 14px; }
+#page-wrap h5 { margin-bottom: 1.5em; }
+#page-wrap h5, h6 { font-weight: bold; }
+
+#page-wrap h1 img, h2 img, h3 img,
+h4 img, h5 img, h6 img {
+  margin: 0;
+}
+
+/* 设置标题、段落上下空间 */
+#page-wrap p { margin: 0 0 1.5em; }
+
+
+/* 重定义超链的基本样式 */
+#page-wrap a:link, a:visited {
+	text-decoration: none;
+	color: #5c5c5c;
+}
+#page-wrap a:hover, a:active {
+	color: #3a3a3a;
+}
+
+/* 设置包含img的a元素的边框与Padding */
+#page-wrap a img {
+	border: 0; 
+	padding: 0;
+}
+
+
+/* insert, delete */
+#page-wrap ins { text-decoration: none; }
+#page-wrap del { text-decoration: line-through; }
+
+
+/* 设置表格 */
+#page-wrap table {
+	width: 100%;
+	margin: 0 -1px;
+	border-collapse: collapse;
+	border-spacing: 0;
+	table-layout: fixed;
+}
+#page-wrap table, th, td { border: 1px solid #7c7c7c; }
+#page-wrap th, td {
+	padding: 1em 2em; 
+	text-align: left; 
+}
+#page-wrap caption {
+	visibility: hidden; 
+	height: 0;
+}

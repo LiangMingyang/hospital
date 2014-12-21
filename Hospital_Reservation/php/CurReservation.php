@@ -12,6 +12,7 @@ if(!isset($_SESSION))session_start();
 	<link href="../css/CurReservation.css" rel="stylesheet" type="text/css" />
 	<script src="../js/CurReservation.js"> </script>	
 	<input style="display: none" id="User_ID" value="<?php echo $_SESSION['User_ID']  ?>" />
+	<input style="display: none" id="UserName" value="<?php echo $_SESSION['UserName']  ?>" />
 	<table id="reservation_tb">
 		<tr>
 			<td id="num">序号</td>
@@ -24,12 +25,11 @@ if(!isset($_SESSION))session_start();
 			<td id="cancel">取消预约</td>
 		</tr>
 		
-		<tr id="nosignal" style="display: none">
-			<td colspan="7">当前暂无预约记录</td>
+		<tr id="nosignal"  style="display: none">
+			<td colspan="8">当前暂无预约记录</td>
 			
 		</tr>
 	</table>
-	<input type="button" onclick="test()"  value="test" />
 	<div id="detail_area" style="display: none">
 		<span class="tag">预约医院</span> 
 		<span class="tag_1" id="Hospital_Name"></span> 

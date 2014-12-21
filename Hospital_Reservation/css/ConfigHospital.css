@@ -193,7 +193,12 @@ body {
 #confirm_2{
 	background-color: #B14D24;
 	color:white;
-	margin-left:10px;
+	margin-right:10px;
+}
+#del_depart_btn{
+	background-color: #B14D24;
+	color:white;
+	margin-right:10px;
 }
 #cancel_2{
 	background-color: #B14D24;
@@ -202,4 +207,14 @@ body {
 }
 #repeat_signal{
 	color:red;
+}
+#depart_info_tb{
+	background-color: white;
+}
+#depart_info_tb tr td{
+	background-color: #0099CC;
+	color:white;
+	text-align: center;
+	font-size:20px;
+	width:100px;
 }

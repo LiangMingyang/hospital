@@ -24,22 +24,27 @@ function getReservation(){
 	var token=getToken(encrypttime);
 	var User_ID=$('#User_ID').val();
 	$.ajax({
-		url:'../test_reservation.php',
+		url:'../php/TransferStation.php',
 		type:'POST',
-		datatype:'json',
+		dataType:'json',
 		data:{
-			token:token,
+			url:'Check_Reservation_Simple',
 			encrypttime:encrypttime,
 			User_ID:User_ID
 		},
 		success:function(data){
-			data=eval("("+data+")");
 			if(data.msg==0){
 				var content=data.content;
 				var length=content.length;
 				if(length>0){
 					for(var i=0;i<length;i++){
 						var obj=content[i];
+						obj.Reservation_Time=getStandardDt_only(obj.Reservation_Time);
+						if(obj.Duty_Time%10==1){
+							obj.Reservation_Time+="上午";
+						}else{
+							obj.Reservation_Time+="下午";
+						}
 						if(obj.Reservation_Payed=='0'){
 							   $("#reservation_tb").append(
 							"<tr>"
@@ -95,19 +100,12 @@ function getReservation(){
 				}else {
 					$('#nosignal').show();
 				}
-			}else if(data.msg==3){
-				art.dialog({
-							title:'系统消息',
-							icon:'error',
-							content:'请求超时！',
-							ok:true,
-							okVal:'确定'
-			     });
+			
 			}else{
 				art.dialog({
 							title:'系统消息',
 							icon:'error',
-							content:'系统操作异常！',
+							content:'系统操作异常！<br/>'+data.info,
 							ok:true,
 							okVal:'确定'
 			     });
@@ -124,55 +122,28 @@ function getReservation(){
 		}
 	});
 }
-function test(){
-	
-}
-/*
- * 	 Reservation_Time
-  Reseration_Symptom
-  Reservation_Payed
-  Operation_Time
-  Hospital_Name
-  Hospital_Location
-  Depart_Name
-  Doctor_Name
-  Doctor_Level
-  Doctor_Fee
- */
-/*
- * 
- */
+
 function getDetail(t){
 	var Reservation_ID=$(t).attr('id').substr(7);
 	var encrypttime=getEncryptTime();
-	var token=getToken(encrypttime);
 	$.ajax({
-		url:'../test_Reservation_detail.php',
+		url:'../php/TransferStation.php',
 		type:'POST',
-		datatype:'json',
+		dataType:'json',
 		data:{
-			token:token,
+			url:'Check_Reservation_Detail',
 			encrypttime:encrypttime,
 			Reservation_ID:Reservation_ID
 		},
 		success:function(data){
-			data=eval("("+data+")");
 			if(data.msg==0){
-				/*
-				 * $data['msg']=0; 
-   $data['Reservation_ID']=1;
-   $data['Reservation_Time']=date('Y-m-d H:i:s');
-   $data['Operation_Time']=date('Y-m-d H:i:s');
-   $data['Doctor_Name']='耿金坤';
-   
-  $data['Reseration_Symptom']="感冒";
-  $data['Reservation_Payed']=0;
-  $data['Hospital_Name']='北京市第三人民医院';
-  $data['Hospital_Location']='北京市学院路38号';
-  $data['Depart_Name']='内科';
-  $data['Doctor_Level']=1;
-  $data['Doctor_Fee']=15.00;
-				 */
+				data=data.content[0];
+				data.Reservation_Time=getStandardDt_only(data.Reservation_Time);
+				if(data.Duty_Time%10==1){
+					data.Reservation_Time+="上午";
+				}else{
+					data.Reservation_Time+="下午";
+				}
 				$('#Reservation_Time').html(data.Reservation_Time);
 				$('#Doctor_Name').html(data.Doctor_Name);
 				$('#Reseration_Symptom').val(data.Reseration_Symptom);
@@ -211,19 +182,12 @@ function getDetail(t){
 							},
 							okVal:'关闭'
 			     });
-			}else if(data.msg==3){
-				art.dialog({
-							title:'系统消息',
-							icon:'error',
-							content:'请求超时！',
-							ok:true,
-							okVal:'确定'
-			     });
+			
 			}else{
 				art.dialog({
 							title:'系统消息',
 							icon:'error',
-							content:'系统操作异常！',
+							content:'系统操作异常！<br/>'+data.info,
 							ok:true,
 							okVal:'确定'
 			     });
@@ -243,19 +207,16 @@ function getDetail(t){
 function Pay(t){
 	var Reservation_ID=$(t).attr('name');
 	var encrypttime=getEncryptTime();
-	var token=getToken(encrypttime);
 	$.ajax({
-		//url:host/ Pay_Reservation
-		url:'../testPayed.php',
+		url:'../php/TransferStation.php',
 		type:'POST',
-		datatype:'json',
+		dataType:'json',
 		data:{
-			token:token,
+			url:'Pay_Reservation',
 			encrypttime:encrypttime,
 			Reservation_ID:Reservation_ID
 		},
 		success:function(data){
-			data=eval("("+data+")");
 			if(data.msg=='0'){
 				art.dialog({
 							title:'系统消息',
@@ -267,19 +228,11 @@ function Pay(t){
 							},
 							okVal:'确定'
 			     });
-			}else if(data.msg=='3'){
+			}else {
 				art.dialog({
 							title:'系统消息',
 							icon:'error',
-							content:'请求超时！',
-							ok:true,
-							okVal:'确定'
-			     });
-			}else{
-				art.dialog({
-							title:'系统消息',
-							icon:'error',
-							content:'系统操作异常！',
+							content:'系统操作异常！<br/>'+data.info,
 							ok:true,
 							okVal:'确定'
 			     });
@@ -303,18 +256,15 @@ function Cancel_by_ID(Reservation_ID){
    var token=getToken(encrypttime);
    var User_ID=$('#User_ID').val();
    $.ajax({
-		//url:host/ Pay_Reservation
-		url:'../testPayed.php',
+		url:'../php/TransferStation.php',
 		type:'POST',
-		datatype:'json',
+		dataType:'json',
 		data:{
-			token:token,
+			url:'Cancel_Reservation',
 			encrypttime:encrypttime,
 			Reservation_ID:Reservation_ID,
-			User_ID:User_ID
 		},
 		success:function(data){
-			data=eval("("+data+")");
 			if(data.msg=='0'){
 				art.dialog({
 							title:'系统消息',
@@ -326,19 +276,12 @@ function Cancel_by_ID(Reservation_ID){
 							},
 							okVal:'确定'
 			     });
-			}else if(data.msg=='3'){
-				art.dialog({
-							title:'系统消息',
-							icon:'error',
-							content:'请求超时！',
-							ok:true,
-							okVal:'确定'
-			     });
+			     getReservation();
 			}else{
 				art.dialog({
 							title:'系统消息',
 							icon:'error',
-							content:'系统操作异常！',
+							content:'系统操作异常！<br />'+data.info,
 							ok:true,
 							okVal:'确定'
 			     });
@@ -359,18 +302,9 @@ function Cancel_by_ID(Reservation_ID){
 function cancel_reservation(t){
 	
 	var Reservation_Time=$(t).parent().siblings().eq(1).html();
-	//alert(Reservation_Time);
-	//alert(Reservation_Time.replace(/-/g,"/"));
     var reservation_time=new Date(Reservation_Time.replace(/-/g,"/"));
-    //alert(reservation_time.getTime());
     var now_time=new Date();
-    //alert(now_time.getTime());
-    //alert(reservation_time.getUTCDate());
-    //alert(now_time.getUTCDate());
     var interval=(reservation_time.getTime()-now_time.getTime())/(24*60*60*1000);
-    //alert(reservation_time.getTime()-now_time.getTime());
-    //alert(interval);
-   // alert(interval);
     if(interval<1){
     	 art.dialog({
    	   	 		title:'系统提示',
@@ -413,25 +347,27 @@ function printReservationSheet(t){
     var Doctor_Level;
     var Doctor_Fee;
     var encrypttime=getEncryptTime();
-    var token=getToken(encrypttime);
 	$.ajax({
-		//url:"host/Check_Reservation_Detail",
-		url:"../test_Reservation_detail.php",
+		url:'../php/TransferStation.php',
 	    type:'POST',
-		datatype:'json',
+		dataType:'json',
 		async:false,
 		data:{
-			token:token,
+			url:"Check_Reservation_Detail",
 			encrypttime:encrypttime,
   			Reservation_ID:Reservation_ID
 		},
 		success:function(data){
-			data=eval("("+data+")");
-			if(data.msg=='0'){
-				alert('ok');
-				
+			if(data.msg=='0'){	
+				data=data.content[0];	
+				data.Reservation_Time=getStandardDt_only(data.Reservation_Time);
+				if(data.Duty_Time%10==1){
+					data.Reservation_Time+="上午";
+				}else{
+					data.Reservation_Time+="下午";
+				}
 				Reservation_Time=data.Reservation_Time;
-				Reseration_Symptom=data.Reseration_Symptom;
+				Reservation_Symptom=data.Reservation_Symptom;
 				Reservation_Payed=data.Reservation_Payed;
 				Operation_Time=data.Operation_Time;
 				Hospital_Name=data.Hospital_Name;
@@ -440,21 +376,12 @@ function printReservationSheet(t){
 				Doctor_Name=data.Doctor_Name;
 				Doctor_Level=data.Doctor_Level;
 				Doctor_Fee=data.Doctor_Fee;
-				alert(Reservation_Time);
 				window.location.href="../php/printReservationSheet.php?Reservation_Time="+data.Reservation_Time
-				                     +"&Reseration_Symptom="+data.Reseration_Symptom
+				                     +"&Reseration_Symptom="+data.Reservation_Symptom
 				                     +"&Reservation_ID="+Reservation_ID
 				                     +"&Hospital_Name="+data.Hospital_Name
 				                     +"&Hospital_Location="+data.Hospital_Location
 				                     +"&Depart_Name="+data.Depart_Name;
-			}else if(data.msg=='3'){
-				art.dialog({
-							title:'系统消息',
-							icon:'error',
-							content:'请求超时！',
-							ok:true,
-							okVal:'确定'
-			     });
 			}else{
 				art.dialog({
 							title:'系统消息',
@@ -488,7 +415,7 @@ function printAppointmentSheet(t){
 		});
 		return;
 	}
-    alert($(t).parent().siblings().eq(5).find(".pay").attr("style")==undefined);
+    //alert($(t).parent().siblings().eq(5).find(".pay").attr("style")==undefined);
 	var Reservation_ID=$(t).attr('id').substr(12);
     var Reservation_Time;
     var Reseration_Symptom;
@@ -502,21 +429,26 @@ function printAppointmentSheet(t){
     var Doctor_Level;
     var Doctor_Fee;
     var encrypttime=getEncryptTime();
-    var token=getToken(encrypttime);
+    
 	$.ajax({
-		//url:"host/Check_Reservation_Detail",
-		url:"../test_Reservation_detail.php",
+		url:'../php/TransferStation.php',
 	    type:'POST',
-		datatype:'json',
+		dataType:'json',
 		async:false,
 		data:{
-			token:token,
+			url:'Check_Reservation_Detail',
 			encrypttime:encrypttime,
   			Reservation_ID:Reservation_ID
 		},
 		success:function(data){
-			data=eval("("+data+")");
-			if(data.msg=='0'){			
+			if(data.msg=='0'){	
+				data=data.content;	
+				data.Reservation_Time=getStandardDt_only(obj.Reservation_Time);
+				if(data.Duty_Time%10==1){
+					data.Reservation_Time+="上午";
+				}else{
+					data.Reservation_Time+="下午";
+				}	
 				Reservation_Time=data.Reservation_Time;
 				Hospital_Name=data.Hospital_Name;
 				Depart_Name=data.Depart_Name;
@@ -533,19 +465,11 @@ function printAppointmentSheet(t){
 				                     +"&Doctor_Fee="+data.Doctor_Fee
 				                     +"&Doctor_Name="+data.Doctor_Name
 				                     +"&Reservation_PayTime="+data.Reservation_PayTime;
-			}else if(data.msg=='3'){
-				art.dialog({
-							title:'系统消息',
-							icon:'error',
-							content:'请求超时！',
-							ok:true,
-							okVal:'确定'
-			     });
 			}else{
 				art.dialog({
 							title:'系统消息',
 							icon:'error',
-							content:'系统操作异常！',
+							content:'系统操作异常！<br/>'+data.info,
 							ok:true,
 							okVal:'确定'
 			     });

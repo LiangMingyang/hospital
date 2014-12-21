@@ -1,8 +1,35 @@
 /**
  * @author acer
  */
+$(document).ready(function(){
+	getAmount();
+});
+function getAmount(){
+	var encrypttime=getEncryptTime();
+	var User_ID=$('#name').attr('name');
+	$.ajax({
+		url:'../php/TransferStation.php',
+		type:'POST',
+		dataType:'json',
+		data:{
+			encrypttime:encrypttime,
+			url:"Get_Cash",
+			User_ID:User_ID,
+		},
+		success:function(data){
+			if(data.msg==0){
+				$('#cur_Amount').val(data.amount);
+			}else{
+				('#cur_Amount').val('?');
+			}
+		},
+		error:function(data){
+			('#amount').val('?');
+		}
+	});
+}
 function confirm_cash(){
-	var Amount=$('#cur_Amount').val();
+	var Amount=$('#amount').val();
 	var User_ID=$('#name').attr('name');
 	if(isNaN(Amount)){
 		art.dialog({
@@ -16,7 +43,6 @@ function confirm_cash(){
 		return;
 	}
 	var encrypttime=getEncryptTime();
-	var token=getToken(encrypttime);
 	$.ajax({
 		url:'../php/TransferStation.php',
 		type:'POST',
@@ -33,8 +59,7 @@ function confirm_cash(){
 					icon:"succeed",
 					content:'充值成功',
 					ok:function(){
-						var ans=$('#cur_Amount').val()*1.0+Amount*1.0;
-						$('#cur_Amount').val(ans);
+						getAmount();
 					},
 					okVal:'我知道了',
 				});

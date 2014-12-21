@@ -1,0 +1,28 @@
+* {
+margin : 0;
+padding : 0;
+}
+html {
+height : 100%;
+}
+body {
+	height : 100%;
+	color : #000000;
+	cursor : default;
+font-size : 11px;
+line-height : 16px;
+text-align : left;
+/*background-color : #00ffee;*/
+background-image:url('../img/background.gif');
+background-position : top center;
+background-repeat : repeat;
+background-attachment: scroll;
+font-family : Tahoma, sans-serif;
+}
+a:link, a:visited {
+    color : #fff;
+}
+a img {
+    border : 0;
+}
+a{text-decoration:none;}

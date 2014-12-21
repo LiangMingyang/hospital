@@ -5,11 +5,12 @@
 <html>
 	<link href="../css/ConfigHospital.css" rel="stylesheet" type="text/css" />
 	<script src="../include/jquery-2.1.1.js"></script>
-	<script src="../include/uploadPreview/uploadPreview.js"></script>
+	<script type="text/javascript" src="../include/qiniu_adapter/demo/js/plupload.full.min.js"></script>
+	<script type="text/javascript" src="../include/qiniu_adapter/demo/js/qiniu.js"></script>
+	<script type="text/javascript" src="../include/qiniu_adapter/demo/js/hospital.js"></script>
     <script src="../include/artDialog/artDialog.js?skin=default"></script>
 	<script src="../include/artDialog/plugins/iframeTools.source.js"></script>
 	<script src="../include/My97DatePicker/WdatePicker.js"></script>
-	<script src="../include/AjaxFileUploaderV2.1/ajaxfileupload.js"></script>
 	<script language="JavaScript" src="../include/sha1.js"></script>
 	<script language="JavaScript" src="../js/ConfigHospital.js"> </script>
     <body>
@@ -30,6 +31,7 @@
 				</select>
 				<span id="level_tag">等级</span>
 		        <select id="Hospital_Level">
+		        	<option value="-1">选择等级</option>
 		        	<option value="31">三级甲等</option>
 		        	<option value="32">三级乙等</option>
 		        	<option value="33">三级丙等</option>
@@ -63,16 +65,12 @@
 				<tr>
 					
 					<td id="picture_area" rowspan="8">  
-						   <a id=""></a>
-				
-							<img onclick="upload_picture()" id="hospital_picture" 
-							src='../images/picture_upload_logo.jpg' />
-							<input type="file" id="scan_file" name="PicturetoUpload" style="display: none"/>
-					        <br />
-					        <a class="pic_option" id="submitPic" onclick="submitPicture()">提交</a>
-						    <a class="pic_option" id="cancelPic" onclick="cancelPicture()">移除</a> 
+						    <div id="container">
+	        					<a href="#" id="pickfiles">
+	        						<img id="hospital_picture" src='http://hospital.qiniudn.com/picture_upload_logo.jpg' />
+	        					</a>
+      						</div>
 					        <input type="text" id="picture_url" style="display: none" />
-					        <input type="text" id="picture_name" style="display: none" />
 					</td>
 					
 					
@@ -94,7 +92,7 @@
 							<option value="32">一级乙等</option>
 							<option value="33">一级丙等</option>
 						</select>
-						<a id="add_depart_btn" onclick="add_depart()">添加科室</a>
+						<a id="add_depart_btn" onclick="config_depart()">管理科室</a>
 					</td>
 					
 				</tr>
@@ -141,15 +139,21 @@
 			</form>
 		</div>
 		<div id="add_depart_div" style="display: none">
+			<span>现有科室</span>
 			<table id="depart_info_tb">
 			</table>
-			<span>科室名</span>
+			<span>待增加科室名</span>
 			<input type="text" id="Depart_Name" />
+			<input type="button" id="confirm_2"  value="确定" onclick="confirm_op()"/>
 			<br />
 			<span id="repeat_signal" style="display: none">该医院已经存在此科室名</span>
 			<br />
-			<input type="button" id="confirm_2"  value="确定" onclick="confirm_op()"/>
-			<input type="button" id="cancel_2" value="取消" onclick="cancel_op()" />
+			<span>待删除科室名</span>
+			<select id="del_depart_select">
+				
+			</select>
+			<input type="button" value="删除" id="del_depart_btn"  onclick="del_Dpart()"/>
+			<br />
 		</div>
 	</body>
 	

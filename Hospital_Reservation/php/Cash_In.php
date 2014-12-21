@@ -29,7 +29,7 @@
 				<tr>
 					<td class="tag">当前余额￥</td>
 					<td class="tag_1">
-						<input type="text" id="cur_Amount" value="<?php  $_SESSION['Amount']=10; echo  $_SESSION['Amount']; ?>"  disabled="disabled"  readonly="readonly"/>
+						<input type="text" id="cur_Amount" value="?"  disabled="disabled"  readonly="readonly"/>
 					</td>
 				</tr>
 				<tr>

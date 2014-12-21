@@ -195,3 +195,44 @@ function binb2b64(binarray) {
     }
     return str;
 }
+function getEncryptTime(){
+	 var myDate=new Date();
+     var year=myDate.getFullYear();
+     var month=myDate.getMonth()+1;//getMonth  返回 0~11
+	 if(month<10)month='0'+month;
+     var day=myDate.getDate();
+     //day++;
+     if(day<10) day='0'+day;
+     var hour=myDate.getHours();
+     if(hour<10)hour='0'+hour;
+     var minute=myDate.getMinutes();
+     if(minute<10)minute='0'+minute;
+     var second=myDate.getSeconds();
+     //minute=minute*1+10;
+     if(second<10)second='0'+second;
+     var t=year+'-'+month+'-'+day+' '+hour+':'+minute+":"+second;
+     return t;
+}
+function getToken(encrypttime){
+    	 var t="songzimingdb$"+encrypttime;
+    	 var output=hex_sha1(t);
+    	 return output;
+}
+function getStandardDate(dt_str){
+	 var myDate=new Date(dt_str);
+	 var year=myDate.getFullYear();
+     var month=myDate.getMonth()+1;//getMonth  返回 0~11
+	 if(month<10)month='0'+month;
+     var day=myDate.getDate();
+     //day++;
+     if(day<10) day='0'+day;
+     var hour=myDate.getHours();
+     if(hour<10)hour='0'+hour;
+     var minute=myDate.getMinutes();
+     if(minute<10)minute='0'+minute;
+     var second=myDate.getSeconds();
+     //minute=minute*1+10;
+     if(second<10)second='0'+second;
+     var t=year+'-'+month+'-'+day+' '+hour+':'+minute+":"+second;
+     return t;
+}

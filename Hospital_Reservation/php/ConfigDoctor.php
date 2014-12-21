@@ -29,44 +29,21 @@
 		</div>
 		<div id="doctor_area" style="display: none">
 			<table id="doctor_tb">
-				<tr>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-				</tr>
-				<tr>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-					<td>1</td>
-				</tr>
 			</table>
+			<span id="no_record_signal" style="display: none">没有相关记录</span>
 		</div>
 		<div id="doctor_info_area" style="display: none">
 			<br />
 			<table id="Doctor_Info_tb">
 				<tr>	
-					<td id="picture_area" rowspan="8">  
-							<img onclick="upload_picture()" id="doctor_picture" src='../images/picture_upload_logo.jpg' />
-							<input type="file" id="scan_file" name="PicturetoUpload" style="display: none"/>
+					<td id="picture_area" rowspan="8"> 
+						    <div id="container">
+	        					<a href="#" id="pickfiles">
+	        						<img id="doctor_picture" src='http://hospital.qiniudn.com/picture_upload_logo.jpg' />
+	        					</a>
+      						</div>
 					        <br />
-					        <a class="pic_option" id="submitPic" onclick="submitPicture()">提交</a>
-						    <a class="pic_option" id="cancelPic" onclick="cancelPicture()">移除</a> 
-					        <input type="text" id="picture_url" name='' style="display: none" />
-					        <input type="text" id="picture_name" name='' style="display: none" />
+					        <input type="text" id="picture_url" value="" style="display: none" />
 					</td>
 					
 					
@@ -106,9 +83,22 @@
 						<textarea id="Doctor_Major"></textarea>
 					</td>
 				</tr>
-				
 				<tr>
 					<td>
+						<span>坐诊时间</span>
+						<a id="show_duty_time" onclick="show_duty_time()">显示</a>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="button" id="confirm_info_btn" value="保存配置" onclick="confirm_info()"/>
+						<input type="button" id="del_doctor_btn" value="删除医生" onclick="del_doctor()"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="duty_time_div" style="display: none">
+			        <input type="text" id="old_duty_time" style="display: none" />
 					<span id="tag_duty_time">坐诊时间</span>
 					<br />
 					<label><input type="checkbox" class="Duty_Time" name="Duty_Time" value="11" />周一上午</label>
@@ -129,15 +119,9 @@
 					<label><input type="checkbox" class="Duty_Time" name="Duty_Time" value="71" />周日上午</label>
 					<label><input type="checkbox" class="Duty_Time" name="Duty_Time" value="72" />周日下午</label>
 					<br />
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<input type="button" id="confirm_info_btn" value="保存配置" onclick="confirm_info()"/>
-						<input type="button" id="del_doctor_btn" value="删除医生" onclick="del_doctor()"/>
-					</td>
-				</tr>
-			</table>
+					<input type="button" id="save_duty_time_btn" onclick="save_duty_time()" value="保存"/>
+					<input type="button" id="close_dlg_btn"  onclick="close_duty_time()" value="关闭"/>
+					
 		</div>
 	</body>
 </html>

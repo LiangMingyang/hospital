@@ -236,3 +236,14 @@ function getStandardDate(dt_str){
      var t=year+'-'+month+'-'+day+' '+hour+':'+minute+":"+second;
      return t;
 }
+function getStandardDt_only(dt_str){
+	 var myDate=new Date(dt_str);
+	 var year=myDate.getFullYear();
+     var month=myDate.getMonth()+1;//getMonth  返回 0~11
+	 if(month<10)month='0'+month;
+     var day=myDate.getDate();
+     //day++;
+     if(day<10) day='0'+day;
+     var t=year+'-'+month+'-'+day;
+     return t;
+}

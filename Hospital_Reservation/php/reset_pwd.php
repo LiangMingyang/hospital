@@ -9,6 +9,8 @@ if(!isset($_SESSION)){
 	 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	 <script type="text/javascript" src="../include/jquery-2.1.1.js"></script>
      <script type="text/javascript"  src="../include/sha1.js"></script>
+	 <script type="text/javascript"  src="../include/artDialog/artDialog.js?skin=default"></script>
+<script type="text/javascript"  src="../include/artDialog/plugins/iframeTools.source.js"></script>
 	<style>
 		span{
 			font-size:20px;
@@ -74,7 +76,7 @@ if(!isset($_SESSION)){
 					error:function(data){
 						art.dialog({
 								title:'系统消息',
-								content:'拉取医院信息失败，请稍后重试！',
+								content:'与服务器交互失败，请稍后重试！',
 								icon:'error',
 								cancel:true,
 								cancelVal:'关闭',

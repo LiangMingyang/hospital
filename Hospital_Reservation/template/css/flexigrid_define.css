@@ -1,0 +1,12 @@
+.flexigrid div.fbutton .add {
+	background: url(flexigrid/images/add.png) no-repeat center left;
+}
+.flexigrid div.fbutton .delete {
+	background: url(flexigrid/images/close.png) no-repeat center left;
+}
+.flexigrid div.fbutton .edit {
+	background: url(flexigrid/images/edit.png) no-repeat center left;
+}
+.flexigrid div.fbutton .privilege {
+	background: url(flexigrid/images/privilege.png) no-repeat center left;
+}

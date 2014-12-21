@@ -19,7 +19,7 @@ function get_province(){
 				var content=data.content;
 				var len=content.length;
 				for(var i=0;i<len;i++){
-					$('#Province')
+					$('#Province_Info')
 					.append('<option value="'
 					+content[i].Province_ID
 					+'">'+content[i].Province_Name+'</option>');
@@ -47,7 +47,7 @@ function get_province(){
 	});
 }
 function get_area(){
-	var Province_ID=$('#Province').val();
+	var Province_ID=$('#Province_Info').val();
 	if(Province_ID<0)return;
 	var encrypttime=getEncryptTime();
 	$.ajax({
@@ -64,7 +64,7 @@ function get_area(){
 							var content=data.content;
 							var len=content.length;
 							for(var i=0;i<len;i++){
-								$('#Area')
+								$('#Area_Info')
 					            .append('<option value="'
 					            +content[i].Area_ID
 					            +'">'+content[i].Area_Name+'</option>');
@@ -91,6 +91,64 @@ function get_area(){
 				}
 			});
 }
+function get_Depart(Hospital_ID){
+	var encrypttime=getEncryptTime();
+	$.ajax({
+		        url:'../php/TransferStation.php',
+		      	type:'POST',
+				dataType:'json',
+				data:{
+					url: 'Get_DepartInfo',
+					encrypttime:encrypttime,
+					Hospital_ID:Hospital_ID,
+				},
+				success:function(data){
+					if(data.msg==0){
+						$('#depart_info_tb tr').remove();
+						$('#del_depart_select option').remove();
+						var content=data.content;
+						var len=content.length;
+						var content_txt="";
+						for(var i=0;i<len;i++){
+							if(i%4==0){
+									content_txt+='<tr>';
+							}
+							content_txt+='<td id="'
+								           +content[i].Depart_ID
+                                           +'">'
+                                           +content[i].Depart_Name
+                                           +'</td>';
+                            $('#del_depart_select').append('<option value="'
+                                                          +content[i].Depart_ID
+                                                          +'">'
+                                                          +content[i].Depart_Name
+                                                          +'</option>');             
+                             if(i!=0&&i%4==3||i==len-1)
+                             content_txt+='</tr>';
+						}
+						$('#depart_info_tb').append(content_txt);
+						
+					}else{
+							art.dialog({
+								title:'系统消息',
+								content:'操作失败！失败信息<br/>'+data.info,
+								icon:'error',
+								cancel:true,
+								cancelVal:'关闭',
+							});
+						}
+				},
+				error:function(data){
+					  art.dialog({
+							title:'系统消息',
+							icon:'error',
+							content:'与服务器交互失败！',
+							ok:true,
+							okVal:'确定'
+			 			});
+				}
+			});
+}
 function init_content_info(Hospital_ID){
 	$('#Hospital_ID').val(Hospital_ID);
 	var Province_ID;
@@ -108,15 +166,16 @@ function init_content_info(Hospital_ID){
 			 encrypttime:encrypttime
 		},
 		success:function(data){
-             data=eval("("+data+")");
              if(data.msg==0){
+             	data=data.content[0];
              	$('#Hospital_Level').val(data.Hospital_Level);
              	$('#Hospital_Introduction').val(data.Hospital_Introduction);
              	$('#Hospital_Name').val(data.Hospital_Name);
              	$('#Hospital_Location').val(data.Hospital_Location);
-             	$('#Reservation_Start_Time').val(data.Reservation_Start_Time);
-             	$('#Reservation_End_Time').val(data.Reservation_End_Time);
-                Province_ID=data.Province_ID;
+             	var Reservation_Start_Time=data.Reservation_Start_Time.substr(11);
+             	var Reservation_End_Time=data.Reservation_End_Time.substr(11);
+             	$('#Reservation_Start_Time').val(Reservation_Start_Time);
+             	$('#Reservation_End_Time').val(Reservation_End_Time);
                 Area_ID=data.Area_ID;
                 Hospital_Picture_url=data.Hospital_Picture_url;
              }else{
@@ -130,9 +189,11 @@ function init_content_info(Hospital_ID){
              }		
 		}
      });
+     Province_ID=Math.floor(Area_ID/100);
      get_province();
      $('#Province_Info').val(Province_ID);
-     getArea(Province_ID);
+     get_area(Province_ID);
+     $('#Province_Info').val(Area_ID);
      $("#scan_file").uploadPreview({ Img: "hospital_picture"});
      $('#hospital_picture').attr('src',Hospital_Picture_url);
      var pic=/hospital_pic_/g;
@@ -141,8 +202,8 @@ function init_content_info(Hospital_ID){
      if(idx!=-1){
      	pic_name=Hospital_Picture_url.substr(idx);
      }    
-     $('#picture_name').attr('name',pic_name);
-     $('#picture_url').attr('name',Hospital_Picture_url);
+     $('#picture_name').val(pic_name);
+     $('#picture_url').val(Hospital_Picture_url);
 }
 function show_province(){
 	var encrypttime=getEncryptTime();
@@ -274,7 +335,7 @@ function show_area(){
 }
 function get_privilege(){
 	$('#hospital_tb tr').remove();
-	var Admin_ID=$('#Admin_ID parent').val();
+	var Admin_ID=$('#Admin_ID',window.parent.document).val();
 	var encrypttime=getEncryptTime();
 	$.ajax({
 		url:'../php/TransferStation.php',
@@ -462,8 +523,8 @@ function UploadPicture(file_type,oldfile){
                	  			okVal:'确定'
                	  		});
                	  	alert(data.filename);
-               	  	$('#picture_name').attr('name',data.filename);
-               	  	$('#picture_url').attr('name',data.Hospital_Picture_url);
+               	  	$('#picture_name').val(data.filename);
+               	  	$('#picture_url').val(data.Hospital_Picture_url);
                	}else{
                	  	art.dialog({
                	  		icon:'error',
@@ -506,8 +567,8 @@ function cancelPicture(){
 						icon:'succeed',
 						content:'移除成功',
 						ok:function(){
-							$('picture_name').attr('name','');
-							$('picture_url').attr('name','');
+							$('picture_name').val('');
+							$('picture_url').val('');
 							$('#hospital_picture').attr('src','../images/picture_upload_logo.jpg');
 	                        $("#scan_file").uploadPreview({ Img: "hospital_picture"});
 						},
@@ -541,18 +602,18 @@ function cancelPicture(){
 	
 }
 function confirm_info(){
- var encrypttime=getEncryptTime();
- var Hospital_ID=$('#Hospital_ID').val();
- var Hospital_Introduction=$('#Hospital_Introduction').val();
- var Hospital_Name=$('#Hospital_Name').val();
- var Hospital_Location=$('#Hospital_Location').val();
- var Reservation_Start_Time=$('#Reservation_Start_Time').val();
- var Reservation_End_Time=$('#Reservation_End_Time').val();
- var Province_ID=$('#Province_Info').val();
- var Area_ID=$('#Area_Info').val();
- var Hospital_Picture_url=$('#picture_url').attr('name');
- var Hospital_Level=$('#Hospital_Level').val();
- $.ajax({
+ 	var encrypttime=getEncryptTime();
+ 	var Hospital_ID=$('#Hospital_ID').val();
+ 	var Hospital_Introduction=$('#Hospital_Introduction').val();
+ 	var Hospital_Name=$('#Hospital_Name').val();
+ 	var Hospital_Location=$('#Hospital_Location').val();
+ 	var Reservation_Start_Time="0000-00-00 "+$('#Reservation_Start_Time').val();
+ 	var Reservation_End_Time="0000-00-00 "+$('#Reservation_End_Time').val();
+ 	var Province_ID=$('#Province_Info').val();
+ 	var Area_ID=$('#Area_Info').val();
+ 	var Hospital_Picture_url=$('#picture_url').val();
+ 	var Hospital_Level=$('#Hospital_Level').val();
+ 	$.ajax({
         //url:"../test_get_hospital.php",
 		url:'../php/TransferStation.php',
 		type:'POST',
@@ -566,13 +627,11 @@ function confirm_info(){
             Hospital_Location:Hospital_Location,
             Reservation_Start_Time:Reservation_Start_Time,
             Reservation_End_Time:Reservation_End_Time,
-            Province_ID:Province_ID,
             Area_ID:Area_ID,
             Hospital_Picture_url:Hospital_Picture_url,
             Hospital_Level:Hospital_Level
 		},
 		success:function(data){
-			data=eval("("+data+")");
 			if(data.msg==0){
 				art.dialog({
 					title:'系统消息',
@@ -634,14 +693,70 @@ function depart_name_repeat(Hospital_ID,Depart_Name){
 	return repeat;
 }
 	
-function add_depart(){
-	
+function config_depart(){
+	Hospital_ID=$('#Hospital_ID').val();
+	get_Depart(Hospital_ID);
 	art.dialog({
 		id:'add_depart_dialog',
 		title:'添加科室',
 		content:document.getElementById('add_depart_div'),
+		width:'600',
 	});
-
+}
+function del_Dpart(){
+	var Depart_ID=$('#del_depart_select').val();
+	art.dialog({
+		title:'系统提示',
+		icon:'warning',
+		content:'确定删除该科室吗？',
+		ok:function(){
+			   var encrypttime=getEncryptTime();
+			   $.ajax({
+		         url:'../php/TransferStation.php',
+		      	 type:'POST',
+				 dataType:'json',
+				 async:false,
+				 data:{
+					url: 'Del_Depart',
+					encrypttime:encrypttime,
+					Depart_ID:Depart_ID,
+				 },
+				 success:function(data){
+					  if(data.msg==0){
+					  	art.dialog({
+					  		title:'系统提示',
+					  		content:'操作成功！',
+					  		icon:"succeed",
+					  		ok:true,
+					  		okVal:'确定'
+					  	});
+					  	get_Depart(Hospital_ID);
+					  }else{
+					  	art.dialog({
+					  		title:'系统提示',
+					  		content:'操作失败！失败信息<br/>'+data.info,
+					  		icon:"error",
+					  		cancel:true,
+					  		cancelVal:'确定'
+					  	});
+					  }
+				},
+				error:function(data){
+					art.dialog({
+					  		title:'系统提示',
+					  		content:'与服务器交互失败',
+					  		icon:"error",
+					  		cancel:true,
+					  		cancelVal:'确定'
+					  	});
+			    }
+			});
+		},
+		okVal:'确定',
+		cancelVal:'取消',
+		cancel:true,
+	});
+	dialog.shake()&&dialog.shake();
 }
 function confirm_op(){
 	 $('#repeat_signal').hide();
@@ -692,7 +807,6 @@ function confirm_op(){
 			 			});
 				}
 			});
-			art.dialog({ id:'add_depart_dialog'}).close();
 			}
 	
 }
