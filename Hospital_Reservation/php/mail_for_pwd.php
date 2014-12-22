@@ -1,6 +1,8 @@
 <?php
     echo "ok";
+		print_r($_POST);
   require('../include/phpmailer/class.phpmailer.php');
+  echo "1";
   date_default_timezone_set('PRC');
   function create_password($pw_length) 
     {  
@@ -11,6 +13,7 @@
     	}  
     	return $randpwd;  
     }  
+    echo "3";
 	$conn=mysql_connect("localhost","root","root");
 	if(!$conn){
 		echo "Fail to Connect ".mysql_error();
@@ -22,7 +25,6 @@
 		$randstr=create_password(160);
   		$insert="Insert into Reset_Pwd(User_ID,Time,rand_str) values('$User_ID','$date_now','$randstr')";
 		$reset_id="";
-		print_r($_POST);
 		if(mysql_query($insert)){
 			$reset_id=mysql_insert_id();
 		}else {
