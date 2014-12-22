@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var strftime = require("strftime");
 var connect = global.connect;
+var trim = require('trim');
 
 exports.check = function (req, res, next) {
     delete req.body.token;
@@ -58,7 +59,7 @@ var jsonToAnd = function (data) {
 
 var select = function (table, condition, callback, columns) { // SELECT语句的封装，便于重用
     condition = jsonToAnd(condition);
-    if (condition.trim() != '') { // 如果condition的属性为空，则转换成的字符串应该是'  '
+    if (trim(condition) != '') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
     if (columns) {
@@ -87,7 +88,7 @@ var find = function (table, condition, res, columns) { // 用于绝大多数find
 
 var find_range = function (table, condition, start, size, res, columns) { // 用于绝大多数带limit的find函数，便于重用
     condition = jsonToAnd(condition);
-    if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
+    if (trim(condition) != '') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
     connect.query('SELECT COUNT(1) AS count FROM ?? ' + condition, [table], function (err, rows) {
@@ -1148,7 +1149,7 @@ exports.Del_Privilege = function (req, res) {
         Admin_ID: req.body.Admin_ID
     };
     condition_admin = jsonToAnd(condition_admin);
-    var condition_hospital = ' (' + res.body.Hospital_ID + ') ';
+    var condition_hospital = ' (' + req.body.Hospital_ID + ') ';
     connect.query('DELETE FROM ?? WHERE ' + condition_admin + ' AND ?? IN ' + condition_hospital,
         [table, 'Hospital_ID'], function (err, result) {
             if (err) {
@@ -1167,7 +1168,7 @@ exports.Del_Privilege = function (req, res) {
 
 exports.del_Admin = function (req, res) {
     var table = 'Admin';
-    var condition = ' (' + res.body.Admin_ID.join(', ') + ') ';
+    var condition = ' (' + req.body.Admin_ID + ') ';
     connect.query('DELETE FROM ?? WHERE ?? IN ' + condition, [table, 'Admin_ID'], function (err, result) {
         if (err) {
             res.json({
