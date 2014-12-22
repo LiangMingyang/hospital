@@ -31,7 +31,7 @@
 		$content="您好！请将以下链接复制到浏览器地址栏完成密码重置，链接将在30分钟后失效<br/>".$url;
 		$mail = new PHPMailer();
       	$mail->IsSMTP();
-     	$mail->SMTPDebug = 0;
+     	$mail->SMTPDebug = 2;
       	$mail->Host = "smtp.163.com";
 		$mail->Port = "25";
       	$mail->CharSet = "utf-8"; // 这里指定字符集！
