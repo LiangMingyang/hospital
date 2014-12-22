@@ -14,7 +14,7 @@ date_default_timezone_set('Asia/Shanghai');
 //require 'model.class.php';
 //require 'mysql.class.php';
 
-define('WEB_ROOT', '/');
+define('WEB_ROOT', 'hospital.szm.me');
 define('ROOT_PATH','/');
 define('CSS_PATH', WEB_ROOT.'/template/css/');
 define('IMAGE_PATH', WEB_ROOT.'/images/');
