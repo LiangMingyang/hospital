@@ -10,7 +10,7 @@
     	}  
     	return $randpwd;  
     }  
-	$conn=mysql_connect("localhost","root","");
+	$conn=mysql_connect("localhost","root","root");
 	if(!$conn){
 		echo "Fail to Connect ".mysql_error();
 	}
@@ -26,7 +26,7 @@
 		}else {
 			echo $insert;
 		}
-  		$url="http://localhost/Hospital_Reservation/php/reset_pwd.php?Reset_ID=$reset_id&randstr=$randstr";
+  		$url="http://hospital.szm.me/php/reset_pwd.php?Reset_ID=$reset_id&randstr=$randstr";
 		$content="您好！请将以下链接复制到浏览器地址栏完成密码重置，链接将在30分钟后失效<br/>".$url;
 		$mail = new PHPMailer();
       	$mail->IsSMTP();
