@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var strftime = require("strftime");
 var connect = global.connect;
+var trim = require('trim');
 
 exports.check = function (req, res, next) {
     delete req.body.token;
@@ -58,7 +59,7 @@ var jsonToAnd = function (data) {
 
 var select = function (table, condition, callback, columns) { // SELECT语句的封装，便于重用
     condition = jsonToAnd(condition);
-    if (condition.trim() != '') { // 如果condition的属性为空，则转换成的字符串应该是'  '
+    if (trim(condition) != '') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
     if (columns) {
