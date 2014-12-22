@@ -88,7 +88,7 @@ var find = function (table, condition, res, columns) { // 用于绝大多数find
 
 var find_range = function (table, condition, start, size, res, columns) { // 用于绝大多数带limit的find函数，便于重用
     condition = jsonToAnd(condition);
-    if (condition != '  ') { // 如果condition的属性为空，则转换成的字符串应该是'  '
+    if (trim(condition) != '') { // 如果condition的属性为空，则转换成的字符串应该是'  '
         condition = ' WHERE ' + condition;
     }
     connect.query('SELECT COUNT(1) AS count FROM ?? ' + condition, [table], function (err, rows) {
