@@ -1167,7 +1167,7 @@ exports.Del_Privilege = function (req, res) {
 
 exports.del_Admin = function (req, res) {
     var table = 'Admin';
-    var condition = ' (' + res.body.Admin_ID.join(', ') + ') ';
+    var condition = ' (' + req.body.Admin_ID + ') ';
     connect.query('DELETE FROM ?? WHERE ?? IN ' + condition, [table, 'Admin_ID'], function (err, result) {
         if (err) {
             res.json({
