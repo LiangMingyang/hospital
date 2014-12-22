@@ -1148,7 +1148,7 @@ exports.Del_Privilege = function (req, res) {
         Admin_ID: req.body.Admin_ID
     };
     condition_admin = jsonToAnd(condition_admin);
-    var condition_hospital = ' (' + res.body.Hospital_ID + ') ';
+    var condition_hospital = ' (' + req.body.Hospital_ID + ') ';
     connect.query('DELETE FROM ?? WHERE ' + condition_admin + ' AND ?? IN ' + condition_hospital,
         [table, 'Hospital_ID'], function (err, result) {
             if (err) {
