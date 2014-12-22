@@ -14,7 +14,7 @@
     	return $randpwd;  
     }  
     echo "3";
-	$conn=mysql_connect("localhost","root","root");
+	$conn=mysqli_connect("localhost","root","root");
 	echo "33";
 	if(!$conn){
 		echo "Fail to Connect ".mysql_error();
