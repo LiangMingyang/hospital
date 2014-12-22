@@ -18,6 +18,7 @@
 	if(!$conn){
 		echo "Fail to Connect ".mysql_error();
 	}
+	echo "4";
 	mysql_select_db("password_reset");
   	    $Mail=$_POST['Mail'];
 		$User_ID=$_POST['User_ID'];
@@ -25,13 +26,15 @@
 		$randstr=create_password(160);
   		$insert="Insert into Reset_Pwd(User_ID,Time,rand_str) values('$User_ID','$date_now','$randstr')";
 		$reset_id="";
+		echo "5";
 		if(mysql_query($insert)){
 			$reset_id=mysql_insert_id();
 		}else {
 			echo $insert;
 		}
+		echo "6";
   		$url="http://hospital.szm.me/php/reset_pwd.php?Reset_ID=$reset_id&randstr=$randstr";
-  		
+  		echo "7";
 		$content="您好！请将以下链接复制到浏览器地址栏完成密码重置，链接将在30分钟后失效<br/>".$url;
 		echo "the begin";
 		echo $Mail;
