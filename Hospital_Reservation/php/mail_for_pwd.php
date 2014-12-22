@@ -22,13 +22,14 @@
 		$randstr=create_password(160);
   		$insert="Insert into Reset_Pwd(User_ID,Time,rand_str) values('$User_ID','$date_now','$randstr')";
 		$reset_id="";
+		print_r($_POST);
 		if(mysql_query($insert)){
 			$reset_id=mysql_insert_id();
 		}else {
 			echo $insert;
 		}
   		$url="http://hospital.szm.me/php/reset_pwd.php?Reset_ID=$reset_id&randstr=$randstr";
-  		print_r($_POST);
+  		
 		$content="您好！请将以下链接复制到浏览器地址栏完成密码重置，链接将在30分钟后失效<br/>".$url;
 		echo "the begin";
 		echo $Mail;
