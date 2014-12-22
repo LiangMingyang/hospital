@@ -15,8 +15,11 @@
     }  
     echo "3";
 	$conn=mysql_connect("localhost","root","root");
+	echo "33";
 	if(!$conn){
 		echo "Fail to Connect ".mysql_error();
+	} else {
+	    echo "normal";
 	}
 	echo "4";
 	mysql_select_db("password_reset");
