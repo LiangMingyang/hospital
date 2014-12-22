@@ -50,5 +50,8 @@
 		    <input type="button" value="保存更改" id="save_change_btn" onclick="save_change()" />
 		    <br />
 		</div>
+		<div id="no_signal" style="display: none">
+			<span>没有相关用户</span>
+		</div>
 	</body>
 </html>

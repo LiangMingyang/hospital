@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>全国医院预约挂号统一系统</title>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.1.min.js"></script>
+    <link rel="stylesheet" href="css/index.css" type="text/css" />
     <link href="css/hospitaltime.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="js/sha1.js"></script>
 
@@ -17,6 +18,7 @@
     <script type="text/javascript"  src="js/jquery.hDialog.js"></script>
     <link rel="stylesheet" href="css/common.css"/><!-- 基本样式 -->
     <link rel="stylesheet" href="css/animate.min.css"/> <!-- 动画效果 -->
+    <script type="text/javascript"  src="js/selectprovince.js"></script>
 
     <?php
     @header('Content-type: text/html;charset=UTF-8');
@@ -25,14 +27,18 @@
         echo '<script type="text/javascript">var hospital_id='.$_REQUEST['hpid'].';'.'var department_id='.$_REQUEST['dpmid'].';var department_name=\''.$_REQUEST['dpmname'].'\';</script>';
     ?>
 
+    <script type="text/javascript" src="js/logout.js"></script>
     <?php
     session_start();
-    if (isset($_SESSION['UserName']))
-    {echo "<script type='text/javascript'>var username=\"".$_SESSION['UserName']."\";</script>";}
-    echo "<script type='text/javascript'>var User_ID=2;</script>";
+    echo "<script type='text/javascript'>var User_ID=-1;</script>";
+
+    if (!isset($_SESSION['rd_token']))
+        $_SESSION['rd_token']="#";//#未登录 空已登录
     //登陆之后跳转回来的时候将登陆信息保存
-    if (isset($_SESSION['tiaozhuan']))//判断是否跳转到本页面
-        if($_SESSION['isUser']==""){
+    if (isset($_SESSION['tiaozhuan']))
+    {//判断是否跳转到本页面
+        unset($_SESSION['tiaozhuan']);
+        if(!isset($_SESSION['isUser'])or $_SESSION['isUser']==""){
             $_SESSION['isUser']=$_POST['isUser'];
             if($_SESSION['isUser']=='1'){
                 $_SESSION["Province_ID"]=$_POST["Province_ID"];
@@ -40,7 +46,6 @@
                 $_SESSION["Credit_Rank"]=$_POST['Credit_Rank'];
                 $_SESSION["UserName"]=$_POST['UserName'];
                 $_SESSION["User_ID"]=$_POST['User_ID'];
-                echo "<script type='text/javascript'>var User_ID=".$_SESSION['User_ID'].";</script>";
                 $_SESSION["Credit_Rank"]=$_POST["Credit_Rank"];
                 $_SESSION["Area_ID"]=$_POST['Area_ID'];
                 $_SESSION["Area_Name"]=$_POST['Area_Name'];
@@ -52,7 +57,7 @@
                 $_SESSION["Phone"]=$_POST['Phone'];
                 $_SESSION["Mail"]=$_POST['Mail'];
                 $_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
-                unset($_SESSION['rd_token']);
+                //unset($_SESSION['rd_token']);
                 $_SESSION['rd_token']="";
             }
             else if($_SESSION['isUser']=='0'){
@@ -60,30 +65,59 @@
                 $_SESSION['Admin_Name']=$_POST['Admin_Name'];
                 $_SESSION['isSuper']=$_POST['isSuper'];
                 $_SESSION['LastLogInTime']=$_POST['LastLogInTime'];
-                unset($_SESSION['rd_token']);
+                //unset($_SESSION['rd_token']);
                 $_SESSION['rd_token']="";
             }
         }
+    }
+
+    $a;
+    if (isset($_COOKIE['Province_ID']))
+    {
+		$a=$_COOKIE['Province_ID'];
+        $_SESSION['Province_ID']=$a;
+        $_SESSION['Province_Name']=$_COOKIE['Province_Name'];
+    }
+    if (!isset($_SESSION['Province_ID'])||$_SESSION['Province_ID']="")
+    {
+        $_SESSION['Province_ID']="0";
+        $_SESSION['Province_Name']="北京市";
+    }
+    echo "<script type='text/javascript'>var Province_ID="  .$a.   ";var Province_Name=\""  .  $_SESSION["Province_Name"] ."\";</script>";
     ?>
 </head>
 <body>
-
 <!-- 导航栏代码begin -->
-<<div id="topnavbar" style="display: block;">
+<div id="topnavbar" style="display: block;">
     <div id="topnanv" style="width: 980px;">
-        <div class="defu"> <a href="#" target="_self">首页</a> </div>
+        <div class="defu"> <a href="index.php" target="_self">首页</a> </div>
         <div id="anvlfteb">
-            <div selec="order" class="posbox"> <a href="#">预约</a> <i></i></div>
-            <div selec="notice" class="posbox"><a href="#">公告</a><i></i></div>
-            <div selec="orderhelp" class="posbox"><a href="#">帮助</a> <i></i></div>
-            <div selec="suggest" class="posbox"><a href="#">反馈</a><i></i></div>
+            <div selec="order" class="posbox"> <a href="javascript:void(0)">预约</a> <i></i></div>
+            <div selec="notice" class="posbox"><a href="javascript:void(0)">公告</a><i></i></div>
+            <div selec="orderhelp" class="posbox"><a href="javascript:void(0)">帮助</a> <i></i></div>
+            <div selec="suggest" class="posbox"><a href="javascript:void(0)">反馈</a><i></i></div>
             <div id="seledbox" class="posiabox" style="display: none; left: 1px;">
                 <div> </div>
             </div>
         </div>
-        <div id="btn"> <a style="color:#FFF" target="_blank" href="#">注册</a> </div>
-        <div id="btn"> <a style="color:#FFF" target="_blank" href="#">登陆</a> </div>
-        <div id="btn"> <a style="color:#FFF" target="_blank" href="#">您所在的城市为：[]，点击可更换</a> </div>
+        <?php
+        if ($_SESSION['rd_token']=="#")
+        {
+            echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_blank\" href=\"php/register.php\">注册</a> </div>";
+            echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_self\" href=\"php/login.php?lastweb=../index.php\">登录</a> </div>";
+        }
+        else {
+
+            echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_self\" onclick='logout(\"".'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."\")' href=\"javascript:void(0)\">登出</a> </div>";
+            if($_SESSION['isUser']=='1')
+            {
+                echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_self\" href=\"php/IndividualCenter.php\">".$_SESSION['UserName']."点击进入个人中心</a> </div>";
+                echo "<script type='text/javascript'>var User_ID=".$_SESSION['User_ID'].";</script>";
+            }
+                else echo "<div id=\"btn\"> <a style=\"color:#FFF\" target=\"_self\" href=\"php/IndividualCenter.php\">".$_SESSION['Admin_Name']."点击进入个人中心</a> </div>";
+        }
+        echo '<div id="btn"> <a style="color:#FFF" target="_self" href="javascript:void(0)" id="provincebtn">您的所在地：['.$_SESSION["Province_Name"].']，点击可更换</a> </div>';
+        ?>
     </div>
 </div>
 <!-- 导航栏代码end -->
@@ -156,8 +190,7 @@
     </div>
 </div>
 
-<!--<div style="display: block; opacity: 0.9; cursor: pointer;" id="cboxOverlay"></div>-->
-<div style="display: none; opacity: 1; cursor: auto;" id="cboxOverlay"></div>
+<!--<div style="display: none; opacity: 1; cursor: auto;" id="cboxOverlay"></div>
 <div style="display: none; padding-bottom: 42px; padding-right: 42px; top: 318px; left: 219px; position: absolute; width: 818px; height: 761px; opacity: 1; cursor: auto;"
      class="" id="colorbox">
     <div style="height: 803px; width: 860px;" id="cboxWrapper">
@@ -194,41 +227,24 @@
         </div>
     </div>
     <div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div>
-</div>
-<!--
-<div style="display: block; padding-bottom: 42px; padding-right: 42px; top: 318px; left: 219px; position: absolute; width: 818px; height: 761px; opacity: 1; cursor: auto;"
-     class="" id="colorbox">
-    <div style="height: 803px; width: 860px;" id="cboxWrapper">
-        <div>
-            <div style="float: left;" id="cboxTopLeft"></div>
-            <div style="float: left; width: 818px;" id="cboxTopCenter"></div>
-            <div style="float: left;" id="cboxTopRight"></div>
-        </div>
-        <div style="clear: left;">
-            <div style="float: left; height: 761px;" id="cboxMiddleLeft"></div>
-            <div style="float: left; width: 818px; height: 761px;" id="cboxContent">
-                <div style="display: block; width: 818px; overflow: auto; height: 733px;" id="cboxLoadedContent">
-                    <iframe class="cboxIframe" src="ghao.php?hpid=1&amp;keid=1080010&amp;date1=2014-12-22" name="cbox1418655097186" frameborder="0"></iframe>
-                </div>
-                <div style="float: left; display: block;" id="cboxTitle">北京市预约挂号统一平台</div>
-                <div style="float: left; display: none;" id="cboxCurrent"></div>
-                <div style="float: left; display: none;" id="cboxNext"></div>
-                <div style="float: left; display: none;" id="cboxPrevious"></div>
-                <div style="float: left; display: none;" id="cboxSlideshow"></div>
-                <div style="float: left;" id="cboxClose">close</div>
-            </div>
-            <div style="float: left; height: 761px;" id="cboxMiddleRight"></div>
-        </div>
-        <div style="clear: left;">
-            <div style="float: left;" id="cboxBottomLeft"></div>
-            <div style="float: left; width: 818px;" id="cboxBottomCenter"></div>
-            <div style="float: left;" id="cboxBottomRight"></div>
-        </div>
-    </div>
-    <div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div>
-</div>
--->
+</div>-->
 
+<div id="doctorcontent" class="doctorcontent">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="500">
+        <tbody><tr>
+            <td class="riqidh" align="left">开始预约</td>
+        </tr></tbody>
+    </table>
+    <table align="center" border="0" cellpadding="1" cellspacing="1" width="500">
+        <tbody id="doctortbody">
+            <tr>
+                <td class="tdtitle">医生</td>
+                <td class="tdtitle">时间段</td>
+                <td class="tdtitle">操作</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 <!--病症填写弹窗-->
 <div id="HBox">
     <form action="" method="post" onsubmit="return false;">
@@ -242,5 +258,12 @@
     </form>
 </div><!-- HBox end -->
 
+<div class="province_list" id="province_list">
+    <div class="content">
+        <ul>
+
+        </ul>
+    </div>
+</div>
 </body>
 </html>

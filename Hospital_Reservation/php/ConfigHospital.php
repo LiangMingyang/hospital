@@ -115,7 +115,7 @@
 				<tr>
 					<td class="tag" >医院地址
 					&nbsp;
-					<select id="Province_Info">
+					<select id="Province_Info" onchange="get_area_info()">
 					</select>
 					&nbsp;
 					<select id="Area_Info"></select>

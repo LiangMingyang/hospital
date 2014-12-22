@@ -99,7 +99,11 @@ function show_user(start,size){
 			    var len=content.length;
 			    if(len==0){
 			        $('#tb_footer').hide();
+			    	$('#no_signal').show();
 			    	return;
+			    }else{
+			    	 $('#tb_footer').show();
+			    	$('#no_signal').hide();
 			    }
 			    $('#user_tb tr td').remove();
 			    for(var i=0;i<len;i++){
@@ -130,9 +134,7 @@ function show_user(start,size){
 			    }
 			    $('#user_tb').append(content_txt);
 			    $('#total').html(len);
-			    if(len==0){
-			    	$('#no_signal').show();
-			    }
+			   
 			    $('#page_num').html(Math.ceil(len/size));
 			    $('#tb_footer').show();
 			}else {
@@ -186,7 +188,7 @@ function check_user(t){
 					ok:true,
 					okVal:'确定'
 				});
-				
+				show_user(0,10);
 			}else {
 				art.dialog({
 					title:'系统消息',
@@ -271,6 +273,16 @@ function del_user(){
 	$('input:checkbox[name=del_u]:checked').each(function(index) {
 	  User_ID+=$(this).attr('id')+",";
 	});
+	if(User_ID==""){
+		art.dialog({
+			title:'系统提示',
+			content:'请勾选相关选项!',
+			icon:'warning',
+			ok:true,
+			okVal:'确定'
+		});
+		return;
+	}
 	User_ID=User_ID.substr(0,User_ID.length-1);
 	$.ajax({
 		//url:'',
@@ -314,5 +326,32 @@ function del_user(){
 	});
 }
 function goPage3(){
-	
+	var dest_page=$('#page_no3').val();
+	if(isNaN(dest_page)){
+		art.dialog({
+					title:'系统消息',
+					content:'请输入数字！',
+					icon:'error',
+					cancel:true,
+					cancelVal:'关闭',
+				});
+				return;
+	}else{
+		dest_page=Math.floor(dest_page/1.0);
+		$('#page_no3').val(dest_page);
+		if(dest_page<1||dest_page>$('#page_num').html()){
+			art.dialog({
+					title:'系统消息',
+					content:'页码超出范围！',
+					icon:'error',
+					cancel:true,
+					cancelVal:'关闭',
+				});
+				return;
+		}
+	}
+	var size=10;
+	var page=$('#page_no3').val();
+	var start=(page-1)*size;
+	show_user(start,size);
 }

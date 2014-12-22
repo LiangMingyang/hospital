@@ -23,7 +23,7 @@ function logout(){
 					logoutval=true;
 				}
 			});
-			window.location.href="../php/login.php";
+			window.location.href="../index.php";
 		},
 		cancelVal:'取消',
 		cancel:true

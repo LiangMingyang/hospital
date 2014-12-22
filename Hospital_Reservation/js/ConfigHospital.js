@@ -66,6 +66,7 @@ function get_province_info(){
 		},
 		success:function(data){
 			if(data.msg==0){
+				$('#Province_Info option').remove();
 				var content=data.content;
 				var len=content.length;
 				for(var i=0;i<len;i++){
@@ -155,6 +156,7 @@ function get_area_info(){
 			},
 			success:function(data){
 					if(data.msg=='0'){
+						$('#Area_Info option').remove();
 							var content=data.content;
 							var len=content.length;
 							for(var i=0;i<len;i++){
@@ -201,6 +203,7 @@ function get_area(){
 			},
 			success:function(data){
 					if(data.msg=='0'){
+						    $('#Area option').remove();
 							var content=data.content;
 							var len=content.length;
 							for(var i=0;i<len;i++){
@@ -236,7 +239,7 @@ function init_content_info(Hospital_ID){
 	$('#Hospital_ID').val(Hospital_ID);
 	var Province_ID;
 	var Area_ID;
-	var Hospital_Picture_url;
+	var Hospital_Picture_Url;
 	var encrypttime=getEncryptTime();
 	$.ajax({
 		url:'../php/TransferStation.php',
@@ -262,7 +265,7 @@ function init_content_info(Hospital_ID){
                 get_province_info();    
                 $('#Province_Info').val(Math.floor(Area_ID/100));
                 get_area_info();
-                Hospital_Picture_url=data.Hospital_Picture_url;
+                Hospital_Picture_Url=data.Hospital_Picture_Url;
              }else{
              	art.dialog({
              		title:'系统消息',
@@ -277,8 +280,9 @@ function init_content_info(Hospital_ID){
      get_province();
      $('#Province_Info').val(Province_ID);
      get_area(Province_ID);
-     $('#hospital_picture').attr('src',Hospital_Picture_url);
-     $('#picture_url').val(Hospital_Picture_url);
+     $('#hospital_picture').attr('src',Hospital_Picture_Url);
+     $('#picture_url').val(Hospital_Picture_Url);
+     $('#hospital_picture').attr('src',Hospital_Picture_Url);
 }
 function search(){
 	$('#hospital_tb tr').remove();
@@ -315,6 +319,7 @@ function search(){
 					$('#no_signal').show();
 					$('#page_div').hide();
 				}else{
+					$('#hospital_tb tr').remove();
 					$('#no_signal').hide();
 					$('#page_num').html(Math.ceil(len/10));
 					$('#num').html(len);
@@ -633,7 +638,7 @@ function confirm_op(){
 
 function del_Dpart(){
 	var Depart_ID=$('#del_depart_select').val();
-	art.dialog({
+	var dialog=art.dialog({
 		title:'系统提示',
 		icon:'warning',
 		content:'确定删除该科室吗？',
@@ -690,7 +695,7 @@ function del_Dpart(){
 function del_op(){
 	var encrypttime=getEncryptTime();
 	var Hospital_ID=$('#Hospital_ID').val();
-	art.dialog({
+	var dialog=art.dialog({
 		title:'系统提示',
 		icon:'warning',
 		content:'确定删除该医院吗？',
@@ -717,7 +722,7 @@ function del_op(){
 							close_div();
 							var num=$('#hospital_num').html();
 							$('#hospital_num').html(num-1);
-							
+							search();
 					}else{
 							art.dialog({
 								title:'系统消息',

@@ -187,6 +187,16 @@ function del_Priv(){
 	$('input:checkbox[name=hospital_priv_del]:checked').each(function(i){
 		Hospital_ID+=$(this).attr('id')+",";
 	});
+	if(Hospital_ID==""){
+		art.dialog({
+			title:'系统提示',
+			content:'请勾选相关选项!',
+			icon:'warning',
+			ok:true,
+			okVal:'确定'
+		});
+		return;
+	}
 	Hospital_ID=Hospital_ID.substr(0,Hospital_ID.length-1);
 	$.ajax({
 		url:'../php/TransferStation.php',
@@ -207,7 +217,8 @@ function del_Priv(){
 					ok:true,
 					okVal:'确定'
 				});
-				show_Admin_Info();
+				$('#Admin_Info').fadeOut('1000');
+				show_Admin_Info(Admin_ID);
 			}else{
 				art.dialog({
 					title:'系统消息',
@@ -237,6 +248,16 @@ function add_Priv(){
 	$('input:checkbox[name=hospital_priv_add]:checked').each(function(i){
 		Hospital_ID+=$(this).attr('id')+",";
 	});
+	if(Hospital_ID==""){
+		art.dialog({
+			title:'系统提示',
+			content:'请勾选相关选项!',
+			icon:'warning',
+			ok:true,
+			okVal:'确定'
+		});
+		return;
+	}
 	Hospital_ID=Hospital_ID.substr(0,Hospital_ID.length-1);
 	$.ajax({
 		url:'../php/TransferStation.php',
@@ -258,7 +279,8 @@ function add_Priv(){
 					ok:true,
 					okVal:'确定'
 				});
-				show_Admin_Info();
+				$('#Admin_Info').fadeOut('1000');
+				show_Admin_Info(Admin_ID);
 			}else{
 				art.dialog({
 					title:'系统消息',
@@ -323,8 +345,9 @@ function getHospital(start,size){
 						+content[i].Hospital_Name
 						+'</td>';
 						if(i%3==2||i==len-1)
-						content+="</tr>";
+						content_txt+="</tr>";
 				}
+				
 				$('#add_Hospital').append(content_txt);
 			}else{
 				art.dialog({
@@ -389,9 +412,7 @@ function del_Admin(){
 		content:'确定删除该管理员吗？',
 		okVal:'确定',
 		ok:function(){
-			var admin_ID=$('#Admin_Name').attr('name');
-			var Admin_ID=Array();
-			Admin_ID.push(admin_ID);
+			var Admin_ID=$('#Admin_Name').attr('name');
 			var encrypttime=getEncryptTime();
 			$.ajax({
 				url:'../php/TransferStation.php',
@@ -411,6 +432,8 @@ function del_Admin(){
 		        			ok:true,
 		        			okVal:'确定'
 		        		});
+		        		$('#Admin_Info').fadeOut('1000');
+		        		getAdminList();
 		        	}else{
 		        		art.dialog({
 		        			title:'系统消息',
@@ -435,6 +458,7 @@ function del_Admin(){
 		cancel:true,
 		cancelVal:'取消'
 	});
+	
 }
 function changePwd(){
 	art.dialog({

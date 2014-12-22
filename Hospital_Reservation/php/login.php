@@ -16,7 +16,7 @@ session_start();
  ?>
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<form id="backinfo_User" action="<?php $_SESSION['tiaozhuan']="1";if (isset($_REQUEST['lastweb'])) echo $_REQUEST['lastweb'];else echo "IndividualCenter.php";?>" method="post" style="display: none">
+<form id="backinfo_User" action="<?php if (isset($_REQUEST['lastweb'])) echo $_REQUEST['lastweb'];else echo "IndividualCenter.php";?>" method="post" style="display: none">
 	<input id="Province_ID" name="Province_ID" type="text"/>
 	<input id="Province_Name" name="Province_Name" type="text"/>
 	<input id="Area_ID" name="Area_ID" type="text"/>
@@ -34,7 +34,7 @@ session_start();
     <input id="isUser_1" name="isUser" value="1" type="text" />
     <input id="LastLogInTime_User"  name="LastLogInTime" type="text"/>
 </form>
-<form id="backinfo_Admin" action="<?php $_SESSION['tiaozhuan']="1";if (isset($_REQUEST['lastweb'])) echo $_REQUEST['lastweb'];else echo "IndividualCenter.php";?>" method="post" style="display: none">
+<form id="backinfo_Admin" action="<?php if (isset($_REQUEST['lastweb'])) echo $_REQUEST['lastweb'];else echo "IndividualCenter.php";?>" method="post" style="display: none">
     <input id="Admin_ID" name="Admin_ID" type="text" />
     <input id="Admin_Name" name="Admin_Name" type="text" />
     <input id="isSuper" name="isSuper" type="text"/> 

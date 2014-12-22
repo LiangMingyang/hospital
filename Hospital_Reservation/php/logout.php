@@ -2,5 +2,5 @@
 	session_start();
 	unset($_SESSION);
 	session_destroy();
-	echo "a";
+	echo "logout successfully!";
 ?>

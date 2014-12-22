@@ -38,14 +38,12 @@
 			<table id="Hospital_Info_tb">
 				<tr>	
 					<td id="picture_area" rowspan="8">  
-							<img onclick="upload_picture()" id="hospital_picture" 
-							src='../images/picture_upload_logo.jpg' />
-							<input type="file" id="scan_file" name="PicturetoUpload" style="display: none"/>
-					        <br />
-					        <a class="pic_option" id="submitPic" onclick="submitPicture()">提交</a>
-						    <a class="pic_option" id="cancelPic" onclick="cancelPicture()">移除</a> 
+						    <div id="container">
+	        					<a href="#" id="pickfiles">
+	        						<img id="hospital_picture" src='http://hospital.qiniudn.com/picture_upload_logo.jpg' />
+	        					</a>
+      						</div>
 					        <input type="text" id="picture_url" style="display: none" />
-					        <input type="text" id="picture_name" style="display: none" />
 					</td>
 					
 					
@@ -90,7 +88,7 @@
 				<tr>
 					<td class="tag" >医院地址
 					&nbsp;
-					<select id="Province_Info">
+					<select id="Province_Info" onchange="get_area_info()">
 					</select>
 					&nbsp;
 					<select id="Area_Info"></select>

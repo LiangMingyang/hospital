@@ -150,16 +150,18 @@ function get_Depart(Hospital_ID){
 			});
 }
 function init_content_info(Hospital_ID){
+	get_province_info();
 	$('#Hospital_ID').val(Hospital_ID);
 	var Province_ID;
 	var Area_ID;
-	var Hospital_Picture_url;
+	var Hospital_Picture_Url;
 	var encrypttime=getEncryptTime();
 	$.ajax({
 		url:'../php/TransferStation.php',
 		async:false,
 		type:'POST',
 		dataType:'json',
+		async:false,
 		data:{
 			 url:'Get_HospitalInfo_detail',
 			 Hospital_ID:Hospital_ID,
@@ -167,17 +169,18 @@ function init_content_info(Hospital_ID){
 		},
 		success:function(data){
              if(data.msg==0){
-             	data=data.content[0];
+             	var data=data.content[0];	
              	$('#Hospital_Level').val(data.Hospital_Level);
              	$('#Hospital_Introduction').val(data.Hospital_Introduction);
              	$('#Hospital_Name').val(data.Hospital_Name);
              	$('#Hospital_Location').val(data.Hospital_Location);
-             	var Reservation_Start_Time=data.Reservation_Start_Time.substr(11);
-             	var Reservation_End_Time=data.Reservation_End_Time.substr(11);
-             	$('#Reservation_Start_Time').val(Reservation_Start_Time);
-             	$('#Reservation_End_Time').val(Reservation_End_Time);
+             	$('#Reservation_Start_Time').val(data.Reservation_Start_Time.substr(11));
+             	$('#Reservation_End_Time').val(data.Reservation_End_Time.substr(11));
                 Area_ID=data.Area_ID;
-                Hospital_Picture_url=data.Hospital_Picture_url;
+                get_province_info();    
+                $('#Province_Info').val(Math.floor(Area_ID/100));
+                get_area_info();
+                Hospital_Picture_Url=data.Hospital_Picture_Url;
              }else{
              	art.dialog({
              		title:'系统消息',
@@ -189,21 +192,104 @@ function init_content_info(Hospital_ID){
              }		
 		}
      });
-     Province_ID=Math.floor(Area_ID/100);
      get_province();
      $('#Province_Info').val(Province_ID);
      get_area(Province_ID);
-     $('#Province_Info').val(Area_ID);
-     $("#scan_file").uploadPreview({ Img: "hospital_picture"});
-     $('#hospital_picture').attr('src',Hospital_Picture_url);
-     var pic=/hospital_pic_/g;
-     var idx=Hospital_Picture_url.search(pic);
-     var pic_name="";
-     if(idx!=-1){
-     	pic_name=Hospital_Picture_url.substr(idx);
-     }    
-     $('#picture_name').val(pic_name);
-     $('#picture_url').val(Hospital_Picture_url);
+     $('#hospital_picture').attr('src',Hospital_Picture_Url);
+     $('#picture_url').val(Hospital_Picture_Url);
+     $('#hospital_picture').attr('src',Hospital_Picture_Url);
+     
+}
+function get_province_info(){
+	 var encrypttime=getEncryptTime();
+	$.ajax({
+		//url:"../test_province.php",
+		url:'../php/TransferStation.php',
+		type:'POST',
+		dataType:'json',
+		data:{
+			url:'Get_Province_Info',
+			encrypttime:encrypttime
+		},
+		success:function(data){
+			if(data.msg==0){
+				$('#Province_Info option').remove();
+				var content=data.content;
+				var len=content.length;
+				for(var i=0;i<len;i++){
+					$('#Province_Info')
+					.append('<option value="'
+					+content[i].Province_ID
+					+'">'+content[i].Province_Name+'</option>');
+				}
+				
+			}else{
+				art.dialog({
+					title:'系统消息',
+					content:'操作失败！失败信息<br/>'+data.info,
+					icon:'error',
+					cancel:true,
+					cancelVal:'关闭',
+				});
+			}
+		},
+		error:function(data){
+			art.dialog({
+					title:'系统消息',
+					content:'拉取医院信息失败，请稍后重试！',
+					icon:'error',
+					cancel:true,
+					cancelVal:'关闭',
+				});
+		}
+	});
+}
+function get_area_info(){
+	var Province_ID=$('#Province_Info').val();
+	if(Province_ID<0)return;
+	var encrypttime=getEncryptTime();
+	$.ajax({
+			//url:"host/Get_Area_Info_By_Province_ID",
+			url:'../php/TransferStation.php',
+			type:'POST',
+			dataType:'json',
+			data:{
+					url:'Get_Area_Info_By_Province_ID',
+					encrypttime:encrypttime,
+					Province_ID:Province_ID
+			},
+			success:function(data){
+					if(data.msg=='0'){
+						$('#Area_Info option').remove();
+							var content=data.content;
+							var len=content.length;
+							for(var i=0;i<len;i++){
+								$('#Area_Info')
+					            .append('<option value="'
+					            +content[i].Area_ID
+					            +'">'+content[i].Area_Name+'</option>');
+							}
+					}else {
+						art.dialog({
+							title:'系统消息',
+							icon:'error',
+							content:'系统操作异常！错误信息：<br/>'+data.info,
+							ok:true,
+							okVal:'确定'
+			     	});
+					}
+				
+				},
+				error:function(data){
+				  	art.dialog({
+							title:'系统消息',
+							icon:'error',
+							content:'与服务器交互失败！',
+							ok:true,
+							okVal:'确定'
+			     	});
+				}
+			});
 }
 function show_province(){
 	var encrypttime=getEncryptTime();

@@ -134,7 +134,7 @@ body {
 #add_Hospital{
 	position:absolute;
 	margin-top:80px;
-	margin-left:60px;
+	margin-left:0px;
 	border: 1px solid blue ;
 }
 #del_admin_div{
