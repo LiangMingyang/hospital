@@ -28,7 +28,11 @@
 			echo $insert;
 		}
   		$url="http://hospital.szm.me/php/reset_pwd.php?Reset_ID=$reset_id&randstr=$randstr";
+  		print_r($_POST);
 		$content="您好！请将以下链接复制到浏览器地址栏完成密码重置，链接将在30分钟后失效<br/>".$url;
+		echo "the begin";
+		echo $Mail;
+		echo "the end";
 		$mail = new PHPMailer();
       	$mail->IsSMTP();
      	$mail->SMTPDebug = 2;
