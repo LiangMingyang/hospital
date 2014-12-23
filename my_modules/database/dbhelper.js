@@ -295,6 +295,13 @@ exports.LogIn_Admin = function (req, res) {
         var admin = rows[0];
         admin.LastLogInTime = strftime("%F %T",new Date());
         Config('Admin', condition, admin, function (err, result) {
+            if(err) {
+                res.json({
+                    msg: 1,
+                    info: err.message
+                });
+                return;
+            }
             res.json({
                 msg: 0,
                 content: admin
