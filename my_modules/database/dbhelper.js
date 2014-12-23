@@ -4,6 +4,7 @@ var connect = global.connect;
 var trim = require('trim');
 
 exports.check = function (req, res, next) {
+    //TODO: 暂时把验证取消了
     delete req.body.token;
     delete req.body.encrypttime;
     next();
@@ -308,7 +309,7 @@ exports.UpdatePwd_Admin = function (req, res) {
         Admin_ID: req.body.Admin_ID
     };
     var dest = {
-        Password: req.body.Password
+        PASSWORD: req.body.PASSWORD
     };
     condition = jsonToAnd(condition);
     connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
@@ -331,7 +332,7 @@ exports.UpdatePwd_User = function (req, res) {
         User_ID: req.body.User_ID
     };
     var dest = {
-        Password: req.body.Password
+        PASSWORD: req.body.PASSWORD
     };
     condition = jsonToAnd(condition);
     connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
@@ -1584,14 +1585,14 @@ exports.Del_Doctor = function (req, res) {
 exports.Get_Old_Pwd_User = function (req, res) {
     var table = 'User';
     var condition = req.body;
-    var columns = 'Password';
+    var columns = 'PASSWORD';
     find(table, condition, res, columns);
 };
 
 exports.Get_Old_Pwd_Admin = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
-    var columns = 'Password';
+    var columns = 'PASSWORD';
     find(table, condition, res, columns);
 };
 
@@ -1698,7 +1699,7 @@ exports.Update_User = function (req, res) {
         User_ID: req.body.User_ID
     };
     /*var dest = {
-     Password: req.body.Password
+     PASSWORD: req.body.PASSWORD
      };*/
     var dest = req.body;
     delete dest.User_ID;
@@ -1835,8 +1836,8 @@ exports.Get_Cash = function(req, res) {
     });
 };
 
-// IN: Admin_ID, OUT: msg, Password
-exports.Get_Password_Admin = function(req, res) {
+// IN: Admin_ID, OUT: msg, PASSWORD
+exports.Get_PASSWORD_Admin = function(req, res) {
     connect.query('Select PASSWORD from Admin where Admin_ID=' + req.body.Admin_ID, function(err, rows) {
         if (!!err) {
             res.json({
@@ -1854,13 +1855,13 @@ exports.Get_Password_Admin = function(req, res) {
         }
         res.json({
             msg: 0,
-            password: rows[0].PASSWORD
+            PASSWORD: rows[0].PASSWORD
         });
     });
 };
 
-// IN: User_ID, OUT: msg, Password
-exports.Get_Password_User = function(req, res) {
+// IN: User_ID, OUT: msg, PASSWORD
+exports.Get_PASSWORD_User = function(req, res) {
     connect.query('Select PASSWORD from User where User_ID=' + req.body.User_ID, function(err, rows) {
         if (!!err) {
             res.json({
@@ -1878,7 +1879,7 @@ exports.Get_Password_User = function(req, res) {
         }
         res.json({
             msg: 0,
-            password: rows[0].PASSWORD
+            PASSWORD: rows[0].PASSWORD
         });
     });
 };
