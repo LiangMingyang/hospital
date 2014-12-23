@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @author acer
  */
 
@@ -38,10 +38,10 @@ function getReservation(){
 				var length=content.length;
 				if(length>0){
 					for(var i=0;i<length;i++){
-						$('#reservation_tb tr').eq(0).nextAll().remove();
 						var obj=content[i];
+						$('#reservation_tb tr').eq(0).nextAll().remove();
 						obj.Reservation_Time=getStandardDt_only(obj.Reservation_Time);
-						obj.Operation_Time=getStandardDate(obj.Operation_Time);
+						obj.Operation_Time=getStandardDt_only(obj.Operation_Time);
 						if(obj.Duty_Time%10==1){
 							obj.Reservation_Time+="上午";
 						}else{
@@ -148,7 +148,7 @@ function getDetail(t){
 				}
 				$('#Reservation_Time').html(data.Reservation_Time);
 				$('#Doctor_Name').html(data.Doctor_Name);
-				$('#Reseration_Symptom').val(data.Reseration_Symptom);
+				$('#Reservation_Symptom').val(data.Reservation_Symptom);
 				
 				if(data.Reservation_Payed=='0'){
 					$('#Reservation_Payed').html("未支付");
@@ -173,7 +173,7 @@ function getDetail(t){
 							ok:function(){
 								$('#Reservation_Time').html('');
 				                $('#Doctor_Name').html('');
-				                $('#Reseration_Symptom').val('');
+				                $('#Reservation_Symptom').val('');
 								$('#Reservation_Payed').html("");
 								$('#pay_btn').hide();
 								$('#Hospital_Name').html('');
@@ -339,7 +339,7 @@ function cancel_reservation(t){
 function printReservationSheet(t){
 	var Reservation_ID=$(t).attr('id').substr(12);
     var Reservation_Time;
-    var Reseration_Symptom;
+    var Reservation_Symptom;
     var Reservation_Payed;
     var Operation_Time;
     var Hospital_Name;
@@ -379,7 +379,7 @@ function printReservationSheet(t){
 				Doctor_Level=data.Doctor_Level;
 				Doctor_Fee=data.Doctor_Fee;
 				window.location.href="../php/printReservationSheet.php?Reservation_Time="+data.Reservation_Time
-				                     +"&Reseration_Symptom="+data.Reservation_Symptom
+				                     +"&Reservation_Symptom="+data.Reservation_Symptom
 				                     +"&Reservation_ID="+Reservation_ID
 				                     +"&Hospital_Name="+data.Hospital_Name
 				                     +"&Hospital_Location="+data.Hospital_Location
@@ -420,7 +420,7 @@ function printAppointmentSheet(t){
     //alert($(t).parent().siblings().eq(5).find(".pay").attr("style")==undefined);
 	var Reservation_ID=$(t).attr('id').substr(12);
     var Reservation_Time;
-    var Reseration_Symptom;
+    var Reservation_Symptom;
     var Reservation_Payed;
     var Reservation_PayTime;
     var Operation_Time;
@@ -459,7 +459,7 @@ function printAppointmentSheet(t){
 				Doctor_Fee=data.Doctor_Fee;
 				Reservation_PayTime=data.Reservation_PayTime;
 				window.location.href="../php/printAppointSheet.php?Reservation_Time="+data.Reservation_Time
-				                     +"&Reseration_Symptom="+data.Reseration_Symptom
+				                     +"&Reservation_Symptom="+data.Reservation_Symptom
 				                     +"&Reservation_ID="+Reservation_ID
 				                     +"&Hospital_Name="+data.Hospital_Name
 				                     +"&Hospital_Location="+data.Hospital_Location

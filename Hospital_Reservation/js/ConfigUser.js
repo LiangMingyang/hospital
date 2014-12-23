@@ -102,9 +102,14 @@ function search_user(){
 			Identity_ID:Identity_ID
 		},
 		success:function(data){
+			$('#user_info').hide();
+			$('#no_signal').hide();
 			if(data.msg==0){
-				if(data.content.length==0)
-				return;
+				if(data.content.length==0){
+					$('#no_signal').show();
+					return;
+				}
+				
 				data=data.content[0];
 				$('#UserName').attr('name',data.User_ID);
 				$('#UserName').val(data.UserName);

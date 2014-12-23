@@ -6,7 +6,7 @@
     require_once('../include/HttpClient.class.php');
 	$Reset_ID=$_SESSION['Reset_ID'];
 	$randstr=$_SESSION['randstr'];
-	$conn=mysql_connect("localhost","root","");//xiu gai
+	$conn=mysql_connect("localhost","root","root");//xiu gai
 	if(!$conn){
 		echo "Fail to Connect ".mysql_error();
 	}

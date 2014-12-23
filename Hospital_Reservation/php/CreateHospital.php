@@ -5,11 +5,12 @@
 <html>
 	<link href="../css/CreateHospital.css" rel="stylesheet" type="text/css" />
 	<script src="../include/jquery-2.1.1.js"></script>
-	<script src="../include/uploadPreview/uploadPreview.js"></script>
+	<script type="text/javascript" src="../include/qiniu_adapter/demo/js/plupload.full.min.js"></script>
+		<script type="text/javascript" src="../include/qiniu_adapter/demo/js/qiniu.js"></script>
+		<script type="text/javascript" src="../include/qiniu_adapter/demo/js/hospital.js"></script>
     <script src="../include/artDialog/artDialog.js?skin=default"></script>
 	<script src="../include/artDialog/plugins/iframeTools.source.js"></script>
 	<script src="../include/My97DatePicker/WdatePicker.js"></script>
-	<script src="../include/AjaxFileUploaderV2.1/ajaxfileupload.js"></script>
 	<script language="JavaScript" src="../include/sha1.js"></script>
 	<script language="JavaScript" src="../js/CreateHospital.js"> </script>
     <body>
@@ -24,13 +25,12 @@
 				<tr>
 					
 					<td id="picture_area" rowspan="8">  
-							<img onclick="upload_picture()" id="hospital_picture" src='../images/picture_upload_logo.jpg' />
-							<input type="file" id="scan_file" name="PicturetoUpload" style="display: none"/>
-					        <br />
-					        <a class="pic_option" id="submitPic" onclick="submitPicture()">提交</a>
-						    <a class="pic_option" id="cancelPic" onclick="cancelPicture()">移除</a> 
+						    <div id="container">
+	        					<a href="#" id="pickfiles">
+	        						<img id="hospital_picture" src='http://hospital.qiniudn.com/picture_upload_logo.jpg' />
+	        					</a>
+      						</div>
 					        <input type="text" id="picture_url" style="display: none" />
-					        <input type="text" id="picture_name" style="display: none" />
 					</td>
 					
 					

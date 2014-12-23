@@ -18,7 +18,7 @@ $(document).ready(function(){
 function Init_User_info()
 {
     //setCookie("province_ID",1,30);
-
+    Get_Province_Info();
 }
 
 //读取医院信息

@@ -9,6 +9,7 @@ function createAdmin(){
 		url:'../php/TransferStation.php',
 		type:'POST',
 		dataType:'json',
+		async:false,
 		data:{
 			url:"Check_Admin_Repeat",
 			Admin_Name:Admin_Name,
@@ -16,7 +17,7 @@ function createAdmin(){
 		},
 		success:function(data){
 			if(data.msg=='0'){
-				if(data.repeat==1){
+				if(data.isRepeat==1){
 			      repeat=true;   	
 				}
 			}else{
@@ -46,6 +47,7 @@ function createAdmin(){
 	}
 	if(repeat){
 		$('#repeat_signal').show();
+		return;
 	}else{
 		var Admin_Name=$('#Admin_Name').val();
 		var Password=hex_sha1($('#Password').val());
@@ -61,7 +63,7 @@ function createAdmin(){
 				Password:Password
 			},
 			success:function(data){
-				if(data.msg==1){
+				if(data.msg==0){
 					art.dialog({
 						title:'系统消息',
 						icon:'succeed',

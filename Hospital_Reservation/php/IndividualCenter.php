@@ -38,7 +38,7 @@ if($_SESSION['isUser']==""){
    		}
 }
   if($_SESSION['rd_token']=='#'||$_SESSION['isUser']!="1"&&$_SESSION['isUser']!="0"){
- 	 echo "<script>window.location.href='../php/login.php'</script>";
+ 	 echo "<script>window.location.href='../index.php'</script>";
   }
   //print_r($_SESSION);
   

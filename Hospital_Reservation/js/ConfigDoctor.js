@@ -219,7 +219,7 @@ function show_doctor_info(Doctor_ID){
 				$('#Doctor_Fee').val(data.Doctor_Fee);
 				$('#Doctor_Limit').val(data.Doctor_Limit);
 				$('#Doctor_Major').val(data.Doctor_Major);
-				$('#Doctor_Picture_url').val(data.Doctor_Picture_url);
+				$('#doctor_picture').attr('src',data.Doctor_Picture_Url);
 				/*
 				var Duty_Time=Array();
 				$('input[name=Duty_Time]:checked').each(function(index) {

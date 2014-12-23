@@ -1,0 +1,8 @@
+
+CREATE TABLE `reset_pwd` (
+  `ID` int(11) NOT NULL auto_increment,
+  `User_ID` int(11) NOT NULL,
+  `Time` datetime NOT NULL,
+  `rand_str` varchar(160) NOT NULL,
+  PRIMARY KEY  (`ID`)
+)

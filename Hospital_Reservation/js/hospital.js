@@ -40,6 +40,7 @@ function jqPaginationInit(number)
 function Init_User_info()
 {
     //setCookie("province_ID",1,30);
+    Get_Province_Info();
 }
 
 //跳转到医院详细信息页面
@@ -75,7 +76,7 @@ function Find_Hospital(province_ID,Area_ID,Hospital_Level,start,size)
             hospital_number=msg.total;
             $.each(data,function(idx,item){
                 var newhosp='<li'+'>';
-                newhosp+='<img src="'+ item.Hospital_Picture_url +'" height="96" width="128">';
+                newhosp+='<img src="'+ item.Hospital_Picture_Url +'" height="96" width="128">';
                 newhosp+='<strong><a href="#" onclick="HospitalDetail('+item.Hospital_ID+')">'+ item.Hospital_Name +'</a></strong>';
                 newhosp+='</li'+'>';
                 $(".hospital_list .content ul").append(newhosp);

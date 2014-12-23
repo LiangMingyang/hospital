@@ -10,6 +10,15 @@ function login(){
 		login_user(type);
 	}
 }
+function tiaozhuan()
+{
+	$.ajax({
+		type: "post",//使用post方法访问后台
+		dataType: "json",//返回json格式的数据
+		url:'../php/tiaozhuan.php',
+		async:false
+	});
+}
 function login_user(type){
 	var loginname=$("#loginname").val();
 	var password=$("#password").val();
@@ -27,7 +36,7 @@ function login_user(type){
             PASSWORD:password
 		},
 		success:function(data){
-			if(data.msg=='0'){	
+			if(data.msg=='0'){
 				    data=data.content;
 				    if(data.isChecked==0){
 				    	art.dialog({
@@ -38,6 +47,7 @@ function login_user(type){
 				    	});
 				    	return;
 				    }
+					tiaozhuan();
 					$('#UserName').val(data.UserName);
 					$('#User_ID').val(data.User_ID);
 				 	$('#Province_ID').val(data.Province_ID);
@@ -102,6 +112,7 @@ function login_admin(type){
 		},
 		success:function(data){
 			if(data.msg=='0'){	
+					tiaozhuan();
 				    data=data.content;
 					$('#Admin_Name').val(Admin_Name);
 					$('#Admin_ID').val(data.Admin_ID);

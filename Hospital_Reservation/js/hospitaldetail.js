@@ -19,6 +19,7 @@ $(document).ready(function(){
 function Init_User_info()
 {
     //setCookie("province_ID",1,30);
+    Get_Province_Info();
 }
 
 //跳转到科室时间页面

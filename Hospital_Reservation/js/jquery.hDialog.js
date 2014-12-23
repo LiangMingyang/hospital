@@ -36,7 +36,7 @@
 					$this.data('hDialog', opt);
                 }
                 opt = $.extend({}, opt, options);
-                $(opt.box).hide(); //隐藏容器
+                //$(opt.box).hide(); //隐藏容器
 				$this.on(opt.triggerEvent,function() { //元素点击事件
 					//重置表单
 					if(opt.resetForm) {
@@ -72,7 +72,7 @@
 			});
         },
         add: function (o,$this) { //显示弹框
-        	var w,h,t,l,m; $obj = $(o.box); title = o.title; c = $this.attr("class"); modalBg = o.modalBg; closeBg = o.closeBg;
+        	var w,h,t,l,m; $obj = $(o.box); title = o.title; c = ""; modalBg = o.modalBg; closeBg = o.closeBg;
 			w = o.width != undefined ? parseInt(o.width) : '300';
 			h = o.height != undefined ? parseInt(o.height) : '270';
 			m = ""+(-(h/2))+'px 0 0 '+(-(w/2))+"px";
@@ -92,7 +92,7 @@
 					t = l = '50%'; 
 			}
 					
-        	methods.remove('#HOverlay,#HCloseBtn,#HTitle');
+        	methods.remove('#HOverlay,#HTitle');
 			$body.stop().append("<div id='HOverlay' style='width:"+_doc.width()+"px;height:"+_doc.height()+"px;background-color:"+modalBg+";position:fixed;top:0;left:0;z-index:9999;'></div>");				
 			if(o.title != ''){ $obj.stop().prepend('<div id="HTitle" style="padding:10px 45px 10px 12px;border-bottom:1px solid #ddd;background-color:#f2f2f2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+o.title+'</div>'); }
 			if(o.closeHide != false){

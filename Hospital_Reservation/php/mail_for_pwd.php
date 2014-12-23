@@ -1,5 +1,8 @@
 <?php
+    echo "ok";
+		print_r($_POST);
   require('../include/phpmailer/class.phpmailer.php');
+  echo "1";
   date_default_timezone_set('PRC');
   function create_password($pw_length) 
     {  
@@ -10,10 +13,15 @@
     	}  
     	return $randpwd;  
     }  
-	$conn=mysql_connect("localhost","root","root");
+    echo "3";
+	$conn=mysqli_connect("localhost","root","root");
+	echo "33";
 	if(!$conn){
 		echo "Fail to Connect ".mysql_error();
+	} else {
+	    echo "normal";
 	}
+	echo "4";
 	mysql_select_db("password_reset");
   	    $Mail=$_POST['Mail'];
 		$User_ID=$_POST['User_ID'];
@@ -21,16 +29,22 @@
 		$randstr=create_password(160);
   		$insert="Insert into Reset_Pwd(User_ID,Time,rand_str) values('$User_ID','$date_now','$randstr')";
 		$reset_id="";
+		echo "5";
 		if(mysql_query($insert)){
 			$reset_id=mysql_insert_id();
 		}else {
 			echo $insert;
 		}
-  		$url="http://localhost/Hospital_Reservation/php/reset_pwd.php?Reset_ID=$reset_id&randstr=$randstr";
+		echo "6";
+  		$url="http://hospital.szm.me/php/reset_pwd.php?Reset_ID=$reset_id&randstr=$randstr";
+  		echo "7";
 		$content="您好！请将以下链接复制到浏览器地址栏完成密码重置，链接将在30分钟后失效<br/>".$url;
+		echo "the begin";
+		echo $Mail;
+		echo "the end";
 		$mail = new PHPMailer();
       	$mail->IsSMTP();
-     	$mail->SMTPDebug = 0;
+     	$mail->SMTPDebug = 2;
       	$mail->Host = "smtp.163.com";
 		$mail->Port = "25";
       	$mail->CharSet = "utf-8"; // 这里指定字符集！

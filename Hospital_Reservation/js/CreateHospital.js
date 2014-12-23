@@ -1,6 +1,4 @@
 $(function () {
-  $("#scan_file").uploadPreview({ Img: "hospital_picture"});
-  $('#scan_file').val('');
   show_province();
 });
 function show_province(){
@@ -16,6 +14,7 @@ function show_province(){
 			},
 			success:function(data){
 				if(data.msg=='0'){
+					$('#Province option').remove();
 					var content=data.content;
 					var len=content.length;
 					for(var i=0;i<len;i++){
@@ -77,6 +76,7 @@ function show_area(){
 				},
 				success:function(data){
 					if(data.msg=='0'){
+						$('#Area option').remove();
 							var content=data.content;
 							var len=content.length;
 							for(var i=0;i<len;i++){
@@ -109,106 +109,6 @@ function show_area(){
 				}
 			});
 	}
-}
-function upload_picture(){
-	$('#scan_file').trigger("click");	
-}
-function submitPicture(){
-	var filename=$('#scan_file').val();
-	var file_type=filename.substr(filename.lastIndexOf(".")+1);
-	if($('#scan_file').val()=='undefined'||$('#scan_file').val()==''){
-		art.dialog({
-			title:'系统消息',
-			icon:'warning',
-			content:'请选择图片',
-			top:'15%',
-			ok:true,
-			okVal:'我知道了'
-		});
-	}
-	else if(file_type!='jpg'&&file_type!='jpeg'&&file_type!='png'&&file_type!='gif'){
-		art.dialog({
-			title:'系统消息',
-			icon:'error',
-			content:'文件类型错误！请选择jpg、jpeg、bmp、png、gif图片格式',
-			top:'15%',
-			ok:true,
-			okVal:'我知道了'
-		});
-		('#scan_file').val('');
-		return;
-	}else{
-		var oldfile=$('#picture_name').val();
-		if(oldfile!=''){
-		    art.dialog({
-		    	title:'系统提醒',
-		    	top:'15%',
-		    	content:'重复提交会覆盖原有的图片，确定执行此操作？',
-		    	ok:function(){
-                     UploadPicture(file_type,oldfile);
-		    	},
-		    	okVal:'确定',
-		    	cancelVal:'取消',
-		    	cancel:function(){
-		    		return true;
-		    	}
-		    });	
-		   
-		}else {
-			UploadPicture(file_type,oldfile);
-		}
-	}
-}
-function UploadPicture(file_type,oldfile){
-	$.ajaxFileUpload({
-          url:'../php/addImage_Hospital.php',//处理图片脚本
-          secureuri :false,
-          fileElementId :'scan_file',//file控件id
-          dataType : 'json',
-          data:{
-            	destination:"hospital",
-            	filetype:file_type,
-            	oldfile:oldfile
-            },
-          success : function (data, status){
-               if(data.msg==0){
-               	   art.dialog({
-               	  		icon:'succeed',
-               	  		top:'15%',
-               	  		content:"操作成功！",
-               	  		title:'系统消息',
-               	  		ok:true,
-               	  		okVal:'确定'
-               	  	});
-               	  	$('#picture_url').val(data.Hospital_Picture_url);
-               	  	$('#picture_name').val(data.filename);
-                }else{
-               	  	art.dialog({
-               	  		icon:'error',
-               	  		top:'15%',
-               	  		content:'上传图片失败：<br/>'+"错误信息："+data.error,
-               	  		title:'系统消息',
-               	  		cancel:true,
-               	  		cancelVal:'确定'
-               	  	});
-               }
-          },
-          error: function(data, status, e){
-                art.dialog({
-               	  	icon:'error',
-               	  	top:'15%',
-               	  	content:"与服务器交互失败！",
-               	  	title:'系统消息',
-               	  	cancel:true,
-               	  	cancelVal:'确定'
-               	 });
-            	}
-       	});
-    $("#scan_file").uploadPreview({ Img: "hospital_picture"});
-}
-function cancelPicture(){
-	$('#hospital_picture').attr('src','../images/picture_upload_logo.jpg');
-	$("#scan_file").uploadPreview({ Img: "hospital_picture"});
 }
 function confirm_info(){
   var Hospital_Name=$('#Hospital_Name').val();
