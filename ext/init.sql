@@ -31,7 +31,7 @@ CREATE TABLE `Admin` (
   `LastLogInTime` datetime DEFAULT NULL,
   `isSuper` int(1) DEFAULT '0',
   PRIMARY KEY (`Admin_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `Admin` (
 
 LOCK TABLES `Admin` WRITE;
 /*!40000 ALTER TABLE `Admin` DISABLE KEYS */;
-INSERT INTO `Admin` VALUES (1,'SuperAdmin','7c4a8d09ca3762af61e59520943dc26494f8941b','a@b.com',0,'2014-12-04 23:04:26',1);
+INSERT INTO `Admin` VALUES (1,'SuperAdmin','20eabe5d64b0e216796e834f52d61fd0b70332fc','a@b.com',0,'2014-12-23 23:08:53',1),(2,'Operator1','7c4a8d09ca3762af61e59520943dc26494f8941b','',0,'2014-12-23 00:50:32',0),(6,'op2','7c4a8d09ca3762af61e59520943dc26494f8941b','',0,NULL,0);
 /*!40000 ALTER TABLE `Admin` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,7 @@ CREATE TABLE `Depart` (
   PRIMARY KEY (`Depart_ID`),
   KEY `Hospital_ID` (`Hospital_ID`),
   CONSTRAINT `Depart_ibfk_1` FOREIGN KEY (`Hospital_ID`) REFERENCES `Hospital` (`Hospital_ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `Depart` (
 
 LOCK TABLES `Depart` WRITE;
 /*!40000 ALTER TABLE `Depart` DISABLE KEYS */;
-INSERT INTO `Depart` VALUES (1,1,'北医三院');
+INSERT INTO `Depart` VALUES (1,1,'北医三院'),(5,3,'眼科'),(6,3,'耳鼻喉科'),(7,3,'神经外科'),(8,3,'神经内科'),(9,3,'肛肠科');
 /*!40000 ALTER TABLE `Depart` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,11 +113,11 @@ CREATE TABLE `Doctor` (
   `Doctor_Fee` decimal(4,2) DEFAULT NULL,
   `Doctor_Limit` int(2) DEFAULT NULL,
   `Doctor_Major` varchar(30) DEFAULT NULL,
-  `Doctor_Picture_url` varchar(50) DEFAULT NULL,
+  `Doctor_Picture_Url` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`Doctor_ID`),
   KEY `Depart_ID` (`Depart_ID`),
   CONSTRAINT `Doctor_ibfk_1` FOREIGN KEY (`Depart_ID`) REFERENCES `Depart` (`Depart_ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,7 +126,7 @@ CREATE TABLE `Doctor` (
 
 LOCK TABLES `Doctor` WRITE;
 /*!40000 ALTER TABLE `Doctor` DISABLE KEYS */;
-INSERT INTO `Doctor` VALUES (1,1,'DB',1,10.00,1,'Death','none');
+INSERT INTO `Doctor` VALUES (1,1,'DB',1,10.00,1,'Death','none'),(2,9,'宋子明',1,0.01,10,'优雅','http://hospital.qiniudn.com/pic_1418976697025'),(4,6,'test',1,1.00,3,'','http://hospital.qiniudn.com/pic_1418986248045'),(5,5,'耿金坤',1,2.00,3,'眼科','http://hospital.qiniudn.com/pic_1419005374183'),(6,5,'123',1,11.00,11,'123123',''),(7,5,'1233',1,11.00,11,'123123','http://hospital.qiniudn.com/pic_1419260221058');
 /*!40000 ALTER TABLE `Doctor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -151,6 +151,7 @@ CREATE TABLE `Doctor_Time` (
 
 LOCK TABLES `Doctor_Time` WRITE;
 /*!40000 ALTER TABLE `Doctor_Time` DISABLE KEYS */;
+INSERT INTO `Doctor_Time` VALUES (5,11),(5,12),(5,21),(5,22),(5,31),(5,32),(5,41),(5,42),(5,51),(5,52),(5,61),(5,62),(5,71),(5,72),(7,11),(7,31);
 /*!40000 ALTER TABLE `Doctor_Time` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,18 +166,18 @@ CREATE TABLE `History_Reservation` (
   `History_Reservation_ID` int(11) NOT NULL AUTO_INCREMENT,
   `User_ID` int(11) NOT NULL,
   `Doctor_ID` int(11) NOT NULL,
-  `History_Reservation_Time` date NOT NULL,
-  `Duty_Time` int(2) NOT NULL,
+  `History_Reservation_Time` date DEFAULT NULL,
   `History_Reservation_Symptom` varchar(50) DEFAULT NULL,
   `History_Reservation_Paied` int(1) NOT NULL,
   `History_Pay_Time` datetime DEFAULT NULL,
   `History_Operation_Time` datetime NOT NULL,
+  `Duty_Time` int(2) NOT NULL,
   PRIMARY KEY (`History_Reservation_ID`),
   KEY `User_ID` (`User_ID`),
   KEY `Doctor_ID` (`Doctor_ID`),
   CONSTRAINT `History_Reservation_ibfk_1` FOREIGN KEY (`User_ID`) REFERENCES `User` (`User_ID`) ON UPDATE CASCADE,
   CONSTRAINT `History_Reservation_ibfk_2` FOREIGN KEY (`Doctor_ID`) REFERENCES `Doctor` (`Doctor_ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,6 +186,7 @@ CREATE TABLE `History_Reservation` (
 
 LOCK TABLES `History_Reservation` WRITE;
 /*!40000 ALTER TABLE `History_Reservation` DISABLE KEYS */;
+INSERT INTO `History_Reservation` VALUES (1,2,5,'2014-11-30','SRF Saaby',32,'0000-00-00 00:00:00','2014-11-30 00:10:00',2014);
 /*!40000 ALTER TABLE `History_Reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -199,16 +201,16 @@ CREATE TABLE `Hospital` (
   `Hospital_ID` int(11) NOT NULL AUTO_INCREMENT,
   `Area_ID` int(11) NOT NULL,
   `Hospital_Level` int(2) DEFAULT NULL,
-  `Hospital_Introduction` varchar(200) DEFAULT NULL,
+  `Hospital_Introduction` varchar(500) DEFAULT NULL,
   `Hospital_Name` varchar(30) NOT NULL,
-  `Hospital_Location` varchar(20) DEFAULT NULL,
+  `Hospital_Location` varchar(50) DEFAULT NULL,
   `Reservation_Start_Time` datetime DEFAULT NULL,
   `Reservation_End_Time` datetime DEFAULT NULL,
-  `Hospital_Picture_url` varchar(50) DEFAULT NULL,
+  `Hospital_Picture_Url` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`Hospital_ID`),
   KEY `Area_ID` (`Area_ID`),
   CONSTRAINT `Hospital_ibfk_1` FOREIGN KEY (`Area_ID`) REFERENCES `Area` (`Area_ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +219,7 @@ CREATE TABLE `Hospital` (
 
 LOCK TABLES `Hospital` WRITE;
 /*!40000 ALTER TABLE `Hospital` DISABLE KEYS */;
-INSERT INTO `Hospital` VALUES (1,1,1,'nothing','北医三院','北航周边','2014-11-30 00:33:10','2014-11-30 00:33:15','nothing');
+INSERT INTO `Hospital` VALUES (1,1,0,'nothing','北医三院','北航周边','0000-00-00 08:54:30','0000-00-00 20:54:30','http://hospital.qiniudn.com/pic_1419265098813'),(3,1,31,'北京同仁医院创建于1886年（清光绪12年），是一所以眼科、耳鼻咽喉科和心血管疾病诊疗为重点的大型综合性医院。','北京同仁医院',' 北京市东城区东交民巷1号 电话：(010)58269911','0000-00-00 07:00:00','0000-00-00 15:00:00','http://hospital.qiniudn.com/pic_1419177505405'),(7,1,31,'','东城区人民医院','','0000-00-00 00:00:00','0000-00-00 00:00:00',''),(8,2,31,'','西城区人民医院','','0000-00-00 00:00:00','0000-00-00 00:00:00',''),(9,5,31,'test','test','test','0000-00-00 00:00:00','0000-00-00 00:00:00','http://hospital.qiniudn.com/pic_1419255970442'),(10,1,31,'123123','12312','213123213','0000-00-00 00:00:00','0000-00-00 00:00:00','http://hospital.qiniudn.com/pic_1419259650874');
 /*!40000 ALTER TABLE `Hospital` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -244,6 +246,7 @@ CREATE TABLE `Manage` (
 
 LOCK TABLES `Manage` WRITE;
 /*!40000 ALTER TABLE `Manage` DISABLE KEYS */;
+INSERT INTO `Manage` VALUES (3,2),(3,6),(9,6);
 /*!40000 ALTER TABLE `Manage` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -282,19 +285,19 @@ CREATE TABLE `Reservation` (
   `User_ID` int(11) NOT NULL,
   `Doctor_ID` int(11) NOT NULL,
   `Reservation_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Reservation_Time` date NOT NULL,
-  `Duty_Time` int(2) NOT NULL,
+  `Reservation_Time` date DEFAULT NULL,
   `Reservation_Symptom` varchar(50) DEFAULT NULL,
   `Reservation_Payed` int(1) NOT NULL,
   `Reservation_PayTime` datetime DEFAULT NULL,
   `Reservation_PayAmount` decimal(4,2) DEFAULT NULL,
   `Operation_Time` datetime NOT NULL,
+  `Duty_Time` int(2) NOT NULL,
   PRIMARY KEY (`Reservation_ID`),
   KEY `User_ID` (`User_ID`),
   KEY `Doctor_ID` (`Doctor_ID`),
   CONSTRAINT `Reservation_ibfk_1` FOREIGN KEY (`User_ID`) REFERENCES `User` (`User_ID`) ON UPDATE CASCADE,
   CONSTRAINT `Reservation_ibfk_2` FOREIGN KEY (`Doctor_ID`) REFERENCES `Doctor` (`Doctor_ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -303,7 +306,7 @@ CREATE TABLE `Reservation` (
 
 LOCK TABLES `Reservation` WRITE;
 /*!40000 ALTER TABLE `Reservation` DISABLE KEYS */;
-INSERT INTO `Reservation` VALUES (1,1,1,'2014-11-30','71','ss',1,'2014-11-30 00:49:08',12.00,'2014-11-30 00:49:13');
+INSERT INTO `Reservation` VALUES (1,5,1,'2014-11-30','ss',1,'2014-11-30 00:49:08',12.00,'2014-11-30 00:49:13',12),(2,5,13,'2014-12-22','123',0,NULL,2.00,'2014-12-22 14:26:06',11),(2,5,14,'2014-12-22','212312',1,'2014-12-22 14:30:12',2.00,'2014-12-22 14:29:45',11),(2,5,15,'2014-12-23','123',0,NULL,2.00,'2014-12-22 14:36:46',22),(2,5,16,'2014-12-23','123',0,NULL,2.00,'2014-12-22 14:36:53',22),(2,5,17,'2014-12-24','123',1,'2014-12-22 14:41:45',2.00,'2014-12-22 14:36:53',32);
 /*!40000 ALTER TABLE `Reservation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,7 +362,7 @@ CREATE TABLE `User` (
   PRIMARY KEY (`User_ID`),
   KEY `Area_ID` (`Area_ID`),
   CONSTRAINT `User_ibfk_1` FOREIGN KEY (`Area_ID`) REFERENCES `Area` (`Area_ID`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -368,7 +371,7 @@ CREATE TABLE `User` (
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES (1,1,'szmdb',0,'111','111',3,3,0.00,1,'2014-11-30 00:48:18','www','aaa',NULL,'123',0);
+INSERT INTO `User` VALUES (1,1,'szmdb',0,'111','',3,3,0.00,1,'2014-11-30 00:48:18','www','aaa','2014-12-18 21:22:19','123',3),(2,1101,'耿金坤',1,'371581199409060051','20eabe5d64b0e216796e834f52d61fd0b70332fc',7,3,198.00,1,'1994-09-05 08:00:00','BUAA','steam1994@163.com','2014-12-24 00:05:21','13260129923',0);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -381,4 +384,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-12-16 21:56:24
+-- Dump completed on 2014-12-24  1:09:33
