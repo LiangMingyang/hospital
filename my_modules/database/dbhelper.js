@@ -493,6 +493,13 @@ exports.Reservation = function (req, res) {
             });
             return;
         }
+        if(rows.length == 0) {
+            res.json({
+                msg:4,
+                info:"没有符合条件的信息"
+            })
+            return ;
+        }
         console.log('The count of reservation is ' + rows[0] + ' and doctor limit is ' + rows[0]);
         if (rows[0].count >= rows[0].Doctor_Limit) { // 若不小于Doctor_Limit，返回挂号数已满
             res.json({
@@ -537,6 +544,13 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
                 info: err.message
             });
             return;
+        }
+        if(rows.length == 0) {
+            res.json({
+                msg:4,
+                info:"没有符合条件的信息"
+            })
+            return ;
         }
         if (rows[0].Reservation_Payed == 1) { // 如果已支付过挂号费，需要退款
             table = 'User';
@@ -603,6 +617,13 @@ exports.Check_PayState = function (req, res) {
             });
             return;
         }
+        if(rows.length == 0) {
+            res.json({
+                msg:4,
+                info:"没有符合条件的信息"
+            })
+            return ;
+        }
         res.json({
             msg: 0,
             info: rows[0].Reservation_Payed // == 0 ? '已支付' : '未支付'
@@ -622,6 +643,20 @@ exports.Check_Cash = function (req, res) {
                 info: err.message
             });
             return;
+        }
+        if(rows.length == 0) {
+            res.json({
+                msg:4,
+                info:"没有符合条件的信息"
+            })
+            return ;
+        }
+        if(rows.length == 0) {
+            res.json({
+                msg:4,
+                info:"没有符合条件的信息"
+            })
+            return ;
         }
         res.json({
             msg: 0,
