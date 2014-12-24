@@ -473,9 +473,9 @@ exports.Reservation = function (req, res) {
     var condition = {
         'Doctor.Doctor_ID': req.body.Doctor_ID,
         'Doctor_Time.Duty_Time': req.body.Duty_Time,
+        'Reservation.Reservation_Time': req.body.Reservation_Time,
         relation: {
             'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
-            'Reservation.Reservation_Time': req.body.Reservation_Time,
             'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
         }
     };
@@ -485,7 +485,7 @@ exports.Reservation = function (req, res) {
     ];
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
-    var q = connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + 'GROUP BY ??', [columns, table, columns], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+    var q = connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
         if (!!err) {
             res.json({
                 msg: 1,
@@ -500,8 +500,8 @@ exports.Reservation = function (req, res) {
             })
             return ;
         }
-        console.log('The count of reservation is ' + rows[0] + ' and doctor limit is ' + rows[0]);
-        if (rows[0].count >= rows[0].Doctor_Limit) { // 若不小于Doctor_Limit，返回挂号数已满
+        console.log('The count of reservation is ' + rows.length + ' and doctor limit is ' + rows[0].Doctor_Limit);
+        if (rows.length >= rows[0].Doctor_Limit) { // 若不小于Doctor_Limit，返回挂号数已满
             res.json({
                 msg: 2,
                 info: '预约已满'
