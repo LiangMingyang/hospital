@@ -231,43 +231,43 @@ exports.LogIn_User = function (req, res) {
         //TODO:暂时被锁定了不会更新LastLoginTime
         var last = new Date(user.LastLogInTime);
         var now = new Date();
-        if(user.FailTime >= 3 && (now-last) < 60*60*1000 ) {
+        if (user.FailTime >= 3 && (now - last) < 60 * 60 * 1000) {
             res.json({
-                msg:1,
-                info:"该用户被锁定，请联系管理员"
+                msg: 1,
+                info: "该用户被锁定，请联系管理员"
             })
-            return ;
+            return;
         }
         ///判断登陆是否成功
         user.LastLogInTime = strftime("%F %T", now);
-        if(user.PASSWORD == password) {
+        if (user.PASSWORD == password) {
             user.FailTime = 0;
             Config('User', condition, user, function (err, result) {
-                if(err) {
+                if (err) {
                     res.json({
-                        msg:1,
-                        info:err.message
+                        msg: 1,
+                        info: err.message
                     })
-                    return ;
+                    return;
                 }
                 res.json({
-                    msg:0,
+                    msg: 0,
                     content: user
                 })
             })
         } else {
-            if(user.FailTime<3)++user.FailTime;
-            Config('User',condition,user, function (err, result) {
-                if(err) {
+            if (user.FailTime < 3)++user.FailTime;
+            Config('User', condition, user, function (err, result) {
+                if (err) {
                     res.json({
-                        msg:1,
-                        info:err.message
+                        msg: 1,
+                        info: err.message
                     })
-                    return ;
+                    return;
                 }
                 res.json({
-                    msg:1,
-                    info:"密码不正确"
+                    msg: 1,
+                    info: "密码不正确"
                 })
             })
         }
@@ -293,9 +293,9 @@ exports.LogIn_Admin = function (req, res) {
             return;
         }
         var admin = rows[0];
-        admin.LastLogInTime = strftime("%F %T",new Date());
+        admin.LastLogInTime = strftime("%F %T", new Date());
         Config('Admin', condition, admin, function (err, result) {
-            if(err) {
+            if (err) {
                 res.json({
                     msg: 1,
                     info: err.message
@@ -454,58 +454,48 @@ exports.Check_History_Reservation_Detail = function (req, res) {
 };
 
 function twoDigits(d) {
-    if(0 <= d && d < 10) return "0" + d.toString();
-    if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+    if (0 <= d && d < 10) return "0" + d.toString();
+    if (-10 < d && d < 0) return "-0" + (-1 * d).toString();
     return d.toString();
 }
 
 function currentDatetime() {
     var date = new Date();
     return date.getUTCFullYear() + "-" + twoDigits(1 + date.getUTCMonth()) + "-" + twoDigits(date.getUTCDate()) + " " + twoDigits(date.getUTCHours()) + ":" + twoDigits(date.getUTCMinutes()) + ":" + twoDigits(date.getUTCSeconds());
-};
+}
 
 exports.Reservation = function (req, res) {
-    var table = [
-        'Reservation',
-    ];
+    var table = 'Reservation';
     var condition = {
-        'Doctor_ID' : req.body.Doctor_ID,
-        'Duty_Time' : req.body.Duty_Time,
-        'Reservation_Time' : req.body.Reservation_Time
-    }
+        'Doctor_ID': req.body.Doctor_ID,
+        'Duty_Time': req.body.Duty_Time,
+        'Reservation_Time': req.body.Reservation_Time
+    };
     condition = jsonToAnd(condition);
-    // 查询挂号是否已满
-    var q = connect.query('SELECT * FROM ?? WHERE ' + condition, [table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
-        if (!!err) {
+    connect.query('SELECT COUNT(1) FROM ?? WHERE ' + condition, [table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+        if (err) {
             res.json({
                 msg: 1,
                 info: err.message
             });
             return;
         }
-        var cnt = rows.length;
-        select('Doctor',{Doctor_ID:condition.Doctor_ID},function(err, rows) {
-            if(err) {
+        var cnt = rows[0].count;
+        select('Doctor', {Doctor_ID: condition.Doctor_ID}, function (err, rows) {
+            if (err) {
                 res.json({
                     msg: 1,
                     info: err.message
                 });
-                return ;
+                return;
             }
-            if(rows.length == 0) {
+            var doctor = rows[0];
+            if (doctor.Doctor_Limit >= cnt) {
                 res.json({
                     msg: 1,
-                    info: "没这个医生"
-                })
-                return ;
-            }
-            var docotor = rows[0];
-            if(docotor.Doctor_Limit == cnt) {
-                res.json({
-                    msg:1,
                     info: "这个医生这个时间已经满了"
-                })
-                return ;
+                });
+                return;
             }
             condition.Reservation_PayAmount = docotor.Doctor_Fee;
             condition.Operation_Time = currentDatetime();
@@ -526,10 +516,9 @@ exports.Reservation = function (req, res) {
             });
         })
     });
-    //console.log(q.sql);
 };
 
-exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
+exports.Cancel_Reservation = function (req, res) {
     var table = 'Reservation';
     var condition = req.body;
     var columns = [
@@ -545,12 +534,12 @@ exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
             });
             return;
         }
-        if(rows.length == 0) {
+        if (rows.length == 0) {
             res.json({
-                msg:4,
-                info:"没有符合条件的信息"
+                msg: 4,
+                info: "没有符合条件的信息"
             })
-            return ;
+            return;
         }
         if (rows[0].Reservation_Payed == 1) { // 如果已支付过挂号费，需要退款
             table = 'User';
@@ -617,12 +606,12 @@ exports.Check_PayState = function (req, res) {
             });
             return;
         }
-        if(rows.length == 0) {
+        if (rows.length == 0) {
             res.json({
-                msg:4,
-                info:"没有符合条件的信息"
+                msg: 4,
+                info: "没有符合条件的信息"
             })
-            return ;
+            return;
         }
         res.json({
             msg: 0,
@@ -644,19 +633,19 @@ exports.Check_Cash = function (req, res) {
             });
             return;
         }
-        if(rows.length == 0) {
+        if (rows.length == 0) {
             res.json({
-                msg:4,
-                info:"没有符合条件的信息"
+                msg: 4,
+                info: "没有符合条件的信息"
             })
-            return ;
+            return;
         }
-        if(rows.length == 0) {
+        if (rows.length == 0) {
             res.json({
-                msg:4,
-                info:"没有符合条件的信息"
+                msg: 4,
+                info: "没有符合条件的信息"
             })
-            return ;
+            return;
         }
         res.json({
             msg: 0,
@@ -738,13 +727,13 @@ exports.Pay_Reservation = function (req, res) {
             }
         };
         /*var dest = {
-            Amount: Amount - rows[0].Reservation_PayAmount,
-            Reservation_Payed: 1,
-            Reservation_PayTime: req.body.Reservation_PayTime
-        };*/
+         Amount: Amount - rows[0].Reservation_PayAmount,
+         Reservation_Payed: 1,
+         Reservation_PayTime: req.body.Reservation_PayTime
+         };*/
         condition = jsonToAnd(condition);
         //connect.query('UPDATE ?? SET ? WHERE ' + condition, [table, dest], function (err, result) {
-        var qq = connect.query('UPDATE Reservation, User SET User.Amount=User.Amount-'+rows[0].Reservation_PayAmount+ ', Reservation_Payed=1, Reservation_PayTime=\''+currentDatetime()+'\' WHERE ' + condition, function (err, result) {
+        var qq = connect.query('UPDATE Reservation, User SET User.Amount=User.Amount-' + rows[0].Reservation_PayAmount + ', Reservation_Payed=1, Reservation_PayTime=\'' + currentDatetime() + '\' WHERE ' + condition, function (err, result) {
             if (err) {
                 res.json({
                     msg: 1,
@@ -1336,7 +1325,7 @@ exports.Get_History_Reservation = function (req, res) {
                 });
                 return;
             }
-            connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ?? BETWEEN ? AND ?' ,
+            connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ?? BETWEEN ? AND ?',
                 [table, 'History_Reservation_Time', req.body.Reservation_Start_Time, req.body.Reservation_End_Time],
                 function (err, count) {
                     if (err) {
@@ -1472,23 +1461,23 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
         c2 = " and Depart.Hospital_ID = " + req.body.Hospital_ID;
     }
     var sql =
-    "select Doctor.Doctor_ID, Doctor.Doctor_Name from Doctor, Depart " +
-    "where Doctor.Depart_ID = Depart.Depart_ID " +
-    c1 +
-    c2 +
-    " and Doctor.Doctor_ID not in ( " +
+        "select Doctor.Doctor_ID, Doctor.Doctor_Name from Doctor, Depart " +
+        "where Doctor.Depart_ID = Depart.Depart_ID " +
+        c1 +
+        c2 +
+        " and Doctor.Doctor_ID not in ( " +
         "select t1.did from ( " +
-            "select Doctor.Doctor_ID as did, Doctor.Doctor_Limit from Doctor, Reservation, Doctor_Time" +
-            " where Reservation.Doctor_ID = Doctor_Time.Doctor_ID and Doctor_Time.Doctor_ID = Doctor.Doctor_ID " +
-                " and Reservation.Duty_Time = Doctor_Time.Duty_Time and Doctor_Time.Duty_Time = " + req.body.Duty_Time +
-                " and Reservation.Reservation_Time = '" + req.body.Reservation_Time + "'" +
-            " group by Doctor.Doctor_ID having count(Reservation.Reservation_ID) >= Doctor.Doctor_Limit" +
-        ") as t1"+
-    ")";
+        "select Doctor.Doctor_ID as did, Doctor.Doctor_Limit from Doctor, Reservation, Doctor_Time" +
+        " where Reservation.Doctor_ID = Doctor_Time.Doctor_ID and Doctor_Time.Doctor_ID = Doctor.Doctor_ID " +
+        " and Reservation.Duty_Time = Doctor_Time.Duty_Time and Doctor_Time.Duty_Time = " + req.body.Duty_Time +
+        " and Reservation.Reservation_Time = '" + req.body.Reservation_Time + "'" +
+        " group by Doctor.Doctor_ID having count(Reservation.Reservation_ID) >= Doctor.Doctor_Limit" +
+        ") as t1" +
+        ")";
     console.log("SQL> " + sql);
     connect.query(sql, function (err, rows) {
         if (err) {
-        console.log("ERR:" + sql);
+            console.log("ERR:" + sql);
             res.json({
                 msg: 1,
                 info: err.message
@@ -1500,50 +1489,50 @@ exports.Find_Doctor_By_Condition_Free = function (req, res) {
             content: rows
         });
     });
-    
-/*    var table = [
-        'Depart',
-        'Hospital',
-        'Doctor',
-        'Doctor_Time'
-    ];
-    var condition = {
-        Reservation_Time: req.body.Reservation_Time,
-        'Doctor_Time.Duty_Time': req.body.Duty_Time,
-        relation: {
-            'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
-            'Doctor.Depart_ID': 'Depart.Depart_ID',
-            'Depart.Hospital_ID': 'Hospital.Hospital_ID'
-            //'Reservation.Duty_Time': 'Doctor_Time.Duty_Time'
-        }
-    };
-    if (req.body.Depart_ID) {
-        condition['Depart.Depart_ID'] = req.body.Depart_ID;
-    }
-    if (req.body.Hospital_ID) {
-        condition['Hospital.Hospital_ID'] = req.body.Hospital_ID;
-    }
-    // TODO: Doctor_ID appears in multiple tables, current solution is very dirty.
-    var columns = [
-        'Doctor.Doctor_ID',
-        'Doctor.Doctor_Name'
-    ];
-    condition = jsonToAnd(condition);
-    // use Doctor.Doctor_ID to avoid ambiguous, and then rename it to Doctor_ID to satisfy API requirement.
-    var q = connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            content: rows
-        });
-    });
-    console.log("SQL: " + q.sql);*/
+
+    /*    var table = [
+     'Depart',
+     'Hospital',
+     'Doctor',
+     'Doctor_Time'
+     ];
+     var condition = {
+     Reservation_Time: req.body.Reservation_Time,
+     'Doctor_Time.Duty_Time': req.body.Duty_Time,
+     relation: {
+     'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID',
+     'Doctor.Depart_ID': 'Depart.Depart_ID',
+     'Depart.Hospital_ID': 'Hospital.Hospital_ID'
+     //'Reservation.Duty_Time': 'Doctor_Time.Duty_Time'
+     }
+     };
+     if (req.body.Depart_ID) {
+     condition['Depart.Depart_ID'] = req.body.Depart_ID;
+     }
+     if (req.body.Hospital_ID) {
+     condition['Hospital.Hospital_ID'] = req.body.Hospital_ID;
+     }
+     // TODO: Doctor_ID appears in multiple tables, current solution is very dirty.
+     var columns = [
+     'Doctor.Doctor_ID',
+     'Doctor.Doctor_Name'
+     ];
+     condition = jsonToAnd(condition);
+     // use Doctor.Doctor_ID to avoid ambiguous, and then rename it to Doctor_ID to satisfy API requirement.
+     var q = connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) {
+     if (err) {
+     res.json({
+     msg: 1,
+     info: err.message
+     });
+     return;
+     }
+     res.json({
+     msg: 0,
+     content: rows
+     });
+     });
+     console.log("SQL: " + q.sql);*/
 };
 
 function Config(table, condition, dest, callback) {
@@ -1557,7 +1546,7 @@ exports.Config_User = function (req, res, callback) {
         User_ID: req.body.User_ID
     };
     var dest = req.body;
-    Config(table,condition,dest,function (err, result) {
+    Config(table, condition, dest, function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1574,33 +1563,33 @@ exports.Config_User = function (req, res, callback) {
 
 exports.Del_Doctor = function (req, res) {
     /*var table = [
-        'Doctor_Time',
-        'Doctor'
-    ];
-    var condition = {
-        'Doctor.Doctor_ID': req.body.Doctor_ID,
-        relation: {
-            'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
-        }
-    };
-    condition = jsonToAnd(condition);
-    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            info: '该医生信息已删除'
-        });
-    });*/
+     'Doctor_Time',
+     'Doctor'
+     ];
+     var condition = {
+     'Doctor.Doctor_ID': req.body.Doctor_ID,
+     relation: {
+     'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
+     }
+     };
+     condition = jsonToAnd(condition);
+     connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, result) {
+     if (err) {
+     res.json({
+     msg: 1,
+     info: err.message
+     });
+     return;
+     }
+     res.json({
+     msg: 0,
+     info: '该医生信息已删除'
+     });
+     });*/
     // I know someone (lmy) would say this code should use jsonToAnd and other utils provided.
     // But delete from multiple table is different!
     var did = req.body.Doctor_ID;
-    connect.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
+    connect.query('delete from Doctor_Time where Doctor_ID=' + did, function (err, result) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1608,7 +1597,7 @@ exports.Del_Doctor = function (req, res) {
             });
             return;
         }
-        connect.query('delete from Doctor where Doctor_ID='+did, function(err, result) {
+        connect.query('delete from Doctor where Doctor_ID=' + did, function (err, result) {
             if (!!err) {
                 res.json({
                     msg: 1,
@@ -1785,7 +1774,7 @@ exports.Del_User = function (req, res) {
 exports.Add_Doctor_Time = function (req, res) {
     var table = 'Doctor_Time';
     var dest = tupleToString(req.body.Duty_Time.split(','), req.body.Doctor_ID);
-    connect.query('INSERT INTO ?? (??, ??) VALUES ' + dest, [table, 'Duty_Time','Doctor_ID' ], function (err, result) {
+    connect.query('INSERT INTO ?? (??, ??) VALUES ' + dest, [table, 'Duty_Time', 'Doctor_ID'], function (err, result) {
         if (err) {
             res.json({
                 msg: 1,
@@ -1827,10 +1816,10 @@ exports.Del_Doctor_Time = function (req, res) {
         });
 }
 
-exports.Update_Doctor_Time = function(req, res) {
+exports.Update_Doctor_Time = function (req, res) {
     var did = req.body.Doctor_ID;
     var times = req.body.Duty_Time.split(',');
-    connect.query('delete from Doctor_Time where Doctor_ID='+did, function(err, result) {
+    connect.query('delete from Doctor_Time where Doctor_ID=' + did, function (err, result) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1838,7 +1827,9 @@ exports.Update_Doctor_Time = function(req, res) {
             });
             return;
         }
-        connect.query('insert into Doctor_Time (Doctor_ID, Duty_Time) values '+times.map(function(e){return '('+did+','+e+')';}).join(','), function(err, result) {
+        connect.query('insert into Doctor_Time (Doctor_ID, Duty_Time) values ' + times.map(function (e) {
+            return '(' + did + ',' + e + ')';
+        }).join(','), function (err, result) {
             if (!!err) {
                 res.json({
                     msg: 1,
@@ -1855,8 +1846,8 @@ exports.Update_Doctor_Time = function(req, res) {
 };
 
 // IN: User_ID, OUT: msg, Amount
-exports.Get_Cash = function(req, res) {
-    connect.query('Select Amount from User where User_ID=' + req.body.User_ID, function(err, rows) {
+exports.Get_Cash = function (req, res) {
+    connect.query('Select Amount from User where User_ID=' + req.body.User_ID, function (err, rows) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1864,7 +1855,7 @@ exports.Get_Cash = function(req, res) {
             });
             return;
         }
-        if (rows.length<1) {
+        if (rows.length < 1) {
             res.json({
                 msg: 1,
                 info: 'No such user'
@@ -1879,8 +1870,8 @@ exports.Get_Cash = function(req, res) {
 };
 
 // IN: Admin_ID, OUT: msg, PASSWORD
-exports.Get_PASSWORD_Admin = function(req, res) {
-    connect.query('Select PASSWORD from Admin where Admin_ID=' + req.body.Admin_ID, function(err, rows) {
+exports.Get_PASSWORD_Admin = function (req, res) {
+    connect.query('Select PASSWORD from Admin where Admin_ID=' + req.body.Admin_ID, function (err, rows) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1888,7 +1879,7 @@ exports.Get_PASSWORD_Admin = function(req, res) {
             });
             return;
         }
-        if (rows.length<1) {
+        if (rows.length < 1) {
             res.json({
                 msg: 1,
                 info: 'No such admin'
@@ -1903,8 +1894,8 @@ exports.Get_PASSWORD_Admin = function(req, res) {
 };
 
 // IN: User_ID, OUT: msg, PASSWORD
-exports.Get_PASSWORD_User = function(req, res) {
-    connect.query('Select PASSWORD from User where User_ID=' + req.body.User_ID, function(err, rows) {
+exports.Get_PASSWORD_User = function (req, res) {
+    connect.query('Select PASSWORD from User where User_ID=' + req.body.User_ID, function (err, rows) {
         if (!!err) {
             res.json({
                 msg: 1,
@@ -1912,7 +1903,7 @@ exports.Get_PASSWORD_User = function(req, res) {
             });
             return;
         }
-        if (rows.length<1) {
+        if (rows.length < 1) {
             res.json({
                 msg: 1,
                 info: 'No such user'
