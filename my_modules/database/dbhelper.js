@@ -467,25 +467,15 @@ function currentDatetime() {
 exports.Reservation = function (req, res) {
     var table = [
         'Reservation',
-        'Doctor',
-        'Doctor_Time'
     ];
     var condition = {
-        'Doctor.Doctor_ID': req.body.Doctor_ID,
-        'Doctor_Time.Duty_Time': req.body.Duty_Time,
-        'Reservation.Reservation_Time': req.body.Reservation_Time,
-        relation: {
-            'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
-            'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
-        }
-    };
-    var columns = [
-        'Doctor_Limit',
-        'Doctor_Fee'
-    ];
+        'Doctor_ID' : req.body.Doctor_ID,
+        'Duty_Time' : req.body.Duty_Time,
+        'Reservation_Time' : req.body.Reservation_Time
+    }
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
-    var q = connect.query('SELECT ?? FROM ?? WHERE ' + condition, [columns, table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+    var q = connect.query('SELECT * FROM ?? WHERE ' + condition, [table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
         if (!!err) {
             res.json({
                 msg: 1,
@@ -493,40 +483,50 @@ exports.Reservation = function (req, res) {
             });
             return;
         }
-        if(rows.length == 0) {
-            res.json({
-                msg:4,
-                info:"没有符合条件的信息"
-            })
-            return ;
-        }
-        console.log('The count of reservation is ' + rows.length + ' and doctor limit is ' + rows[0].Doctor_Limit);
-        if (rows.length >= rows[0].Doctor_Limit) { // 若不小于Doctor_Limit，返回挂号数已满
-            res.json({
-                msg: 2,
-                info: '预约已满'
-            });
-            return;
-        }
-        table = 'Reservation';
-        condition = req.body;
-        condition.Reservation_PayAmount = rows[0].Doctor_Fee; // 之前顺便查了Doctor_Fee，节省了一次查询
-        condition.Operation_Time = currentDatetime();
-        connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) { // 插入挂号信息
-            if (err) {
+        var cnt = rows.length;
+        select('Doctor',{Doctor_ID:condition.Doctor_ID},function(err, rows) {
+            if(err) {
                 res.json({
                     msg: 1,
                     info: err.message
                 });
-                return;
+                return ;
             }
-            res.json({
-                msg: 0,
-                info: '挂号成功'
+            if(rows.length == 0) {
+                res.json({
+                    msg: 1,
+                    info: "没这个医生"
+                })
+                return ;
+            }
+            var docotor = rows[0];
+            if(docotor.Doctor_Limit == cnt) {
+                res.json({
+                    msg:1,
+                    info: "这个医生这个时间已经满了"
+                })
+                return ;
+            }
+            condition.Reservation_PayAmount = docotor.Doctor_Fee;
+            condition.Operation_Time = currentDatetime();
+            condition.User_ID = req.body.User_ID;
+            condition.Reservation_Symptom = req.body.Reservation_Symptom;
+            connect.query('INSERT INTO ?? SET ?', [table, condition], function (err, result) {
+                if (err) {
+                    res.json({
+                        msg: 1,
+                        info: err.message
+                    });
+                    return;
+                }
+                res.json({
+                    msg: 0,
+                    info: '挂号成功'
+                });
             });
-        });
+        })
     });
-    console.log(q.sql);
+    //console.log(q.sql);
 };
 
 exports.Cancel_Reservation = function (req, res) { //更晕了，要死了
