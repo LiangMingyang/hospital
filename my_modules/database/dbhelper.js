@@ -471,8 +471,8 @@ exports.Reservation = function (req, res) {
         'Duty_Time': req.body.Duty_Time,
         'Reservation_Time': req.body.Reservation_Time
     };
-    condition = jsonToAnd(condition);
-    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + condition, [table], function (err, count) { // 查询当天该Doctor_ID所有挂号的条目数
+    var conditionString = jsonToAnd(condition);
+    connect.query('SELECT COUNT(1) AS count FROM ?? WHERE ' + conditionString, [table], function (err, count) { // 查询当天该Doctor_ID所有挂号的条目数
         if (err) {
             res.json({
                 msg: 1,
