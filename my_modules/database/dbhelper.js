@@ -489,7 +489,7 @@ exports.Reservation = function (req, res) {
                 });
                 return;
             }
-            if (rows[0].length == 0) {
+            if (rows.length == 0) {
                 res.json({
                     msg: 1,
                     info: "没有对应的医生"
