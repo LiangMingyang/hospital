@@ -505,7 +505,7 @@ exports.Reservation = function (req, res) {
                 });
                 return;
             }
-            condition.Reservation_PayAmount = docotor.Doctor_Fee;
+            condition.Reservation_PayAmount = doctor.Doctor_Fee;
             condition.Operation_Time = currentDatetime();
             condition.User_ID = req.body.User_ID;
             condition.Reservation_Symptom = req.body.Reservation_Symptom;
@@ -546,7 +546,7 @@ exports.Cancel_Reservation = function (req, res) {
             res.json({
                 msg: 4,
                 info: "没有符合条件的信息"
-            })
+            });
             return;
         }
         if (rows[0].Reservation_Payed == 1) { // 如果已支付过挂号费，需要退款
