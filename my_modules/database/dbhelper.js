@@ -472,7 +472,7 @@ exports.Reservation = function (req, res) {
         'Reservation_Time': req.body.Reservation_Time
     };
     condition = jsonToAnd(condition);
-    connect.query('SELECT COUNT(1) FROM ?? WHERE ' + condition, [table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+    connect.query('SELECT COUNT(1) FROM ?? WHERE ' + condition, [table], function (err, count) { // 查询当天该Doctor_ID所有挂号的条目数
         if (err) {
             res.json({
                 msg: 1,
@@ -480,7 +480,7 @@ exports.Reservation = function (req, res) {
             });
             return;
         }
-        var cnt = rows[0].count;
+        var cnt = count[0].count;
         select('Doctor', {Doctor_ID: condition.Doctor_ID}, function (err, rows) {
             if (err) {
                 res.json({
