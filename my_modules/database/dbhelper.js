@@ -498,7 +498,7 @@ exports.Reservation = function (req, res) {
             }
             var doctor = rows[0];
             console.log(doctor);
-            if (doctor.Doctor_Limit >= cnt) {
+            if (doctor.Doctor_Limit <= cnt) {
                 res.json({
                     msg: 1,
                     info: "这个医生这个时间已经满了"
