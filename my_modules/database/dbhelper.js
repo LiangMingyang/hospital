@@ -1227,22 +1227,12 @@ exports.Find_User_By_Identity_ID = function (req, res) {
 exports.Find_Admin_By_Admin_Name = function (req, res) {
     var table = 'Admin';
     var condition = req.body;
-    condition = jsonToAnd(condition);
-    connect.query('DELETE FROM ?? WHERE ' + condition, [table], function (err, rows) {
-        if (err) {
-            res.json({
-                msg: 1,
-                info: err.message
-            });
-            return;
-        }
-        res.json({
-            msg: 0,
-            Admin_ID: rows[0].Admin_ID,
-            Mail: rows[0].Mail,
-            isSuper: rows[0].isSuper
-        });
-    });
+    var columns = [
+        'Admin_ID',
+        'Mail',
+        'isSuper'
+    ];
+    find(table, condition, res, columns);
 };
 
 exports.Get_Province_Info = function (req, res) {
