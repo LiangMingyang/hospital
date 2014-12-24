@@ -485,7 +485,7 @@ exports.Reservation = function (req, res) {
     ];
     condition = jsonToAnd(condition);
     // 查询挂号是否已满
-    var q = connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition, [columns, table], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
+    var q = connect.query('SELECT ??, COUNT(*) AS count FROM ?? WHERE ' + condition + 'GROUP BY ??', [columns, table, columns], function (err, rows) { // 查询当天该Doctor_ID所有挂号的条目数
         if (!!err) {
             res.json({
                 msg: 1,
