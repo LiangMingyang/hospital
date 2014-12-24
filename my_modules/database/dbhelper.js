@@ -472,10 +472,10 @@ exports.Reservation = function (req, res) {
     ];
     var condition = {
         'Doctor.Doctor_ID': req.body.Doctor_ID,
-        'Reservation.Reservation_Time': req.body.Reservation_Time,
         'Doctor_Time.Duty_Time': req.body.Duty_Time,
         relation: {
             'Reservation.Doctor_ID': 'Doctor.Doctor_ID',
+            'Reservation.Reservation_Time': req.body.Reservation_Time,
             'Doctor_Time.Doctor_ID': 'Doctor.Doctor_ID'
         }
     };
